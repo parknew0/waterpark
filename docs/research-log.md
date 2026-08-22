@@ -121,6 +121,15 @@
 - 출처: [Kakao Developers 카카오맵 이해하기](https://developers.kakao.com/docs/ko/kakaomap/common), [Kakao Developers 쿼터](https://developers.kakao.com/docs/ko/getting-started/quota), [Kakao Developers 유료 API](https://developers.kakao.com/docs/ko/app-setting/paid-api)
 - 확인일: 2026-08-22
 
+## 2026-08-22 Kakao 무료 쿼터 앱 영구 삭제 여부
+
+- 상태: `OPEN` — 무료 쿼터 대상 앱 영구 삭제 후 다른 앱에 쿼터가 재배정된다는 공식 근거를 확인하지 못함.
+- Kakao Developers 화면은 무료 쿼터 대상 앱을 비활성화해도 대상을 변경할 수 없다고 안내한다.
+- 공식 앱 문서는 영구 삭제한 앱은 복구할 수 없다고 명시하며, FAQ는 같은 이름으로 새 앱을 만들어도 기존 앱과 다른 서비스로 인식한다고 설명한다.
+- 현재 근거로는 기존 앱 삭제 후 Waterpark가 무료 대상이 된다고 판단할 수 없다. 무료 쿼터 목적의 삭제를 보류하고, 카카오 데브톡에 기존 무료 앱 ID와 Waterpark 앱 ID를 제시해 운영진의 명시적 답변을 받는다.
+- 출처: [Kakao Developers 앱 설정](https://developers.kakao.com/docs/ko/app-setting/app), [Kakao Developers FAQ](https://developers.kakao.com/docs/ko/getting-started/faq), [카카오맵 무료 쿼터 정책 공지](https://devtalk.kakao.com/t/api-notice-on-new-kakao-map-api-features-and-free-quota-policy/150222)
+- 확인일: 2026-08-22
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |

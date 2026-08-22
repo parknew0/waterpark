@@ -93,6 +93,13 @@ node scripts/build_frontend_parking_catalog.mjs
 
 유료 사용 절차는 `비즈월렛 생성 → 결제 카드 등록 → 앱과 비즈월렛 연결 → 유료 API 사용 설정` 순서다. 월별 사용량과 예상 금액을 확인할 수 있고, 합계에 부가세 10%가 더해져 다음 달 1일 오전 1시경 자동 결제된다.
 
+### 무료 쿼터 앱 삭제·변경 주의
+
+- 상태: `OPEN` — Kakao Developers 화면은 무료 쿼터 대상 앱을 비활성화해도 변경할 수 없다고 안내한다.
+- 공식 문서에서 무료 쿼터 대상 앱을 **영구 삭제하면 다른 앱으로 무료 쿼터가 재배정된다**는 규정은 확인하지 못했다.
+- 공식 앱 문서상 삭제한 앱은 복구할 수 없고, 같은 이름으로 새 앱을 만들어도 기존 앱과 다른 서비스로 인식된다.
+- 따라서 무료 쿼터를 얻을 목적으로 기존 앱을 삭제하지 않는다. 삭제 전에 카카오 데브톡 지도/로컬 API 게시판에 기존 무료 앱 ID와 Waterpark 앱 ID를 제시해 재배정 가능 여부를 서면으로 확인한다.
+
 ## 공식 출처
 
 | 출처 | 확인 내용 | 확인일 |
@@ -100,6 +107,8 @@ node scripts/build_frontend_parking_catalog.mjs
 | [Kakao Developers 카카오맵 이해하기](https://developers.kakao.com/docs/ko/kakaomap/common) | 카카오맵 API 활성화 경로, JavaScript 키·SDK 도메인, 2026-07-21 이후 무료 쿼터 정책 | 2026-08-22 |
 | [Kakao Developers 쿼터](https://developers.kakao.com/docs/ko/getting-started/quota) | 무료 쿼터와 지도 SDK·주소 변환·장소 검색 단가 | 2026-08-22 |
 | [Kakao Developers 유료 API](https://developers.kakao.com/docs/ko/app-setting/paid-api) | 비즈월렛 연결, 유료 사용 설정, 사용량 확인, 부가세와 결제 시점 | 2026-08-22 |
+| [Kakao Developers 앱 설정](https://developers.kakao.com/docs/ko/app-setting/app) | 앱 영구 삭제와 복구 불가 조건 | 2026-08-22 |
+| [Kakao Developers FAQ](https://developers.kakao.com/docs/ko/getting-started/faq) | 같은 이름으로 다시 만든 앱도 다른 서비스로 인식 | 2026-08-22 |
 | [Kakao 지도 Web API 가이드](https://apis.map.kakao.com/web/guide/) | JavaScript 키, SDK 도메인 등록, WGS84 위경도 | 2026-08-22 |
 | [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/) | `Geocoder.addressSearch`, `Places.keywordSearch`, 거리순 정렬 | 2026-08-22 |
 | [키워드 장소 검색 예제](https://apis.map.kakao.com/web/sample/keywordBasic/) | 검색 결과 Marker 표시 방식 | 2026-08-22 |
