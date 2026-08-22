@@ -1,4 +1,5 @@
 import type { Coordinate, ParkingPlace } from "../types/parking";
+import type { FloodAwareRoute, Position } from "../types/routing";
 
 export interface KakaoPlaceResult {
   id: string;
@@ -9,6 +10,11 @@ export interface KakaoPlaceResult {
   y: string;
   distance?: string;
   place_url?: string;
+}
+
+interface KakaoAddressResult {
+  address?: { address_name: string };
+  road_address?: { address_name: string };
 }
 
 interface KakaoLatLng {
@@ -25,6 +31,14 @@ interface KakaoMarkerInstance {
   setMap(map: KakaoMapInstance | null): void;
 }
 
+interface KakaoCustomOverlayInstance {
+  setMap(map: KakaoMapInstance | null): void;
+}
+
+interface KakaoDrawableInstance {
+  setMap(map: KakaoMapInstance | null): void;
+}
+
 interface KakaoLatLngBounds {
   extend(position: KakaoLatLng): void;
 }
@@ -33,8 +47,40 @@ interface KakaoMapsApi {
   load(callback: () => void): void;
   LatLng: new (latitude: number, longitude: number) => KakaoLatLng;
   LatLngBounds: new () => KakaoLatLngBounds;
-  Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMapInstance;
+  Map: new (container: HTMLElement, options: {
+    center: KakaoLatLng;
+    level: number;
+    draggable?: boolean;
+    scrollwheel?: boolean;
+  }) => KakaoMapInstance;
   Marker: new (options: { map: KakaoMapInstance; position: KakaoLatLng; title?: string }) => KakaoMarkerInstance;
+  CustomOverlay: new (options: {
+    map: KakaoMapInstance;
+    position: KakaoLatLng;
+    content: HTMLElement;
+    xAnchor: number;
+    yAnchor: number;
+    zIndex: number;
+  }) => KakaoCustomOverlayInstance;
+  Polyline: new (options: {
+    map: KakaoMapInstance;
+    path: KakaoLatLng[];
+    strokeWeight: number;
+    strokeColor: string;
+    strokeOpacity: number;
+    strokeStyle?: string;
+    zIndex?: number;
+  }) => KakaoDrawableInstance;
+  Polygon: new (options: {
+    map: KakaoMapInstance;
+    path: KakaoLatLng[];
+    strokeWeight: number;
+    strokeColor: string;
+    strokeOpacity: number;
+    fillColor: string;
+    fillOpacity: number;
+    zIndex?: number;
+  }) => KakaoDrawableInstance;
   services: {
     Status: { OK: string; ZERO_RESULT: string; ERROR: string };
     SortBy: { DISTANCE: string };
@@ -42,6 +88,11 @@ interface KakaoMapsApi {
       addressSearch(
         address: string,
         callback: (result: Array<{ x: string; y: string }>, status: string) => void,
+      ): void;
+      coord2Address(
+        longitude: number,
+        latitude: number,
+        callback: (result: KakaoAddressResult[], status: string) => void,
       ): void;
     };
     Places: new () => {
@@ -107,6 +158,20 @@ function geocodeAddress(maps: KakaoMapsApi, address: string): Promise<Coordinate
   });
 }
 
+export async function reverseGeocodeKakao(appKey: string, coordinate: Coordinate): Promise<string | null> {
+  const maps = await loadKakaoMaps(appKey);
+  const geocoder = new maps.services.Geocoder();
+  return new Promise((resolve) => {
+    geocoder.coord2Address(coordinate.longitude, coordinate.latitude, (result, status) => {
+      if (status !== maps.services.Status.OK || result.length === 0) {
+        resolve(null);
+        return;
+      }
+      resolve(result[0].road_address?.address_name ?? result[0].address?.address_name ?? null);
+    });
+  });
+}
+
 export async function searchKakaoParking(appKey: string, address: string): Promise<ParkingPlace[]> {
   const maps = await loadKakaoMaps(appKey);
   const geocoded = await geocodeAddress(maps, address);
@@ -154,24 +219,187 @@ export function createKakaoMap(
   container: HTMLElement,
   center: Coordinate,
   places: ParkingPlace[],
+  currentPosition?: Coordinate,
+  evacuationRoute?: FloodAwareRoute,
+  parkedPlace?: ParkingPlace,
+  onParkingSelect?: (place: ParkingPlace) => void,
 ): () => void {
   const map = new maps.Map(container, {
     center: new maps.LatLng(center.latitude, center.longitude),
     level: 7,
+    draggable: true,
+    scrollwheel: true,
   });
-  const markers: KakaoMarkerInstance[] = [];
+  const overlays: KakaoCustomOverlayInstance[] = [];
+  const routeLayers: KakaoDrawableInstance[] = [];
+  const listenerCleanups: Array<() => void> = [];
 
-  if (places.length > 0) {
-    const bounds = new maps.LatLngBounds();
-    places.forEach((place) => {
-      const position = new maps.LatLng(place.latitude, place.longitude);
-      bounds.extend(position);
-      markers.push(new maps.Marker({ map, position, title: place.name }));
+  const toPath = (positions: Position[]) => positions.map(
+    ([longitude, latitude]) => new maps.LatLng(latitude, longitude),
+  );
+
+  if (evacuationRoute) {
+    evacuationRoute.riskZones.forEach((zone) => {
+      zone.polygons.forEach((polygon) => {
+        routeLayers.push(new maps.Polygon({
+          map,
+          path: toPath(polygon),
+          strokeWeight: 1,
+          strokeColor: zone.level === "CURRENT" ? "#ff244f" : zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
+          strokeOpacity: 0.72,
+          fillColor: zone.level === "CURRENT" ? "#ff244f" : zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
+          fillOpacity: zone.level === "CURRENT" ? 0.48 : zone.level === "VERY_HIGH" ? 0.3 : 0.17,
+          zIndex: 2,
+        }));
+      });
     });
+    routeLayers.push(new maps.Polyline({
+      map,
+      path: toPath(evacuationRoute.baselinePath),
+      strokeWeight: 5,
+      strokeColor: "#a7b1b0",
+      strokeOpacity: 0.62,
+      strokeStyle: "shortdash",
+      zIndex: 3,
+    }));
+    routeLayers.push(new maps.Polyline({
+      map,
+      path: toPath(evacuationRoute.lowerRiskPath),
+      strokeWeight: 7,
+      strokeColor: "#00e8ec",
+      strokeOpacity: 0.95,
+      zIndex: 4,
+    }));
+
+    const destinationMarker = document.createElement("span");
+    destinationMarker.className = "evacuation-destination-marker";
+    destinationMarker.textContent = "P";
+    destinationMarker.setAttribute("role", "img");
+    destinationMarker.setAttribute("aria-label", `대피 주차장 후보: ${evacuationRoute.destination.name}`);
+    overlays.push(new maps.CustomOverlay({
+      map,
+      position: new maps.LatLng(evacuationRoute.destination.latitude, evacuationRoute.destination.longitude),
+      content: destinationMarker,
+      xAnchor: 0.5,
+      yAnchor: 0.5,
+      zIndex: 7,
+    }));
+  }
+
+  if (currentPosition) {
+    const marker = document.createElement("span");
+    marker.className = "current-map-marker";
+    marker.setAttribute("role", "img");
+    marker.setAttribute("aria-label", "현재 위치");
+
+    const directionFrame = document.createElement("span");
+    directionFrame.className = "current-map-marker-direction-frame";
+    directionFrame.setAttribute("aria-hidden", "true");
+    const directionRotator = document.createElement("span");
+    directionRotator.className = "current-map-marker-direction-rotator";
+    const directionCanvas = document.createElement("span");
+    directionCanvas.className = "current-map-marker-direction-canvas";
+    const direction = document.createElement("img");
+    direction.className = "current-map-marker-direction";
+    direction.src = "/assets/parking/current-location-direction.svg";
+    direction.alt = "";
+    directionCanvas.append(direction);
+    directionRotator.append(directionCanvas);
+    directionFrame.append(directionRotator);
+
+    const dotFrame = document.createElement("span");
+    dotFrame.className = "current-map-marker-dot-frame";
+    dotFrame.setAttribute("aria-hidden", "true");
+    const dot = document.createElement("img");
+    dot.className = "current-map-marker-dot";
+    dot.src = "/assets/parking/current-location-dot.svg";
+    dot.alt = "";
+    dotFrame.append(dot);
+
+    marker.append(directionFrame, dotFrame);
+    overlays.push(new maps.CustomOverlay({
+      map,
+      position: new maps.LatLng(currentPosition.latitude, currentPosition.longitude),
+      content: marker,
+      xAnchor: 0.3,
+      yAnchor: 0.71,
+      zIndex: 5,
+    }));
+  }
+
+  places.forEach((place) => {
+    const marker = document.createElement("button");
+    marker.type = "button";
+    marker.className = "parking-dot-marker";
+    marker.setAttribute("aria-label", `${place.name} 선택`);
+    const icon = document.createElement("img");
+    icon.src = "/assets/parking/parking-dot.svg";
+    icon.alt = "";
+    marker.append(icon);
+    const selectPlace = () => onParkingSelect?.(place);
+    marker.addEventListener("click", selectPlace);
+    listenerCleanups.push(() => marker.removeEventListener("click", selectPlace));
+    overlays.push(new maps.CustomOverlay({
+      map,
+      position: new maps.LatLng(place.latitude, place.longitude),
+      content: marker,
+      xAnchor: 0.5,
+      yAnchor: 0.5,
+      zIndex: 4,
+    }));
+  });
+
+  if (parkedPlace) {
+    const marker = document.createElement("div");
+    marker.className = "parked-car-marker";
+    marker.setAttribute("role", "img");
+    marker.setAttribute("aria-label", `주차된 내 차 위치: ${parkedPlace.name}`);
+    const carParts = [
+      ["parked-car-body", "/assets/parking/car-body.svg"],
+      ["parked-car-wheel parked-car-wheel--back-left", "/assets/parking/car-wheel-back-left.svg"],
+      ["parked-car-wheel parked-car-wheel--front-left", "/assets/parking/car-wheel-front-left.svg"],
+      ["parked-car-wheel parked-car-wheel--front-right", "/assets/parking/car-wheel-front-right.svg"],
+      ["parked-car-wheel parked-car-wheel--back-right", "/assets/parking/car-wheel-back-right.svg"],
+    ];
+    carParts.forEach(([className, src]) => {
+      const part = document.createElement("img");
+      part.className = className;
+      part.src = src;
+      part.alt = "";
+      marker.append(part);
+    });
+    overlays.push(new maps.CustomOverlay({
+      map,
+      position: new maps.LatLng(parkedPlace.latitude, parkedPlace.longitude),
+      content: marker,
+      xAnchor: 0.5,
+      yAnchor: 0.5,
+      zIndex: 5,
+    }));
+  }
+
+  if (places.length > 0 || parkedPlace || evacuationRoute) {
+    const bounds = new maps.LatLngBounds();
+    if (currentPosition) {
+      bounds.extend(new maps.LatLng(currentPosition.latitude, currentPosition.longitude));
+    }
+    places.forEach((place) => {
+      bounds.extend(new maps.LatLng(place.latitude, place.longitude));
+    });
+    if (parkedPlace) bounds.extend(new maps.LatLng(parkedPlace.latitude, parkedPlace.longitude));
+    if (evacuationRoute) {
+      evacuationRoute.lowerRiskPath.forEach(([longitude, latitude]) => {
+        bounds.extend(new maps.LatLng(latitude, longitude));
+      });
+    }
     map.setBounds(bounds);
   } else {
     map.setCenter(new maps.LatLng(center.latitude, center.longitude));
   }
 
-  return () => markers.forEach((marker) => marker.setMap(null));
+  return () => {
+    listenerCleanups.forEach((cleanup) => cleanup());
+    routeLayers.forEach((layer) => layer.setMap(null));
+    overlays.forEach((overlay) => overlay.setMap(null));
+  };
 }

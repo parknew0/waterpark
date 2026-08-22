@@ -216,6 +216,105 @@
 - 상세 목록과 판별 순서: [경상북도 침수 관련 공공데이터 소스 조사](./07-gyeongbuk-flood-data-source-catalog.md)
 - 확인일: 2026-08-22
 
+## 2026-08-22 Figma 온보딩·위치 동의 화면 구현
+
+- 상태: `FACT` — Figma 디자인 컨텍스트와 에셋을 직접 확인해 React 구현 및 브라우저 검증 완료.
+- 차량 보호 소개의 최신 기준 노드 `136:2756`은 402×874 모바일 화면, 1/2 진행률, 서비스 설명, 흰색 SUV 이미지와 `Next` CTA로 구성된다.
+- 위치 동의 노드 `123:2151`은 2/2 진행률, 필수 위치 권한과 사용 목적, `Agree & Start` CTA로 구성된다.
+- Figma 원본 흰색 SUV PNG와 위치 SVG를 프로젝트에 저장하고 임시 에셋 URL 의존성을 제거했다.
+- 빗방울이 차체의 지정 위치에 도달하면 낙하선이 사라지고 물방울 파편이 튀는 CSS 애니메이션을 추가했다. 이는 물리 엔진 충돌 판정이 아니라 화면 크기에 맞춘 연출이며 `prefers-reduced-motion`에서 반복을 중단한다.
+- Figma의 iPhone 상태바·다이내믹 아일랜드·홈 인디케이터는 예시용 기기 크롬이므로 실제 웹 UI에서 제외했다.
+- 흐름은 `차량 보호 소개 → 위치 동의 → 브라우저 위치 권한 요청 → Kakao 지도`로 연결했다. URL은 `view=consent`, `view=map`으로 상태를 반영하며 뒤로가기를 지원한다.
+- 402×874에서 최신 SUV 화면과 빗방울 충돌 물보라를 시각 확인했고, 1280×900 중앙 프레임 확인, lint/build, Kakao 지도 진입, 브라우저 경고·오류 0건을 검증했다.
+- 상세: [온보딩 뷰 구현](./frontend/04-onboarding-views.md)
+- 출처: [Figma 차량 보호 소개 `136:2756`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2756&m=dev), [Figma 위치 동의 `123:2151`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2151&m=dev), [Vercel Web Interface Guidelines](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md)
+- 확인일: 2026-08-22
+
+## 2026-08-22 Figma 지도 홈·가까운 주차장·선택 상세 구현
+
+- 상태: `FACT` — Figma 노드 확인, React 구현, 402×874 브라우저 전환 검증 완료. 실제 위치 권한 환경 최종 확인은 `OPEN`.
+- 지도 홈 `123:1415`, 가까운 주차장 시트 `123:2075`, 주차장 선택 상세 `123:2360`, 위치 라벨 `123:1419`를 확인했다.
+- 온보딩 `Next`는 `?view=consent` 위치 동의 화면으로 이동한다. `Agree & Start`를 누르면 `?view=map`으로 이동하고 지도 위 가까운 주차장 시트를 즉시 표시한다.
+- 위치 권한이 허용되면 `navigator.geolocation` 좌표로 경북 공영주차장을 거리순 재정렬하고 Kakao `coord2Address` 결과를 상단 현재 위치 라벨에 표시한다.
+- 위치 권한이 없으면 기본 경북 중심 결과와 상단 위치 라벨 상태를 유지한다. 지도를 가리는 별도 토스트는 제거했다. 테스트 브라우저는 위치 권한을 확보하지 못했으므로 실제 주소 표시는 아직 최종 확인하지 못했다.
+- Figma 사진·아이콘은 로컬에 저장했다. Kakao 지도가 없을 때만 Figma 지도 이미지를 폴백으로 사용한다.
+- Kakao 지도 Web API에는 확인 가능한 웹용 다크 테마 옵션이 없어 지도 타일 부모 레이어에 CSS 색상 필터를 한 번 적용했다. 개별 타일 필터에서 생기던 가로·세로 경계선을 제거하면서 현재 위치 마커와 Kakao 저작권·브랜드 링크는 필터 밖에 유지한다.
+- 강수 API와 위험 예측 API가 아직 연결되지 않아 예시 수치 `30mm`와 특정 주차장 `High risk` 판정을 사용하지 않았다. 각각 `--mm`, `Risk assessment is not connected yet`으로 명시했다.
+- 빗방울 충돌 효과는 10개에서 16개로 늘렸다.
+- Figma `123:2320`의 방향 부채꼴과 청록 점 에셋을 Kakao `CustomOverlay`로 현재 좌표에 표시한다. 위치 권한 실패 시에는 마커를 표시하지 않는다.
+- 가까운 주차장 시트는 지도 진입 즉시 1.2초 동안 아래에서 위로 올라오고 배경 스크림은 360ms 동안 나타난다.
+- 상세: [지도 홈·내 차 위치 설정 흐름](./frontend/05-parking-home-and-location-flow.md)
+- 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [가까운 주차장 `123:2075`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2075&m=dev), [선택 상세 `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev), [현재 위치 라벨 `123:1419`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1419&m=dev), [현재 위치 마커 `123:2320`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2320&m=dev), [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/)
+- 확인일: 2026-08-22
+
+## 2026-08-22 지도 마커 상태·내 차 위치·기기 방향 구현
+
+- 상태: `FACT` — Figma 노드 확인, React 구현, lint/build와 브라우저 상태 전환 검증 완료. 실제 모바일 방향 센서 확인은 `OPEN`.
+- `123:1415` 지도에 진입하면 `123:2075` 가까운 주차장 목록 시트를 즉시 표시한다. 목록 선택 뒤 `123:2360` 상세를 열고 설정 버튼을 누르면 `123:1958` 최종 지도로 전환한다.
+- 최종 지도는 현재 위치, 선택 좌표의 `136:2639` 내 차 마커, 선택한 곳을 제외한 주변 주차장 `P` 마커 최대 8개, 실제 주차장명·주소 카드를 함께 표시한다. 저장은 아직 브라우저 메모리 상태다.
+- 방향 부채꼴은 iOS Safari의 `webkitCompassHeading`을 우선 사용한다. 절대값이 아닌 표준 `alpha`도 상대 회전 폴백으로 사용하고, 회전축은 부채꼴 이미지 내부가 아닌 현재 위치 점 중심으로 교정했다.
+- 현재 위치 오버레이는 포인터 이벤트를 받지 않도록 변경하고 Kakao 지도에 드래그·스크롤 옵션을 명시했다. 402×874 브라우저에서 100px 드래그 후 내부 지도 레이어가 실제 100px 이동했다.
+- 개별 타일마다 적용하던 다크 필터를 타일 부모 레이어의 단일 필터로 변경해 스크린샷의 타일 경계선을 제거했다. Figma `123:2511` 기준으로 강수 아이콘의 빗줄기 간격도 교정했다.
+- Figma `123:1631`의 최종 캡처에는 검색 입력창 오른쪽 아이콘이 표시되지 않는다. 잘못 연결됐던 눈 가림 SVG와 아이콘 버튼을 모두 제거했으며 Enter/모바일 키보드 제출은 form submit으로 유지한다.
+- 현재 위치 부채꼴과 점이 회전할 때 분리되던 문제는 두 요소의 중심과 Kakao anchor를 `(32px, 54px)`로 통일해 수정했다.
+- 모바일에서도 프레임 폭을 402px로 제한해 생기던 좌우·하단 여백을 제거했다. 480px 이하에서는 `100vw × 100svh`를 사용하며 430×932 브라우저에서 시트 `x=0`, `width=430`, `bottom=932`를 확인했다.
+- 상세 CTA는 Figma `123:2360`의 홈 인디케이터 영역 34px을 웹 하단 여백으로 유지했다. 402×874에서 버튼 하단은 828px, 화면 하단 간격은 46px이다.
+- 현재 위치 마커는 단순 삼각형 배치가 아니라 Figma `123:2320`의 중첩 frame·rotator·canvas·dot 구조와 inset을 그대로 이식했다. 기본 `-135°` 위에 센서 방위를 합성하고 Kakao anchor를 점 중심에 맞췄다.
+- Figma `176:2956`에 맞춰 `My Location` 색상을 청록에서 `#EDEDED`로 수정하고 카드 세로 간격을 17px·8px로 조정했다.
+- 최종 카드 주차장명과 주소는 영어로 표시한다. 포항 데모 3개 지점은 명시적인 영문 표기를 사용하며 나머지는 로컬 영문자 변환 폴백을 사용한다. 외부 번역 API의 공식 번역이 아니므로 고유명사 영문 표기는 추후 검수 대상이다.
+- 테스트 브라우저에서는 위치 권한을 확보하지 못해 실제 현재 위치와 센서 회전은 검증하지 못했다. 권한 실패 시 가짜 현재 위치를 표시하지 않는 처리, 목록 즉시 표시, 상세, 확정 후 주변 후보·차 마커·저장 카드 상태를 확인했다.
+- 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [지도 선택 `123:1958`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1958&m=dev), [검색 입력창 `123:1631`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1631&m=dev), [상세 CTA `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev), [현재 위치 마커 `123:2320`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2320&m=dev), [My Location 카드 `176:2956`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=176-2956&m=dev), [내 차 마커 `136:2639`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2639&m=dev), [W3C Device Orientation and Motion](https://www.w3.org/TR/orientation-event/), [Apple DeviceOrientationEvent](https://developer.apple.com/documentation/webkitjs/deviceorientationevent)
+
+### 2026-08-22 — 긴급 상황 화면과 경고 모션 구현
+
+- `FACT`: Figma `90:675`는 402×874 긴급 화면이며 경고 아이콘 149px, 안전 주차장 카드 370×172px, CTA 영역 402×74px로 확인했다.
+- `FACT`: Figma `90:675`와 `136:2576`의 모션 컨텍스트에는 애니메이션 노드가 없었다.
+- `DECISION`: 정적 레이아웃은 Figma 디자인 컨텍스트를 따르고, 사용자 요청에 따라 26개 빗방울 낙하와 1.15초 경고 진동·외곽 원 펄스를 CSS로 추가했다.
+- `FACT`: 402×874 브라우저에서 경고 아이콘 `x=126.5, y=131`, 카드 `x=16, y=506`, CTA `y=748`을 측정했고 애니메이션의 computed transform 변화도 확인했다.
+- `LIMITATION`: `30min`, 배정 주차장과 `156m away`는 실제 예측·주차 여석 API 값이 아닌 Figma 프로토타입 고정값이다.
+- 출처: [Figma 긴급 화면 `90:675`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-675&m=dev), [Figma 경고 원 `136:2576`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2576&m=dev)
+
+### 2026-08-22 — 침수 위험 회피 대피 경로 구현 가능성
+
+- `FACT`: OSMnx는 지정 Polygon의 운전 도로를 NetworkX `MultiDiGraph`로 만들고 GraphML 저장·로드, Dijkstra 기반 가중 최단 경로와 경로 GeoDataFrame 변환을 지원한다.
+- `FACT`: NetworkX 최단 경로는 간선 속성 또는 함수형 가중치를 지원하므로 거리·시간에 비음수 침수 위험 패널티를 더할 수 있다.
+- `FACT`: 현재 Waterpark 위험표는 25,336개 건물 점의 상시 위험도이며 도로를 막는 현재 침수 폴리곤이나 연속 예측 격자가 아니다.
+- `FACT`: 현재 공영주차장 2,010곳은 안전성·지상 여부·실시간 여석이 검증되지 않은 목적지 후보다.
+- `DECISION PROPOSAL`: 현재 침수·공식 통제와 겹친 간선은 제거하고, 가까운 미래 위험과 겹친 간선은 통과 가능하되 위험 비용을 높이는 구조가 구현 가능하다.
+- `LIMITATION`: 현 데이터 단계의 결과는 `안전 경로`가 아니라 `저위험 우회 경로 후보`로 표현해야 한다.
+- 상세: [침수 위험 회피 대피 경로 설계](./09-flood-aware-evacuation-routing.md)
+- 출처: [OSMnx User Reference](https://osmnx.readthedocs.io/en/stable/user-reference.html), [NetworkX shortest_path](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html), [GeoPandas sjoin](https://geopandas.org/en/latest/docs/reference/api/geopandas.sjoin.html), [OpenStreetMap Attribution Guidelines](https://osmfoundation.org/wiki/Licence/Attribution_Guidelines)
+
+### 2026-08-22 — 포항 침수 위험 회피 경로 MVP 구현
+
+- `FACT`: POSTECH 인근 반경 2.5km의 OSM 운전 도로 그래프를 수집해 로컬 GraphML 캐시로 저장하는 생성기를 구현했다.
+- `FACT`: 건물 `HIGH`·`VERY_HIGH` 위험점의 120m 데모 영향권과 각 도로 간선의 교차 길이를 계산하고, `length + HIGH 노출×5 + VERY_HIGH 노출×12`의 비음수 비용으로 Dijkstra 경로를 계산한다.
+- `FACT`: 공영주차장 후보를 영향권 밖·도로 도달 가능 여부로 거른 결과, 기준 출발점에서는 `효곡동 노상1`, 도로거리 618.3m가 선택됐다.
+- `FACT`: 이 입력에서 일반 최단경로와 저위험 경로는 동일하며 위험 영향권 교차 길이는 모두 0m다. 차이가 없는 결과를 임의 우회로로 조작하지 않았다.
+- `FACT`: 긴급 화면의 기존 고정 주차장과 156m 값은 계산 GeoJSON의 목적지·주소·도로거리로 교체했다. CTA 뒤 Kakao 지도 또는 키 없는 SVG 폴백에 위험 구역, 일반 경로, 저위험 경로와 목적지를 표시한다.
+- `LIMITATION`: 위험 반경은 시연 파라미터이며 목적 주차장의 안전성·실시간 여석은 검증되지 않았다. 실제 운영에는 공식 현재 침수·도로 통제 입력이 필요하다.
+- 상세: [침수 위험 회피 대피 경로 설계와 구현](./09-flood-aware-evacuation-routing.md), [프론트 경로 뷰](./frontend/07-flood-aware-route-view.md)
+- 출처: [OSMnx User Reference](https://osmnx.readthedocs.io/en/stable/user-reference.html), [NetworkX shortest_path](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html), [OpenStreetMap Attribution Guidelines](https://osmfoundation.org/wiki/Licence/Attribution_Guidelines)
+
+### 2026-08-22 — 가짜 현재 침수 상황과 4단계 데모 구현
+
+- `FACT`: 기본 경로의 도로 일부를 가로지르는 합성 Polygon을 `data/demo/pohang-current-flood-scenario.geojson`으로 추가했다.
+- `FACT`: 합성 폴리곤을 현재 침수 입력으로 사용하면 OSM 간선 6개가 제거되고 목적지는 `효곡동 노상8`, 우회 거리는 2,121.9m가 된다.
+- `FACT`: Figma `119:1140`, `123:1743`, `90:755`를 확인해 위험 상세·안전 상세·길찾기 React 뷰를 구현했다.
+- `FACT`: 긴급 경고부터 `emergency → risk-detail → safe-detail → route`로 이어지며 각 URL로 직접 진입할 수도 있다.
+- `LIMITATION`: Polygon과 `30mm`, 2시간 위험, 안전시간 30분은 시연 값이다. 실제 침수·강수·안전 보증으로 발표하지 않는다.
+- 상세: [가짜 침수 상황 데모 흐름](./frontend/08-flood-scenario-demo-flow.md)
+- 출처: [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 길찾기 `90:755`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-755&m=dev)
+
+### 2026-08-22 — 긴급 화면 위치와 영문 주소 교정
+
+- `FACT`: Figma `90:675`의 경고 원은 402×874 기준 `x=126.5, y=131`, 차량 프레임은 `x=167, y=171`, 뒤로가기 아이콘 중심은 `(36, 86)`이다.
+- `FACT`: 기존 `max-height: 760px` CSS가 경고 원을 `y=92`로 이동시켜 뒤로가기와 간격을 깨뜨리고 있었다. 이 긴급 화면 예외를 제거했다.
+- `FACT`: 차량 프레임의 상대 x좌표를 35px에서 40.5px로 교정해 Figma와 동일한 절대 x=167을 만들었다.
+- `FACT`: 긴급·안전·길찾기 화면의 목적지명과 주소를 영문으로 통일했다.
+- `FACT`: 402×720에서 좌표 측정, 402×874 시각 검사, TypeScript build, ESLint와 console 오류·경고 0건을 확인했다.
+- 출처: [Figma 긴급 화면 `90:675`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-675&m=dev)
+
 ## 2026-08-22 전국 침수·건물 원본 확보 및 구조 검증
 
 - 상태: `FACT` — 전국 원본 다운로드와 구조·스키마 검증까지 완료. 전국 학습표 생성은 아직 하지 않았다.
@@ -242,14 +341,14 @@
 | D-006 | 2026-08-22 | 지하주차장 침수 지도학습은 양성 9건으로 불가하므로, 규칙 기반 위험점수를 주력으로 하고 지표면 침수 XGBoost를 보조로 병행한다. | `DECISION` |
 | D-007 | 2026-08-22 | 프론트엔드 로우파이는 React·TypeScript·Vite로 구현한다. | `DECISION` |
 | D-008 | 2026-08-22 | 지도·주소·주차장 검색은 Kakao 지도 JavaScript SDK를 우선 사용하고, 키가 없거나 실패하면 경북 공영주차장 좌표 데이터로 전환한다. | `DECISION` |
-| D-009 | 2026-08-23 | 지하주차장 침수 학습을 경북 단독이 아니라 전국 16개 시도로 확장한다. 경북 양성 9동이 전국 1,233동이 되어 지도학습이 성립한다. | `DECISION` |
-| D-010 | 2026-08-23 | 연도별 건물 스냅샷을 수집하지 않는다. 신축 오염이 1.31%로 `A13 사용승인일자`로 제거 가능하고, VWorld 최고 스냅샷이 2015-12-24라 침수 기록의 32%는 대응 자료가 아예 없다. | `DECISION` |
-| D-011 | 2026-08-23 | 단독주택(반지하)을 학습에서 제외하지 않는다. 정답 라벨이 지표면 침수이므로 건물 용도가 라벨 의미를 바꾸지 않으며, 제외하면 양성의 51.8%를 잃는다. | `DECISION` |
-| D-012 | 2026-08-23 | 주변 대비 고도의 반경을 하나 고르지 않고 200/500/1000/2000m를 모두 컬럼으로 둔다. 최적 반경이 서울 500m, 경북 1000m로 지역마다 다르다. | `DECISION` |
-| D-013 | 2026-08-23 | 하천 변수 중 거리 계열은 지역 간 방향이 뒤집혀 제외 대상으로 두고, 고도 계열만 핵심 피처로 쓴다. 거리를 넣으면 시도 홀드아웃 성능이 26% 하락했다. | `DECISION` |
-| D-014 | 2026-08-23 | 모델 평가는 시도 홀드아웃으로만 한다. 무작위 분할은 같은 시도가 양쪽에 들어가 0.4132가 나오지만 배포 성능이 아니다. | `DECISION` |
-| D-015 | 2026-08-23 | `XGB 시도순위`(고도 + 시도내 백분위)를 잠정 채택한다. 가중평균 PR-AUC 0.1329로 규칙 0.0894 대비 49% 높다. 평가에 쓰지 않은 시도로 재확인 후 확정한다. | `DECISION` |
-
+| D-009 | 2026-08-22 | 경로 MVP는 현재 침수 영향권 간선을 제거하고 예측·상시 위험 노출에는 비음수 패널티를 적용하며, 사용자에게 `안전 경로`가 아닌 `저위험 경로 후보`로 표시한다. | `DECISION` |
+| D-010 | 2026-08-23 | 지하주차장 침수 학습을 경북 단독이 아니라 전국 16개 시도로 확장한다. 경북 양성 9동이 전국 1,233동이 되어 지도학습이 성립한다. | `DECISION` |
+| D-011 | 2026-08-23 | 연도별 건물 스냅샷을 수집하지 않는다. 신축 오염이 1.31%로 `A13 사용승인일자`로 제거 가능하고, VWorld 최고 스냅샷이 2015-12-24라 침수 기록의 32%는 대응 자료가 아예 없다. | `DECISION` |
+| D-012 | 2026-08-23 | 단독주택(반지하)을 학습에서 제외하지 않는다. 정답 라벨이 지표면 침수이므로 건물 용도가 라벨 의미를 바꾸지 않으며, 제외하면 양성의 51.8%를 잃는다. | `DECISION` |
+| D-013 | 2026-08-23 | 주변 대비 고도의 반경을 하나 고르지 않고 200/500/1000/2000m를 모두 컬럼으로 둔다. 최적 반경이 서울 500m, 경북 1000m로 지역마다 다르다. | `DECISION` |
+| D-014 | 2026-08-23 | 하천 변수 중 거리 계열은 지역 간 방향이 뒤집혀 제외 대상으로 두고, 고도 계열만 핵심 피처로 쓴다. 거리를 넣으면 시도 홀드아웃 성능이 26% 하락했다. | `DECISION` |
+| D-015 | 2026-08-23 | 모델 평가는 시도 홀드아웃으로만 한다. 무작위 분할은 같은 시도가 양쪽에 들어가 0.4132가 나오지만 배포 성능이 아니다. | `DECISION` |
+| D-016 | 2026-08-23 | `XGB 시도순위`(고도 + 시도내 백분위)를 잠정 채택한다. 가중평균 PR-AUC 0.1329로 규칙 0.0894 대비 49% 높다. 평가에 쓰지 않은 시도로 재확인 후 확정한다. | `DECISION` |
 ## 조사 결과 기록 형식
 
 ```markdown

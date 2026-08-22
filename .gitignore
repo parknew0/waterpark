@@ -20,6 +20,8 @@ data/raw/dem/
 data/raw/river-centerline/
 data/raw/overture/
 data/raw/kma-rain/
+data/raw/osm-cache/
+data/raw/osm-routing/
 data/interim/building-register/
 data/interim/geometry-repaired/
 # Per-building extracts of VWorld attributes (PNU, coordinates, use) are a
