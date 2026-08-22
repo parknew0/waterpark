@@ -4,7 +4,7 @@ Figma `Lo-Fi` 페이지의 지도 홈과 `내 차 위치 설정` 화면을 React
 
 ```bash
 cd frontend
-cp .env.example .env
+nano .env
 npm install
 npm run dev
 ```

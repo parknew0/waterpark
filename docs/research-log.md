@@ -98,13 +98,15 @@
 
 ## 2026-08-22 프론트엔드 지도·주차장 검색 확인 결과
 
-- 상태: `FACT` — Figma 노드 확인과 React 로우파이 구현 완료. Kakao 키·SDK 도메인은 확인됐고 카카오맵 API 활성화는 `OPEN_ACTIVATION`.
+- 상태: `FACT` — Figma 노드 확인, React 로우파이 구현, Kakao 지도·주소·주차장 검색 실연결 완료.
 - Figma 전체 `Lo-Fi` Canvas `20:7`에서 지도 홈 `117:510`과 내 차 위치 설정 `123:1610`을 구현 기준으로 선택했다.
 - Kakao 지도 JavaScript SDK는 JavaScript 키와 등록 도메인이 필요하며, `services` 라이브러리에서 주소 검색과 장소 키워드 검색을 제공한다.
 - React 앱은 주소를 좌표로 바꾼 뒤 `주차장`을 거리순 검색하는 흐름을 구현했다. 키가 없거나 호출이 실패하면 경북 공영주차장 좌표 보유 1,986건을 검색한다.
 - Vercel `agent-skills`의 React 성능 기준과 최신 Web Interface Guidelines를 적용해 접근성, focus, 폼, 비동기 상태, safe-area, 긴 텍스트와 조건부 SDK 로딩을 확인했다.
 - Kakao JavaScript 키의 SDK 도메인 등록 후 `domain mismatched` 오류는 해소됐다. 재호출은 HTTP `403`과 `App(Waterpark) disabled OPEN_MAP_AND_LOCAL service.`를 반환해 **카카오맵 → 사용 설정 → 상태 ON**이 추가로 필요하다.
 - 카카오맵 설정 변경 뒤 같은 `.env` 키로 보낸 새 SDK 요청은 HTTP `401`과 `appKey is already deactivated`였다. 기존 브라우저 세션의 캐시된 SDK에서는 지도와 포항 주차장 15건 검색이 동작했으나, 캐시 없는 요청이 실패하므로 연결 완료로 판정하지 않는다. 활성 키 확인 또는 새 키 적용이 필요하다.
+- 다른 계정에서 새 JavaScript 키를 발급하고 `localhost:5173`, `127.0.0.1:5173` SDK 도메인을 등록한 뒤 캐시 없는 SDK 요청 HTTP `200`을 확인했다.
+- Vite 서버를 새 키로 재시작한 최종 점검에서 Kakao 지도만 렌더링됐고 폴백·지도 오류는 없었다. `경상북도 포항시` 검색은 `Kakao 실시간 검색`으로 전환되어 장소 15건을 표시했으며 브라우저 경고·오류는 0건이었다.
 - Kakao 공식 문서상 2026-07-21부터 카카오맵 API 활성화가 필수이며, 개발자 계정에서 첫 번째로 활성화한 앱에만 무료 쿼터가 제공된다.
 - 산출물: `frontend/`, `docs/frontend/`, `frontend/public/data/gyeongbuk-parking.json`
 - 출처: [Kakao Developers 카카오맵 이해하기](https://developers.kakao.com/docs/ko/kakaomap/common), [Kakao 지도 Web API 가이드](https://apis.map.kakao.com/web/guide/), [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/), [Vercel agent-skills](https://github.com/vercel-labs/agent-skills), [Web Interface Guidelines](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md)

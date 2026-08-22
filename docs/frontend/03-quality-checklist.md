@@ -33,12 +33,13 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 날짜 | 검사 | 결과 | 후속 작업 |
 | --- | --- | --- | --- |
 | 2026-08-22 | `npm run lint` | 통과 | 컴포넌트 변경마다 재실행 |
-| 2026-08-22 | `npm run build` | TypeScript·Vite production build 통과 | API 키 입력 후 외부 SDK 실호출 재검증 |
+| 2026-08-22 | `npm run build` | TypeScript·Vite production build 통과 | API·컴포넌트 변경마다 재실행 |
 | 2026-08-22 | 데스크톱 브라우저 | 검색·목록·선택 구조 정상 | Kakao Marker 클릭 상세 연결은 다음 단계 |
 | 2026-08-22 | 402×874 모바일 | Figma 바텀시트 구조, 48×48 위치 버튼, overflow 정상 | 실제 기기 safe-area 확인 |
 | 2026-08-22 | `포항시` 검색 | 포항 주차장 20개 표시, 첫 결과 주소 확인 | 검색 반경·정렬 정책은 사용자 테스트 후 조정 |
 | 2026-08-22 | Kakao SDK 실호출 1차 | 키 로딩 정상, Kakao 응답 `401 domain mismatched` | JavaScript SDK 도메인 등록 |
 | 2026-08-22 | Kakao SDK 실호출 2차 | 도메인 오류 해소, Kakao 응답 `403 disabled OPEN_MAP_AND_LOCAL` | 카카오맵 → 사용 설정 → 상태 `ON` 후 재검증 |
 | 2026-08-22 | Kakao SDK 실호출 3차 | 새 SDK 요청은 `401 appKey is already deactivated`; 기존 브라우저 캐시에서는 지도·포항 15건 검색 동작 | 활성 JavaScript 키 확인 후 `.env` 갱신, 캐시 없는 요청으로 재검증 |
+| 2026-08-22 | Kakao SDK 실호출 4차 | 새 계정의 키로 SDK HTTP `200`, Kakao 지도 렌더링, 포항 장소 15건 검색, 콘솔 오류 0건 | 연결 완료; 배포 도메인 확정 시 SDK 도메인 추가 |
 
 초기 브라우저 검사에서 공공 원천의 중복 관리번호 때문에 React key 경고가 발생했다. 기관·관리번호·명칭·주소·좌표의 SHA-256 안정 해시로 ID를 교체했으며 이후 새 경고는 발생하지 않았다.
