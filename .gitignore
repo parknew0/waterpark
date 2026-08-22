@@ -19,6 +19,10 @@ data/raw/overture/
 data/raw/kma-rain/
 data/interim/building-register/
 data/interim/geometry-repaired/
+# Per-building extracts of VWorld attributes (PNU, coordinates, use) are a
+# substantial republication of the source, so they stay local like the raw
+# shapefiles. The aggregate JSON summary beside them is tracked.
+data/interim/vworld-buildings/*_flooded.csv
 
 # Generated inspection sidecar.
 outputs/**/*.inspect.ndjson

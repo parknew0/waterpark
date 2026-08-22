@@ -23,6 +23,26 @@ from typing import Iterable
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "data/catalog.csv"
 
+PROVINCE_NAMES = {
+    "11": "서울특별시",
+    "26": "부산광역시",
+    "27": "대구광역시",
+    "28": "인천광역시",
+    "29": "광주광역시",
+    "30": "대전광역시",
+    "31": "울산광역시",
+    "36": "세종특별자치시",
+    "41": "경기도",
+    "42": "강원특별자치도",
+    "43": "충청북도",
+    "44": "충청남도",
+    "45": "전북특별자치도",
+    "46": "전라남도",
+    "47": "경상북도",
+    "48": "경상남도",
+    "50": "제주특별자치도",
+}
+
 FLOOD_SOURCE = (
     "https://portal.esrikr.com/arcgis/rest/services/Hosted/"
     "Flood_2002_2022/FeatureServer/0"
@@ -246,6 +266,85 @@ def gyeongbuk_vworld_assets() -> list[Asset]:
                 notes=(
                     "행 수는 3개 DBF 헤더 합계다. 같은 basename의 SHP/SHX/DBF/PRJ/"
                     "CPG 또는 FIX를 한 묶음으로 취급한다. A1은 모든 연도에서 완전한 유일키가 아니다."
+                ),
+            )
+        )
+    return assets
+
+
+def national_vworld_assets() -> list[Asset]:
+    """Per-province VWorld snapshots taken from 2023-08-08 onward.
+
+    These carry the 29-field schema that includes A27 (지하층수), which the
+    older 2022 nationwide bundle lacks, so they are the source the national
+    underground-parking expansion depends on.
+    """
+    root = ROOT / "data/raw/vworld-buildings/national"
+    assets: list[Asset] = []
+    for directory in sorted(path for path in root.glob("AL_D010_*") if path.is_dir()):
+        match = re.match(r"AL_D010_(\d{2})_(20\d{6})$", directory.name)
+        if not match:
+            continue
+        province_code, compact_date = match.group(1), match.group(2)
+        reference_date = f"{compact_date[:4]}-{compact_date[4:6]}-{compact_date[6:]}"
+        province_name = PROVINCE_NAMES.get(province_code, province_code)
+        assets.append(
+            Asset(
+                dataset_id=f"vworld_buildings_{province_code}_{compact_date}",
+                name=f"VWorld GIS건물통합정보 {province_name} {reference_date}",
+                stage="raw",
+                domain="building",
+                scope=province_name,
+                reference_date=reference_date,
+                path=relative(directory),
+                format="Shapefile bundle",
+                measurement="dbf-directory",
+                crs=prj_crs(directory),
+                availability_status="READY_LOCAL_ONLY",
+                verification_status="DBF_HEADERS_AND_PRJ_VERIFIED",
+                repository_policy="LOCAL_ONLY_GITIGNORED",
+                license_status="OPEN—원본 재배포 권리 확인 전 로컬 전용",
+                source_url=VWORLD_SOURCE,
+                notes=(
+                    "2023-08-08 이후 스키마라 29필드이며 A27 지하층수를 포함한다. "
+                    "행 수는 DBF 헤더 합계이며 deleted flag는 반영하지 않았다."
+                ),
+            )
+        )
+    return assets
+
+
+def basement_overlap_assets() -> list[Asset]:
+    """Per-province basement × flood-trace overlap summaries."""
+    root = ROOT / "data/interim/vworld-buildings"
+    assets: list[Asset] = []
+    for path in sorted(root.glob("basement_flood_overlap_*.json")):
+        match = re.match(r"basement_flood_overlap_(\d{2})\.json$", path.name)
+        if not match:
+            continue
+        province_code = match.group(1)
+        province_name = PROVINCE_NAMES.get(province_code, province_code)
+        assets.append(
+            Asset(
+                dataset_id=f"basement_flood_overlap_{province_code}",
+                name=f"{province_name} 지하층 건물 × 침수흔적 겹침 요약",
+                stage="interim",
+                domain="building-flood-qa",
+                scope=province_name,
+                reference_date="2026-08-22",
+                path=relative(path),
+                format="JSON",
+                measurement="file",
+                crs="EPSG:4326 판정 좌표",
+                availability_status="READY",
+                verification_status="GYEONGBUK_BASELINE_REPRODUCED",
+                repository_policy="GIT_TRACKED_DERIVED",
+                license_status="원본과 동일한 재사용 조건 적용",
+                source_url=VWORLD_SOURCE,
+                derived_from=f"vworld_buildings_{province_code}_*;flood_trace_korea_raw",
+                notes=(
+                    "집계와 50건 표본만 포함한다. 침수 건물 전체 목록은 같은 폴더의 "
+                    "_flooded.csv이며 원본 속성 재배포에 해당해 로컬 전용이다."
                 ),
             )
         )
@@ -810,7 +909,12 @@ def fixed_assets() -> list[Asset]:
 
 
 def main() -> None:
-    assets = fixed_assets() + gyeongbuk_vworld_assets()
+    assets = (
+        fixed_assets()
+        + gyeongbuk_vworld_assets()
+        + national_vworld_assets()
+        + basement_overlap_assets()
+    )
     rows: list[dict[str, str | int]] = []
     for asset in assets:
         row_count, column_count, size = measure(asset)

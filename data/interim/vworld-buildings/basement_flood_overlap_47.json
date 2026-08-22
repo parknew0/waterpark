@@ -1,0 +1,527 @@
+{
+  "dbf": {
+    "a27_missing_or_blank": 5315,
+    "a27_zero_or_negative": 1977655,
+    "basement_rows": 25340,
+    "dbf_declared_rows": 2008310,
+    "deleted_rows": 0
+  },
+  "flood": {
+    "dropped": 0,
+    "invalid_repaired": 0,
+    "province_polygons": 1402
+  },
+  "flooded_samples": [
+    {
+      "building_use_code": "14000",
+      "building_use_name": "업무시설",
+      "gis_building_id": "2019120944162899449800000000",
+      "latitude": 36.1067873,
+      "legal_dong_code": "4715011900",
+      "longitude": 128.1225862,
+      "pnu": "4715011900105400001",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "2004234021403172915700000000",
+      "latitude": 36.3558764,
+      "legal_dong_code": "4777031032",
+      "longitude": 129.3796702,
+      "pnu": "4777031032100470007",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1990234077273173974500000000",
+      "latitude": 36.3568102,
+      "legal_dong_code": "4777031032",
+      "longitude": 129.3802839,
+      "pnu": "4777031032100760009",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "07000",
+      "building_use_name": "판매시설",
+      "gis_building_id": "2006233107353229284900000000",
+      "latitude": 36.4067032,
+      "legal_dong_code": "4777025023",
+      "longitude": 129.3696033,
+      "pnu": "4777025023100260050",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "2011234079053172670600000000",
+      "latitude": 36.3556436,
+      "legal_dong_code": "4777031032",
+      "longitude": 129.3802855,
+      "pnu": "4777031032100430004",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "2011234065173172586000000000",
+      "latitude": 36.3555815,
+      "legal_dong_code": "4777031032",
+      "longitude": 129.3801501,
+      "pnu": "4777031032100430004",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "15000",
+      "building_use_name": "숙박시설",
+      "gis_building_id": "1996239993393341348900000000",
+      "latitude": 36.5074219,
+      "legal_dong_code": "4777035032",
+      "longitude": 129.4470588,
+      "pnu": "4777035032100860017",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1992360501722315328900000000",
+      "latitude": 35.5705838,
+      "legal_dong_code": "4782025339",
+      "longitude": 128.7712688,
+      "pnu": "4782025339105160007",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1995358228192396309000000000",
+      "latitude": 35.6438969,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7477745,
+      "pnu": "4782025321107540005",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1974358042032394093700000000",
+      "latitude": 35.6419298,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7456783,
+      "pnu": "4782025321108210011",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "15000",
+      "building_use_name": "숙박시설",
+      "gis_building_id": "1999358509812387728300000000",
+      "latitude": 35.6361286,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7507227,
+      "pnu": "4782025321110340008",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "1997358058702393800200000000",
+      "latitude": 35.6416628,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7458657,
+      "pnu": "4782025321108230005",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "01000",
+      "building_use_name": "단독주택",
+      "gis_building_id": "1981358199032392161700000000",
+      "latitude": 35.640164,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7473774,
+      "pnu": "4782025321108420003",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1998358268772394412400000000",
+      "latitude": 35.6422102,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7482371,
+      "pnu": "4782025321108340004",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1992358107512396225400000000",
+      "latitude": 35.6438555,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7464535,
+      "pnu": "4782025321108110005",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1994358147822392581800000000",
+      "latitude": 35.6405429,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7468001,
+      "pnu": "4782025321108510001",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "15000",
+      "building_use_name": "숙박시설",
+      "gis_building_id": "1989358144932393010200000000",
+      "latitude": 35.6409376,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7468021,
+      "pnu": "4782025321108480000",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1997357995342395357400000000",
+      "latitude": 35.643065,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7452012,
+      "pnu": "4782025321108040005",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "10000",
+      "building_use_name": "교육연구시설",
+      "gis_building_id": "1998358295642393741800000000",
+      "latitude": 35.6415725,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7484796,
+      "pnu": "4782025321108400002",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "2000358075012394866700000000",
+      "latitude": 35.6426192,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7460648,
+      "pnu": "4782025321108170022",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "02000",
+      "building_use_name": "공동주택",
+      "gis_building_id": "1990358357752389571200000000",
+      "latitude": 35.6378708,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7490582,
+      "pnu": "4782025321108750000",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "10000",
+      "building_use_name": "교육연구시설",
+      "gis_building_id": "1998358281472393678500000000",
+      "latitude": 35.6415101,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7483218,
+      "pnu": "4782025321108400002",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "07000",
+      "building_use_name": "판매시설",
+      "gis_building_id": "1982358012312395643200000000",
+      "latitude": 35.6433079,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7453847,
+      "pnu": "4782025321108030001",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "1994358159192393400900000000",
+      "latitude": 35.6412887,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7469731,
+      "pnu": "4782025321108310051",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "1963358085372395478500000000",
+      "latitude": 35.6431672,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7461948,
+      "pnu": "4782025321108090008",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "1986358068692394233300000000",
+      "latitude": 35.6420635,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7459829,
+      "pnu": "4782025321108210000",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "14000",
+      "building_use_name": "업무시설",
+      "gis_building_id": "2017177160912378220600000000",
+      "latitude": 35.640011,
+      "legal_dong_code": "4782025321",
+      "longitude": 128.7484613,
+      "pnu": "4782025321108590001",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1978316144152694273600000000",
+      "latitude": 35.9182128,
+      "legal_dong_code": "4784025021",
+      "longitude": 128.287581,
+      "pnu": "4784025021100030008",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "14000",
+      "building_use_name": "업무시설",
+      "gis_building_id": "2003316610302698037600000000",
+      "latitude": 35.9215346,
+      "legal_dong_code": "4784025024",
+      "longitude": 128.2927516,
+      "pnu": "4784025024100240001",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "1979316083122694289600000000",
+      "latitude": 35.918249,
+      "legal_dong_code": "4784025021",
+      "longitude": 128.2868739,
+      "pnu": "4784025021100200001",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "2004316513382697142000000000",
+      "latitude": 35.9207509,
+      "legal_dong_code": "4784025024",
+      "longitude": 128.2917154,
+      "pnu": "4784025024120920019",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1993316203402694025000000000",
+      "latitude": 35.9179929,
+      "legal_dong_code": "4784025024",
+      "longitude": 128.2882412,
+      "pnu": "4784025024100550005",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1991316411922695213100000000",
+      "latitude": 35.9190351,
+      "legal_dong_code": "4784025024",
+      "longitude": 128.2905615,
+      "pnu": "4784025024120990000",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "02000",
+      "building_use_name": "공동주택",
+      "gis_building_id": "1992316424032695501200000000",
+      "latitude": 35.9192865,
+      "legal_dong_code": "4784025024",
+      "longitude": 128.290696,
+      "pnu": "4784025024120940000",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1994316373752697437700000000",
+      "latitude": 35.9210369,
+      "legal_dong_code": "4784025028",
+      "longitude": 128.2901695,
+      "pnu": "4784025028107940009",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "2017135913892688727600000000",
+      "latitude": 35.9180039,
+      "legal_dong_code": "4784025024",
+      "longitude": 128.2906138,
+      "pnu": "4784025024121010004",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "09000",
+      "building_use_name": "의료시설",
+      "gis_building_id": "2007316540432698794600000000",
+      "latitude": 35.9222403,
+      "legal_dong_code": "4784025028",
+      "longitude": 128.2920377,
+      "pnu": "4784025028103120004",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "1996316295022694283400000000",
+      "latitude": 35.9182194,
+      "legal_dong_code": "4784025024",
+      "longitude": 128.2892537,
+      "pnu": "4784025024121020005",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "1990316222772695278300000000",
+      "latitude": 35.9191059,
+      "legal_dong_code": "4784025021",
+      "longitude": 128.2884666,
+      "pnu": "4784025021107720007",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "02000",
+      "building_use_name": "공동주택",
+      "gis_building_id": "2012316342742697639900000000",
+      "latitude": 35.9212288,
+      "legal_dong_code": "4784025028",
+      "longitude": 128.2898333,
+      "pnu": "4784025028107950000",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "1984316110462694282200000000",
+      "latitude": 35.9182226,
+      "legal_dong_code": "4784025021",
+      "longitude": 128.28719,
+      "pnu": "4784025021100030017",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "21000",
+      "building_use_name": "동.식물 관련시설",
+      "gis_building_id": "1996365157183896710000000000",
+      "latitude": 36.9941969,
+      "legal_dong_code": "4792034025",
+      "longitude": 128.8560038,
+      "pnu": "4792034025103950005",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "24000",
+      "building_use_name": "방송통신시설",
+      "gis_building_id": "1976413817293908401300000000",
+      "latitude": 36.9949285,
+      "legal_dong_code": "4793025021",
+      "longitude": 129.4025474,
+      "pnu": "4793025021105130001",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "15000",
+      "building_use_name": "숙박시설",
+      "gis_building_id": "1994235382843870060000000000",
+      "latitude": 36.9840264,
+      "legal_dong_code": "4793025021",
+      "longitude": 129.398034,
+      "pnu": "4793025021102030003",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "11000",
+      "building_use_name": "노유자시설",
+      "gis_building_id": "2010417860473606329000000000",
+      "latitude": 36.7219856,
+      "legal_dong_code": "4793025321",
+      "longitude": 129.4392748,
+      "pnu": "4793025321105530000",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "1995235676613881641800000000",
+      "latitude": 36.9944508,
+      "legal_dong_code": "4793025021",
+      "longitude": 129.4013976,
+      "pnu": "4793025021105160015",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "01000",
+      "building_use_name": "단독주택",
+      "gis_building_id": "1979418118623559256500000000",
+      "latitude": 36.6796123,
+      "legal_dong_code": "4793038022",
+      "longitude": 129.4408156,
+      "pnu": "4793038022103150003",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "01000",
+      "building_use_name": "단독주택",
+      "gis_building_id": "1979418097233559141900000000",
+      "latitude": 36.6795193,
+      "legal_dong_code": "4793038022",
+      "longitude": 129.4405737,
+      "pnu": "4793038022103150008",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "01000",
+      "building_use_name": "단독주택",
+      "gis_building_id": "1979418107723559298400000000",
+      "latitude": 36.6796568,
+      "legal_dong_code": "4793038022",
+      "longitude": 129.4407012,
+      "pnu": "4793038022103150002",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "01000",
+      "building_use_name": "단독주택",
+      "gis_building_id": "1979418085173558846800000000",
+      "latitude": 36.6792603,
+      "legal_dong_code": "4793038022",
+      "longitude": 129.440434,
+      "pnu": "4793038022102940012",
+      "underground_floor_count": 1
+    }
+  ],
+  "inside_rate": 0.006906,
+  "province_code": "47",
+  "province_name": "경상북도",
+  "source_dir": "data/raw/vworld-buildings/gyeongbuk/AL_D010_47_20251204",
+  "source_epsg": "5186",
+  "totals": {
+    "basement_buildings": 25340,
+    "geometry_missing": 0,
+    "geometry_resolved": 25340,
+    "inside_flood_polygon": 175
+  }
+}
