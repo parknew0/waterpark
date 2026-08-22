@@ -1,0 +1,451 @@
+{
+  "basement_buildings_scanned": 25345,
+  "flood_polygons": 1402,
+  "per_radius": {
+    "1000": {
+      "median_flooded_m": 8.43,
+      "median_unflooded_m": 17.3,
+      "quantile_bands": [
+        {
+          "buildings": 2252,
+          "decile": 1,
+          "flood_rate": 0.038632,
+          "flooded": 87,
+          "relative_elevation_range_m": [
+            2.26,
+            8.39
+          ]
+        },
+        {
+          "buildings": 2432,
+          "decile": 2,
+          "flood_rate": 0.01727,
+          "flooded": 42,
+          "relative_elevation_range_m": [
+            8.4,
+            10.31
+          ]
+        },
+        {
+          "buildings": 2488,
+          "decile": 3,
+          "flood_rate": 0.011254,
+          "flooded": 28,
+          "relative_elevation_range_m": [
+            10.32,
+            12.22
+          ]
+        },
+        {
+          "buildings": 2548,
+          "decile": 4,
+          "flood_rate": 0.005102,
+          "flooded": 13,
+          "relative_elevation_range_m": [
+            12.23,
+            14.31
+          ]
+        },
+        {
+          "buildings": 2592,
+          "decile": 5,
+          "flood_rate": 0.000772,
+          "flooded": 2,
+          "relative_elevation_range_m": [
+            14.31,
+            16.85
+          ]
+        },
+        {
+          "buildings": 2592,
+          "decile": 6,
+          "flood_rate": 0.000772,
+          "flooded": 2,
+          "relative_elevation_range_m": [
+            16.85,
+            20.35
+          ]
+        },
+        {
+          "buildings": 2596,
+          "decile": 7,
+          "flood_rate": 0.000385,
+          "flooded": 1,
+          "relative_elevation_range_m": [
+            20.36,
+            25.15
+          ]
+        },
+        {
+          "buildings": 2600,
+          "decile": 8,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            25.16,
+            30.58
+          ]
+        },
+        {
+          "buildings": 2600,
+          "decile": 9,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            30.61,
+            41.45
+          ]
+        },
+        {
+          "buildings": 2635,
+          "decile": 10,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            41.45,
+            549.36
+          ]
+        }
+      ],
+      "rate_spread_max_over_min": 100.34
+    },
+    "200": {
+      "median_flooded_m": 3.76,
+      "median_unflooded_m": 8.54,
+      "quantile_bands": [
+        {
+          "buildings": 2280,
+          "decile": 1,
+          "flood_rate": 0.035088,
+          "flooded": 80,
+          "relative_elevation_range_m": [
+            0.0,
+            3.54
+          ]
+        },
+        {
+          "buildings": 2508,
+          "decile": 2,
+          "flood_rate": 0.009171,
+          "flooded": 23,
+          "relative_elevation_range_m": [
+            3.54,
+            4.79
+          ]
+        },
+        {
+          "buildings": 2564,
+          "decile": 3,
+          "flood_rate": 0.00351,
+          "flooded": 9,
+          "relative_elevation_range_m": [
+            4.79,
+            5.93
+          ]
+        },
+        {
+          "buildings": 2552,
+          "decile": 4,
+          "flood_rate": 0.004702,
+          "flooded": 12,
+          "relative_elevation_range_m": [
+            5.94,
+            7.08
+          ]
+        },
+        {
+          "buildings": 2512,
+          "decile": 5,
+          "flood_rate": 0.008758,
+          "flooded": 22,
+          "relative_elevation_range_m": [
+            7.08,
+            8.39
+          ]
+        },
+        {
+          "buildings": 2516,
+          "decile": 6,
+          "flood_rate": 0.008347,
+          "flooded": 21,
+          "relative_elevation_range_m": [
+            8.39,
+            10.12
+          ]
+        },
+        {
+          "buildings": 2576,
+          "decile": 7,
+          "flood_rate": 0.002329,
+          "flooded": 6,
+          "relative_elevation_range_m": [
+            10.12,
+            12.47
+          ]
+        },
+        {
+          "buildings": 2600,
+          "decile": 8,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            12.47,
+            16.09
+          ]
+        },
+        {
+          "buildings": 2592,
+          "decile": 9,
+          "flood_rate": 0.000772,
+          "flooded": 2,
+          "relative_elevation_range_m": [
+            16.09,
+            21.78
+          ]
+        },
+        {
+          "buildings": 2635,
+          "decile": 10,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            21.79,
+            127.73
+          ]
+        }
+      ],
+      "rate_spread_max_over_min": 45.45
+    },
+    "2000": {
+      "median_flooded_m": 10.87,
+      "median_unflooded_m": 22.6,
+      "quantile_bands": [
+        {
+          "buildings": 2308,
+          "decile": 1,
+          "flood_rate": 0.031629,
+          "flooded": 73,
+          "relative_elevation_range_m": [
+            2.99,
+            10.35
+          ]
+        },
+        {
+          "buildings": 2408,
+          "decile": 2,
+          "flood_rate": 0.019934,
+          "flooded": 48,
+          "relative_elevation_range_m": [
+            10.36,
+            12.8
+          ]
+        },
+        {
+          "buildings": 2420,
+          "decile": 3,
+          "flood_rate": 0.018595,
+          "flooded": 45,
+          "relative_elevation_range_m": [
+            12.8,
+            15.11
+          ]
+        },
+        {
+          "buildings": 2576,
+          "decile": 4,
+          "flood_rate": 0.002329,
+          "flooded": 6,
+          "relative_elevation_range_m": [
+            15.11,
+            17.78
+          ]
+        },
+        {
+          "buildings": 2592,
+          "decile": 5,
+          "flood_rate": 0.000772,
+          "flooded": 2,
+          "relative_elevation_range_m": [
+            17.79,
+            22.05
+          ]
+        },
+        {
+          "buildings": 2600,
+          "decile": 6,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            22.05,
+            26.43
+          ]
+        },
+        {
+          "buildings": 2600,
+          "decile": 7,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            26.44,
+            32.07
+          ]
+        },
+        {
+          "buildings": 2596,
+          "decile": 8,
+          "flood_rate": 0.000385,
+          "flooded": 1,
+          "relative_elevation_range_m": [
+            32.08,
+            39.37
+          ]
+        },
+        {
+          "buildings": 2600,
+          "decile": 9,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            39.39,
+            51.94
+          ]
+        },
+        {
+          "buildings": 2635,
+          "decile": 10,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            51.94,
+            681.57
+          ]
+        }
+      ],
+      "rate_spread_max_over_min": 82.15
+    },
+    "500": {
+      "median_flooded_m": 6.44,
+      "median_unflooded_m": 13.09,
+      "quantile_bands": [
+        {
+          "buildings": 2256,
+          "decile": 1,
+          "flood_rate": 0.038121,
+          "flooded": 86,
+          "relative_elevation_range_m": [
+            0.0,
+            6.4
+          ]
+        },
+        {
+          "buildings": 2480,
+          "decile": 2,
+          "flood_rate": 0.012097,
+          "flooded": 30,
+          "relative_elevation_range_m": [
+            6.4,
+            7.99
+          ]
+        },
+        {
+          "buildings": 2504,
+          "decile": 3,
+          "flood_rate": 0.009585,
+          "flooded": 24,
+          "relative_elevation_range_m": [
+            7.99,
+            9.43
+          ]
+        },
+        {
+          "buildings": 2488,
+          "decile": 4,
+          "flood_rate": 0.011254,
+          "flooded": 28,
+          "relative_elevation_range_m": [
+            9.43,
+            10.95
+          ]
+        },
+        {
+          "buildings": 2584,
+          "decile": 5,
+          "flood_rate": 0.001548,
+          "flooded": 4,
+          "relative_elevation_range_m": [
+            10.95,
+            12.72
+          ]
+        },
+        {
+          "buildings": 2596,
+          "decile": 6,
+          "flood_rate": 0.000385,
+          "flooded": 1,
+          "relative_elevation_range_m": [
+            12.72,
+            15.11
+          ]
+        },
+        {
+          "buildings": 2592,
+          "decile": 7,
+          "flood_rate": 0.000772,
+          "flooded": 2,
+          "relative_elevation_range_m": [
+            15.13,
+            18.77
+          ]
+        },
+        {
+          "buildings": 2600,
+          "decile": 8,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            18.78,
+            23.62
+          ]
+        },
+        {
+          "buildings": 2600,
+          "decile": 9,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            23.64,
+            32.76
+          ]
+        },
+        {
+          "buildings": 2635,
+          "decile": 10,
+          "flood_rate": 0.0,
+          "flooded": 0,
+          "relative_elevation_range_m": [
+            32.77,
+            336.0
+          ]
+        }
+      ],
+      "rate_spread_max_over_min": 99.02
+    }
+  },
+  "province_code": "47",
+  "province_name": "경상북도",
+  "radii_m": [
+    200.0,
+    500.0,
+    1000.0,
+    2000.0
+  ],
+  "sample_every": 5,
+  "skipped": {
+    "no_surface": 3
+  },
+  "totals": {
+    "buildings": 25335.0,
+    "flood_rate": 0.006907,
+    "flooded": 175
+  }
+}

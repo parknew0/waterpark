@@ -15,6 +15,9 @@ data/raw/vworld-buildings/
 data/raw/vworld-downloads/
 data/raw/building-register/
 data/raw/dem/
+# 국토지리정보원 하천중심선 1.8 GB. VWorld 배포 페이지에 이용허락범위가
+# 표기되어 있지 않아, 재배포 조건이 확인되기 전까지 원본은 로컬 전용이다.
+data/raw/river-centerline/
 data/raw/overture/
 data/raw/kma-rain/
 data/interim/building-register/
@@ -23,6 +26,10 @@ data/interim/geometry-repaired/
 # substantial republication of the source, so they stay local like the raw
 # shapefiles. The aggregate JSON summary beside them is tracked.
 data/interim/vworld-buildings/*_flooded.csv
+# Per-building VWorld attribute extracts, same reasoning as above.
+data/interim/vworld-buildings/labeled_building_sample*.csv
+data/processed/buildings/national_flooded_building_terrain.csv
+data/processed/buildings/national_building_terrain_river_features.csv
 
 # Generated inspection sidecar.
 outputs/**/*.inspect.ndjson
