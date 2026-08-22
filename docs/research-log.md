@@ -341,6 +341,12 @@
 - `DECISION`: 위험 폴리곤은 Figma `244:3303`을 기준으로 청록색 저투명도 외곽과 내부 레이어를 겹친 발광 표현을 사용한다. 상세 위험 예측 시간은 제품 설명과 같은 1시간으로 통일한다.
 - `FACT`: 길찾기 `90:755`도 `VITE_KAKAO_MAP_APP_KEY`를 전달해 실제 Kakao 지도 위에 OSM 도로망 기반 저위험 경로, 현재 위치, 목적지와 위험 영역을 렌더링한다. Kakao SDK 실패 시에만 SVG 미리보기로 폴백한다.
 - `FACT`: Figma `244:3303` 재확인 결과, 길찾기의 임의 파란 출처 문구를 제거하고 Figma 원본 뒤로가기 SVG 비율을 복원했다. 하단 카드는 GeoJSON의 예측 범위 `60분`, OSM 도로 속성 기반 예상 이동시간 `509.3초`, 도로거리 `2,121.9m`를 각각 `1 hour`, `9 min`, `2.1km`로 표시한다. `1 hour`는 안전 보장이 아니라 모델 예측 범위다.
+- `FACT`: 기상청은 힌남노가 2022년 9월 6일 04:50 거제 동쪽에 상륙했고 같은 날 포항 달력일 강수량이 342.4mm였다고 기록한다. 냉천 유역 수문 연구는 포항관측소 실측 기반 이동누적 최대 강우를 1시간 77.0mm, 2시간 147.9mm, 3시간 203.2mm, 6시간 314.5mm, 9시간 359.8mm, 12시간 378.7mm로 제시한다.
+- `FACT`: ADRC 대한민국 국가보고서는 2022년 9월 6일 포항 남구 인덕동 아파트 지하주차장 사고에서 7명이 사망하고 2명이 생존했다고 기록한다. 로컬 건물 결합 결과의 `우방신세계타운(1차)` 동일 필지 건물 6개는 모두 지하주차장 용도 확인 상태이며 지하층수 최대값은 1층이다.
+- `LIMITATION`: 현재 확보한 행정안전부 침수흔적도 경북 부분집합 1,402건의 실제 연도 최댓값은 2021이라 힌남노 실제 침수 Polygon을 포함하지 않는다. 과거 재현 화면의 붉은 범위는 관측 침수면이 아닌 시연용 영향 반경으로 고정 표기한다.
+- `DECISION`: 실시간 GPS·현재 날짜 앱과 힌남노 과거 재현을 분리하기 위해 `/hinnamnor.html`, `src/historical/*`, `hinnamnor-2022-replay.json`을 별도 진입점과 데이터 흐름으로 구현한다.
+- 상세: [힌남노 과거 재현 화면](./frontend/10-hinnamnor-historical-replay.md)
+- 출처: [기상청 2022 태풍 보고서](https://www.kma.go.kr/download_01/typhoon/typreport_2022.pdf), [기상청 2022년 9월 기후 뉴스레터](https://www.weather.go.kr/download_02/ellinonewsletter_2022_09.pdf), [냉천 유역 힌남노 수문 연구](https://journal.dssms.org/articles/xml/5aEx/), [ADRC 대한민국 국가보고서 FY2024](https://web.adrc.asia/countryreport/KOR/2024/Korea_CountryReport_FY2024.pdf)
 - 상세: [워드마크·스플래시·상세 실지도](./frontend/09-brand-splash-and-live-detail-maps.md)
 - 출처: [Figma 워드마크 `123:2252`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2252&m=dev), [Figma 스플래시 `50:84`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=50-84&m=dev), [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 청록색 위험 영역 `244:3303`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=244-3303&m=dev)
 

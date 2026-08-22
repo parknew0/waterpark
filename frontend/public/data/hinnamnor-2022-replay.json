@@ -1,0 +1,524 @@
+{
+  "schema_version": 1,
+  "mode": "HISTORICAL_REPLAY",
+  "event": {
+    "id": "KR-GB-POHANG-HINNAMNOR-2022-09-06",
+    "name": "Typhoon Hinnamnor — Pohang",
+    "date_kst": "2022-09-06",
+    "focus": {
+      "building_ids": [
+        "1995416991672785621700000000",
+        "1995416973612785833700000000",
+        "1995417009492786225800000000",
+        "1995416915922785773600000000",
+        "1995416910632786251200000000",
+        "1995417055422785654200000000"
+      ],
+      "name": "우방신세계타운(1차)",
+      "location_label": "Indeok-dong, Nam-gu, Pohang-si",
+      "latitude": 35.9835575,
+      "longitude": 129.406536,
+      "underground_parking_status": "CONFIRMED_BASEMENT_PARKING_USE",
+      "underground_parking_confirmed": true,
+      "underground_floor_count": 1,
+      "surface_elevation_m_min": 12.04,
+      "surface_elevation_m_mean": 13.18,
+      "static_risk": "NOT_USED_FOR_HISTORICAL_REPLAY",
+      "historical_flood_overlap_in_current_layer": false
+    }
+  },
+  "rainfall": {
+    "station": "Pohang observation station",
+    "station_id": "138",
+    "rolling_max_mm": [
+      {
+        "duration_minutes": 60,
+        "rainfall_mm": 77.0
+      },
+      {
+        "duration_minutes": 120,
+        "rainfall_mm": 147.9
+      },
+      {
+        "duration_minutes": 180,
+        "rainfall_mm": 203.2
+      },
+      {
+        "duration_minutes": 360,
+        "rainfall_mm": 314.5
+      },
+      {
+        "duration_minutes": 540,
+        "rainfall_mm": 359.8
+      },
+      {
+        "duration_minutes": 720,
+        "rainfall_mm": 378.7
+      }
+    ],
+    "calendar_day_mm": 342.4,
+    "calendar_day_note": "KMA September 6 calendar-day total; rolling windows cross midnight."
+  },
+  "river": {
+    "name": "Naengcheon",
+    "source": "OpenStreetMap current waterway geometry",
+    "coordinates": [
+      [
+        129.3976623,
+        35.8880543
+      ],
+      [
+        129.3973832,
+        35.8885853
+      ],
+      [
+        129.3973285,
+        35.8896376
+      ],
+      [
+        129.3970008,
+        35.8906849
+      ],
+      [
+        129.3970251,
+        35.891093
+      ],
+      [
+        129.3984271,
+        35.8916879
+      ],
+      [
+        129.3991675,
+        35.8924598
+      ],
+      [
+        129.4000657,
+        35.8928433
+      ],
+      [
+        129.3999504,
+        35.895046
+      ],
+      [
+        129.4005148,
+        35.8965013
+      ],
+      [
+        129.4029668,
+        35.8992544
+      ],
+      [
+        129.4031489,
+        35.9002426
+      ],
+      [
+        129.4033249,
+        35.9016978
+      ],
+      [
+        129.4034038,
+        35.9023615
+      ],
+      [
+        129.4024266,
+        35.9027204
+      ],
+      [
+        129.4017408,
+        35.9032415
+      ],
+      [
+        129.401753,
+        35.9035954
+      ],
+      [
+        129.4013342,
+        35.9041018
+      ],
+      [
+        129.4011218,
+        35.9050555
+      ],
+      [
+        129.4009822,
+        35.9061173
+      ],
+      [
+        129.399653,
+        35.9074151
+      ],
+      [
+        129.3981782,
+        35.907656
+      ],
+      [
+        129.3977412,
+        35.9082704
+      ],
+      [
+        129.3977837,
+        35.9106447
+      ],
+      [
+        129.3979415,
+        35.9116475
+      ],
+      [
+        129.3986638,
+        35.9124389
+      ],
+      [
+        129.3993921,
+        35.9126306
+      ],
+      [
+        129.4015163,
+        35.9130976
+      ],
+      [
+        129.402372,
+        35.9137661
+      ],
+      [
+        129.4027604,
+        35.9146951
+      ],
+      [
+        129.4024266,
+        35.9153046
+      ],
+      [
+        129.4007697,
+        35.9176
+      ],
+      [
+        129.3999261,
+        35.9200182
+      ],
+      [
+        129.3991978,
+        35.9209275
+      ],
+      [
+        129.3989065,
+        35.9216205
+      ],
+      [
+        129.398773,
+        35.9220579
+      ],
+      [
+        129.3987366,
+        35.9225003
+      ],
+      [
+        129.3997865,
+        35.9243531
+      ],
+      [
+        129.40009,
+        35.9253607
+      ],
+      [
+        129.399935,
+        35.927372
+      ],
+      [
+        129.3999061,
+        35.9288214
+      ],
+      [
+        129.4013641,
+        35.9303176
+      ],
+      [
+        129.4024756,
+        35.9312526
+      ],
+      [
+        129.4028653,
+        35.932737
+      ],
+      [
+        129.4026488,
+        35.9337188
+      ],
+      [
+        129.4017394,
+        35.935098
+      ],
+      [
+        129.4006712,
+        35.9369096
+      ],
+      [
+        129.3998484,
+        35.9392938
+      ],
+      [
+        129.399912,
+        35.9408269
+      ],
+      [
+        129.4001548,
+        35.9418981
+      ],
+      [
+        129.4012351,
+        35.9434704
+      ],
+      [
+        129.4034498,
+        35.9457188
+      ],
+      [
+        129.4052603,
+        35.9469151
+      ],
+      [
+        129.4065015,
+        35.9483464
+      ],
+      [
+        129.4066791,
+        35.9485512
+      ],
+      [
+        129.4070057,
+        35.9510012
+      ],
+      [
+        129.4071894,
+        35.9534593
+      ],
+      [
+        129.407562,
+        35.9560661
+      ],
+      [
+        129.4077304,
+        35.9589537
+      ],
+      [
+        129.4078121,
+        35.9607094
+      ],
+      [
+        129.4085266,
+        35.9626302
+      ],
+      [
+        129.4095728,
+        35.964993
+      ],
+      [
+        129.4104353,
+        35.9670583
+      ],
+      [
+        129.4108946,
+        35.9681901
+      ],
+      [
+        129.4110074,
+        35.9686204
+      ],
+      [
+        129.411109,
+        35.9690079
+      ],
+      [
+        129.4109916,
+        35.9701231
+      ],
+      [
+        129.4097667,
+        35.9731754
+      ],
+      [
+        129.409042,
+        35.9754346
+      ],
+      [
+        129.4086491,
+        35.9766365
+      ],
+      [
+        129.4068067,
+        35.9796968
+      ],
+      [
+        129.4051582,
+        35.9825505
+      ],
+      [
+        129.4039334,
+        35.9844667
+      ],
+      [
+        129.403173,
+        35.9859781
+      ],
+      [
+        129.4023105,
+        35.9875969
+      ],
+      [
+        129.4013408,
+        35.9891702
+      ],
+      [
+        129.4007488,
+        35.9900993
+      ],
+      [
+        129.4006467,
+        35.9906692
+      ],
+      [
+        129.4007641,
+        35.991524
+      ],
+      [
+        129.401254,
+        35.9929775
+      ],
+      [
+        129.4016878,
+        35.9941212
+      ],
+      [
+        129.4019073,
+        35.9948067
+      ],
+      [
+        129.4022645,
+        35.9955045
+      ],
+      [
+        129.4029433,
+        35.9964542
+      ],
+      [
+        129.4038211,
+        35.9972635
+      ],
+      [
+        129.40549,
+        35.9983328
+      ],
+      [
+        129.4083173,
+        36.0001537
+      ],
+      [
+        129.4105016,
+        36.0015079
+      ],
+      [
+        129.411752,
+        36.0024988
+      ],
+      [
+        129.4125328,
+        36.0029323
+      ],
+      [
+        129.4132575,
+        36.0033122
+      ],
+      [
+        129.4141558,
+        36.0038448
+      ],
+      [
+        129.4156103,
+        36.0054467
+      ],
+      [
+        129.4166157,
+        36.0062146
+      ],
+      [
+        129.4189531,
+        36.0077339
+      ],
+      [
+        129.4206781,
+        36.0090219
+      ],
+      [
+        129.4236023,
+        36.0108339
+      ]
+    ]
+  },
+  "timeline": [
+    {
+      "time_kst": "2022-09-05 21:00",
+      "title": "Rain bands intensify",
+      "detail": "The replay opens before the most destructive early-morning period.",
+      "reconstruction_radius_m": 70,
+      "rainfall_duration_minutes": 60
+    },
+    {
+      "time_kst": "2022-09-06 04:50",
+      "title": "Hinnamnor makes landfall near Geoje",
+      "detail": "KMA reports landfall at 04:50 KST before the storm crossed the southeast.",
+      "reconstruction_radius_m": 150,
+      "rainfall_duration_minutes": 180
+    },
+    {
+      "time_kst": "2022-09-06 06:30",
+      "title": "Underground parking emergency",
+      "detail": "Public reports place the vehicle-move announcement around 06:30 KST.",
+      "reconstruction_radius_m": 260,
+      "rainfall_duration_minutes": 360
+    },
+    {
+      "time_kst": "2022-09-06 07:41",
+      "title": "Rescue reports begin",
+      "detail": "Emergency calls were reported as flooding overwhelmed the site.",
+      "reconstruction_radius_m": 390,
+      "rainfall_duration_minutes": 540
+    }
+  ],
+  "incident": {
+    "summary": "Seven people died and two survived in the Indeok-dong underground parking incident.",
+    "tone": "memorial, not gamified"
+  },
+  "limitations": [
+    "The expanding red area is an illustrative reconstruction radius, not an observed inundation polygon.",
+    "The local Ministry of the Interior and Safety flood-trace copy contains Gyeongbuk records only through 2021, so it cannot validate the 2022 footprint.",
+    "OSM river geometry is current, not a snapshot of the river geometry on 2022-09-06.",
+    "The local static-risk score predates this event reconstruction and must not be presented as a successful Hinnamnor prediction."
+  ],
+  "sources": [
+    {
+      "label": "KMA 2022 Typhoon Report",
+      "url": "https://www.kma.go.kr/download_01/typhoon/typreport_2022.pdf",
+      "role": "track and 04:50 landfall time"
+    },
+    {
+      "label": "KMA September 2022 Climate Newsletter",
+      "url": "https://www.weather.go.kr/download_02/ellinonewsletter_2022_09.pdf",
+      "role": "Pohang calendar-day rainfall 342.4 mm"
+    },
+    {
+      "label": "Naengcheon basin Hinnamnor hydrology study",
+      "url": "https://journal.dssms.org/articles/xml/5aEx/",
+      "role": "observed rolling rainfall and river-overflow context"
+    },
+    {
+      "label": "ADRC Korea Country Report FY2024",
+      "url": "https://web.adrc.asia/countryreport/KOR/2024/Korea_CountryReport_FY2024.pdf",
+      "role": "incident location and casualty outcome"
+    }
+  ],
+  "provenance": {
+    "generated_at": "2026-08-22T16:04:35.447987+00:00",
+    "building_source": "data/processed/ml/predictions/gyeongbuk_underground_parking_risk.csv",
+    "building_source_sha256": "0b812909e28b7ca7afea83e75be4884430f3af1b833b5b9e82e8e36ce00e4310",
+    "checked_at": "2026-08-23"
+  }
+}

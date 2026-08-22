@@ -1,0 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+:root { font-family: "Plus Jakarta Sans", sans-serif; color: #fefefe; background: #071110; font-synthesis: none; }
+* { box-sizing: border-box; }
+html, body, #hinnamnor-root { min-width: 320px; min-height: 100%; margin: 0; }
+button { font: inherit; }
+.hinnamnor-stage { min-height: 100svh; display: grid; place-items: center; overflow: hidden; background: #071110; }
+.hinnamnor-phone { position: relative; width: min(100vw, 402px); height: min(100svh, 874px); min-height: 720px; overflow: hidden; background: #080b0c; }
+.hinnamnor-map-shell, .hinnamnor-map { position: absolute; inset: 0; }
+.hinnamnor-map { overflow: hidden; background: radial-gradient(circle at 50% 42%, #292728, #080c0d 62%); touch-action: none; }
+.hinnamnor-map div:has(> img[src*="/tile/"]) { filter: grayscale(1) invert(.88) sepia(.2) saturate(.76) hue-rotate(112deg) brightness(.82) contrast(1.24); }
+.hinnamnor-map-error { position: absolute; inset: 0; display: grid; place-items: center; padding: 36px; color: #ff999e; text-align: center; background: #101617; }
+.hinnamnor-site-marker { position: relative; width: 116px; height: 116px; display: grid; place-items: center; pointer-events: none; }
+.hinnamnor-site-marker::before, .hinnamnor-site-marker span { content: ""; position: absolute; border-radius: 50%; background: rgb(255 58 69 / 24%); animation: site-pulse 1.8s ease-out infinite; }
+.hinnamnor-site-marker::before { width: 72px; height: 72px; }
+.hinnamnor-site-marker span { width: 32px; height: 32px; border: 2px solid #fff; background: #ff3a45; animation-delay: -.65s; }
+.hinnamnor-site-marker strong { position: absolute; top: 82px; padding: 5px 8px; border-radius: 6px; color: #fff; background: #b4131d; font-size: 9px; letter-spacing: .08em; white-space: nowrap; }
+.hinnamnor-river-label, .hinnamnor-reconstruction-label { position: absolute; z-index: 4; color: #00e8ec; font-size: 8px; font-weight: 700; letter-spacing: .09em; pointer-events: none; }
+.hinnamnor-river-label { right: 18px; top: 302px; }
+.hinnamnor-reconstruction-label { left: 18px; top: 330px; color: #ff7a80; }
+.hinnamnor-header { position: absolute; z-index: 6; top: 24px; right: 16px; left: 16px; display: flex; justify-content: space-between; align-items: flex-start; }
+.hinnamnor-header span { color: #ff737a; font-size: 9px; font-weight: 800; letter-spacing: .15em; }
+.hinnamnor-header h1 { margin: 4px 0 0; font-size: 27px; line-height: 1; letter-spacing: -.04em; }
+.hinnamnor-header time { margin-top: 3px; padding: 7px 9px; border: 1px solid rgb(255 255 255 / 18%); border-radius: 8px; color: #fefefe; background: rgb(10 12 13 / 76%); font-size: 11px; font-weight: 600; }
+.hinnamnor-event-card { position: absolute; z-index: 6; top: 105px; right: 16px; left: 16px; min-height: 112px; padding: 15px 16px; border: 1px solid rgb(255 94 102 / 32%); border-radius: 16px; background: linear-gradient(135deg, rgb(40 31 32 / 94%), rgb(20 23 24 / 92%)); backdrop-filter: blur(10px); }
+.hinnamnor-event-card span { color: #ff737a; font-size: 9px; font-weight: 800; letter-spacing: .1em; }
+.hinnamnor-event-card h2 { margin: 7px 0 5px; font-size: 20px; line-height: 1.2; }
+.hinnamnor-event-card p { margin: 0; color: #c7cecd; font-size: 12px; line-height: 1.45; }
+.hinnamnor-data-strip { position: absolute; z-index: 6; right: 16px; bottom: 154px; left: 16px; display: grid; grid-template-columns: 1.35fr 1fr .86fr; gap: 7px; }
+.hinnamnor-data-strip article { min-width: 0; padding: 12px; border-radius: 14px; background: rgb(35 38 39 / 94%); backdrop-filter: blur(8px); }
+.hinnamnor-data-strip span { display: block; color: #aeb5b4; font-size: 9px; }
+.hinnamnor-data-strip strong { display: block; margin-top: 3px; color: #fff; font-size: 21px; line-height: 1.05; white-space: nowrap; }
+.hinnamnor-data-strip article:first-child strong { color: #ff737a; }
+.hinnamnor-data-strip small { display: block; margin-top: 4px; color: #bbc2c1; font-size: 8px; font-weight: 500; }
+.hinnamnor-controls { position: absolute; z-index: 6; right: 0; bottom: 0; left: 0; height: 142px; padding: 14px 16px 16px; border-radius: 24px 24px 0 0; background: #1f2223; }
+.hinnamnor-timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.hinnamnor-timeline button { height: 24px; padding: 0; border: 0; display: grid; place-items: center; background: transparent; cursor: pointer; }
+.hinnamnor-timeline button::before { content: ""; position: absolute; width: calc((100% - 32px) / 4); height: 2px; background: #505657; }
+.hinnamnor-timeline span { z-index: 1; width: 9px; height: 9px; border: 2px solid #777e7d; border-radius: 50%; background: #1f2223; }
+.hinnamnor-timeline .is-active span { width: 13px; height: 13px; border-color: #ff737a; background: #ff3a45; box-shadow: 0 0 0 5px rgb(255 58 69 / 18%); }
+.hinnamnor-play { position: absolute; top: 45px; right: 16px; min-width: 102px; height: 34px; border: 1px solid #ff737a; border-radius: 18px; color: #ff8d93; background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; }
+.hinnamnor-controls p { width: 220px; margin: 10px 0 4px; font-size: 12px; font-weight: 600; }
+.hinnamnor-controls small { display: block; width: 250px; color: #919998; font-size: 8px; line-height: 1.4; }
+.hinnamnor-load-state { min-height: 100svh; display: grid; place-items: center; padding: 24px; color: #cbd2d1; background: #071110; }
+@keyframes site-pulse { 0% { opacity: .9; transform: scale(.55); } 80%, 100% { opacity: 0; transform: scale(1.2); } }
+@media (min-width: 481px) { .hinnamnor-stage { background: radial-gradient(circle at 50% 25%, #172423, #071110 55%); } .hinnamnor-phone { box-shadow: 0 28px 80px rgb(0 0 0 / 45%); } }
+@media (prefers-reduced-motion: reduce) { .hinnamnor-site-marker::before, .hinnamnor-site-marker span { animation: none; } }
