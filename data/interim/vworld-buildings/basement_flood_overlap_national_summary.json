@@ -237,6 +237,14 @@
       "province_name": "인천광역시"
     }
   ],
+  "timeline_total": {
+    "approval_date_missing": 167,
+    "approval_year_unparsed": 0,
+    "approved_after_first_flood": 12,
+    "approved_after_last_flood": 256,
+    "approved_before_or_same_year": 19319,
+    "flood_year_unknown": 3
+  },
   "totals": {
     "basement_buildings": 1090109,
     "expected_confirmed_parking": 1351.2,

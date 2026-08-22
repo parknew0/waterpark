@@ -84,6 +84,7 @@ def main() -> None:
     use_counts: Counter[str] = Counter()
     depth_by_group: dict[str, Counter[int]] = defaultdict(Counter)
     per_province: list[dict[str, Any]] = []
+    timeline_total: Counter[str] = Counter()
 
     for result in results:
         code = result["province_code"]
@@ -99,6 +100,9 @@ def main() -> None:
             depth_by_group[group][floors] += 1
             if floors >= 2:
                 deep += 1
+
+        for key, value in (result.get("timeline") or {}).items():
+            timeline_total[key] += value
 
         expected = sum(
             count * rates[use] for use, count in province_use.items() if use in rates
@@ -173,6 +177,26 @@ def main() -> None:
             f" | 지하2층+ {deep:>6,} ({deep/total*100:>5.1f}%)"
         )
 
+    checked = (
+        timeline_total["approved_after_last_flood"]
+        + timeline_total["approved_before_or_same_year"]
+    )
+    if checked:
+        after_last = timeline_total["approved_after_last_flood"]
+        after_first = timeline_total["approved_after_first_flood"]
+        print("\n[시점 검증] 2026 건물 스냅샷 대 2002~2022 침수 사건")
+        print(f"  준공일로 판정 가능        : {checked:,}동")
+        print(
+            f"  덮은 사건 전부보다 신축    : {after_last:,}동"
+            f" ({after_last / checked * 100:.2f}%)  → 학습에서 제외해야 함"
+        )
+        print(
+            f"  일부 사건보다만 신축      : {after_first:,}동"
+            f" ({after_first / checked * 100:.2f}%)  → 건물×사건 표에서 해당 행만 제외"
+        )
+        print(f"  준공일 없음              : {timeline_total['approval_date_missing']:,}동")
+        print(f"  침수 연도 불명            : {timeline_total['flood_year_unknown']:,}동")
+
     print("\n[기대 지하주차장 확정 수] 경북 용도별 확정률 적용")
     print(f"  침수 지하층 건물          : {total_flooded:,}동")
     print(f"  용도별 확정률 적용 가능    : {covered:,}동")
@@ -195,6 +219,7 @@ def main() -> None:
                     use: round(rate, 6) for use, rate in sorted(rates.items())
                 },
                 "gyeongbuk_overall_confirmation_rate": round(overall_rate, 6),
+                "timeline_total": dict(timeline_total),
                 "totals": {
                     "flood_polygons": sum(i["flood_polygons"] for i in per_province),
                     "basement_buildings": total_basement,

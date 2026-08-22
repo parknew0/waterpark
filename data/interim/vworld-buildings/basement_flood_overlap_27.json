@@ -1,4 +1,9 @@
 {
+  "approval_year_histogram": {
+    "2003": 1,
+    "2008": 1,
+    "2012": 1
+  },
   "building_use_top20": {
     "공동주택": 1,
     "제1종근린생활시설": 1,
@@ -16,18 +21,28 @@
     "flood_province_codes": [
       "27"
     ],
+    "flood_year_range": [
+      2010,
+      2010
+    ],
     "invalid_repaired": 0,
     "polygons_by_flood_code": {
       "27": 5
     },
+    "polygons_without_year": 0,
     "province_polygons": 5
   },
   "flooded_csv": "data/interim/vworld-buildings/basement_flood_overlap_27_flooded.csv",
   "flooded_samples": [
     {
+      "approval_date": "2012-10-29",
+      "approval_year": 2012,
       "building_use_code": "04000",
       "building_use_name": "제2종근린생활시설",
+      "existed_at_flood": "NO",
+      "first_flood_year": 2010,
       "gis_building_id": "2012154512912642942600000000",
+      "last_flood_year": 2010,
       "latitude": 35.8778123,
       "legal_dong_code": "2771025625",
       "longitude": 128.4969086,
@@ -36,9 +51,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "2008-11-25",
+      "approval_year": 2008,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2010,
       "gis_building_id": "2008154550032640944200000000",
+      "last_flood_year": 2010,
       "latitude": 35.8759872,
       "legal_dong_code": "2771025625",
       "longitude": 128.4973627,
@@ -47,9 +67,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "2003-04-23",
+      "approval_year": 2003,
       "building_use_code": "02000",
       "building_use_name": "공동주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2010,
       "gis_building_id": "2003154599592640674700000000",
+      "last_flood_year": 2010,
       "latitude": 35.8757507,
       "legal_dong_code": "2771025625",
       "longitude": 128.4978868,
@@ -63,6 +88,14 @@
   "province_name": "대구광역시",
   "source_dir": "data/raw/vworld-buildings/national/AL_D010_27_20260809",
   "source_epsg": "5186",
+  "timeline": {
+    "approval_date_missing": 0,
+    "approval_year_unparsed": 0,
+    "approved_after_first_flood": 0,
+    "approved_after_last_flood": 1,
+    "approved_before_or_same_year": 2,
+    "flood_year_unknown": 0
+  },
   "totals": {
     "basement_buildings": 41893,
     "geometry_missing": 0,

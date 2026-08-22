@@ -1,4 +1,39 @@
 {
+  "approval_year_histogram": {
+    "1973": 1,
+    "1976": 2,
+    "1977": 1,
+    "1978": 8,
+    "1979": 15,
+    "1980": 35,
+    "1981": 35,
+    "1982": 35,
+    "1983": 41,
+    "1984": 30,
+    "1985": 33,
+    "1986": 18,
+    "1987": 23,
+    "1988": 21,
+    "1989": 29,
+    "1990": 40,
+    "1991": 33,
+    "1992": 16,
+    "1993": 14,
+    "1994": 13,
+    "1995": 9,
+    "1996": 12,
+    "1997": 6,
+    "1998": 1,
+    "2000": 2,
+    "2001": 3,
+    "2003": 4,
+    "2006": 4,
+    "2007": 3,
+    "2008": 1,
+    "2013": 1,
+    "2016": 2,
+    "2018": 2
+  },
   "building_use_top20": {
     "공동주택": 80,
     "교육연구시설": 1,
@@ -27,18 +62,28 @@
     "flood_province_codes": [
       "44"
     ],
+    "flood_year_range": [
+      2007,
+      2022
+    ],
     "invalid_repaired": 2,
     "polygons_by_flood_code": {
       "44": 1989
     },
+    "polygons_without_year": 0,
     "province_polygons": 1989
   },
   "flooded_csv": "data/interim/vworld-buildings/basement_flood_overlap_44_flooded.csv",
   "flooded_samples": [
     {
+      "approval_date": "2001-09-12",
+      "approval_year": 2001,
       "building_use_code": "06000",
       "building_use_name": "종교시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2017,
       "gis_building_id": "2001213815533664580700000000",
+      "last_flood_year": 2017,
       "latitude": 36.7993869,
       "legal_dong_code": "4413110700",
       "longitude": 127.1556008,
@@ -47,9 +92,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1991-06-04",
+      "approval_year": 1991,
       "building_use_code": "04000",
       "building_use_name": "제2종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1991212618533668372800000000",
+      "last_flood_year": 2020,
       "latitude": 36.8028478,
       "legal_dong_code": "4413111300",
       "longitude": 127.142192,
@@ -58,9 +108,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1989-11-09",
+      "approval_year": 1989,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1989214497793664481000000000",
+      "last_flood_year": 2020,
       "latitude": 36.7993212,
       "legal_dong_code": "4413110700",
       "longitude": 127.1632454,
@@ -69,9 +124,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1994-08-24",
+      "approval_year": 1994,
       "building_use_code": "Z5000",
       "building_use_name": "문화및집회시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1994186368053529029800000000",
+      "last_flood_year": 2020,
       "latitude": 36.6773061,
       "legal_dong_code": "4481025021",
       "longitude": 126.8482903,
@@ -80,9 +140,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1991-06-21",
+      "approval_year": 1991,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1991186026023528604800000000",
+      "last_flood_year": 2020,
       "latitude": 36.6768832,
       "legal_dong_code": "4481025021",
       "longitude": 126.8444655,
@@ -91,9 +156,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1979-11-23",
+      "approval_year": 1979,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1979186462843529606300000000",
+      "last_flood_year": 2020,
       "latitude": 36.6777719,
       "legal_dong_code": "4481025021",
       "longitude": 126.849346,
@@ -102,9 +172,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "2000-01-14",
+      "approval_year": 2000,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "2000185996263528169700000000",
+      "last_flood_year": 2020,
       "latitude": 36.6764876,
       "legal_dong_code": "4481025021",
       "longitude": 126.8441304,
@@ -113,9 +188,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1988-12-08",
+      "approval_year": 1988,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1988186238113528248100000000",
+      "last_flood_year": 2020,
       "latitude": 36.6765731,
       "legal_dong_code": "4481025021",
       "longitude": 126.8468387,
@@ -124,9 +204,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1982-05-14",
+      "approval_year": 1982,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1982186642363532232600000000",
+      "last_flood_year": 2020,
       "latitude": 36.6801688,
       "legal_dong_code": "4481025021",
       "longitude": 126.851349,
@@ -135,9 +220,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1996-09-03",
+      "approval_year": 1996,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1996186726483533124400000000",
+      "last_flood_year": 2020,
       "latitude": 36.6809704,
       "legal_dong_code": "4481025021",
       "longitude": 126.8522945,
@@ -146,9 +236,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1983-09-30",
+      "approval_year": 1983,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1983186049183528571700000000",
+      "last_flood_year": 2020,
       "latitude": 36.676855,
       "legal_dong_code": "4481025021",
       "longitude": 126.8447226,
@@ -157,9 +252,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1988-12-26",
+      "approval_year": 1988,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1988186234053528134200000000",
+      "last_flood_year": 2020,
       "latitude": 36.6764554,
       "legal_dong_code": "4481025021",
       "longitude": 126.8467939,
@@ -168,9 +268,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1990-08-14",
+      "approval_year": 1990,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1990186229863528220600000000",
+      "last_flood_year": 2020,
       "latitude": 36.6765445,
       "legal_dong_code": "4481025021",
       "longitude": 126.8467483,
@@ -179,9 +284,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1992-01-28",
+      "approval_year": 1992,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1992186003323528392800000000",
+      "last_flood_year": 2020,
       "latitude": 36.6766888,
       "legal_dong_code": "4481025021",
       "longitude": 126.8442115,
@@ -190,9 +300,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1987-12-30",
+      "approval_year": 1987,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1987186548323530111200000000",
+      "last_flood_year": 2020,
       "latitude": 36.6782825,
       "legal_dong_code": "4481025021",
       "longitude": 126.8502946,
@@ -201,9 +316,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1982-12-29",
+      "approval_year": 1982,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1982185652983529864300000000",
+      "last_flood_year": 2020,
       "latitude": 36.6779845,
       "legal_dong_code": "4481025021",
       "longitude": 126.8403227,
@@ -212,9 +332,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1992-04-24",
+      "approval_year": 1992,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1992186184733528574800000000",
+      "last_flood_year": 2020,
       "latitude": 36.6768588,
       "legal_dong_code": "4481025021",
       "longitude": 126.846241,
@@ -223,9 +348,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1992-02-14",
+      "approval_year": 1992,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1992186194933528607500000000",
+      "last_flood_year": 2020,
       "latitude": 36.6768879,
       "legal_dong_code": "4481025021",
       "longitude": 126.8463487,
@@ -234,9 +364,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1993-12-03",
+      "approval_year": 1993,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1993186531783530794400000000",
+      "last_flood_year": 2020,
       "latitude": 36.6788628,
       "legal_dong_code": "4481025021",
       "longitude": 126.8501648,
@@ -245,9 +380,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1992-01-24",
+      "approval_year": 1992,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1992186165143528203400000000",
+      "last_flood_year": 2020,
       "latitude": 36.6765215,
       "legal_dong_code": "4481025021",
       "longitude": 126.8460296,
@@ -256,9 +396,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1981-09-07",
+      "approval_year": 1981,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1981186261153528298500000000",
+      "last_flood_year": 2020,
       "latitude": 36.6766124,
       "legal_dong_code": "4481025021",
       "longitude": 126.8470905,
@@ -267,9 +412,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1992-07-24",
+      "approval_year": 1992,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1992186659513531537400000000",
+      "last_flood_year": 2020,
       "latitude": 36.6795344,
       "legal_dong_code": "4481025021",
       "longitude": 126.8515478,
@@ -278,9 +428,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1987-11-03",
+      "approval_year": 1987,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1987186462353530100300000000",
+      "last_flood_year": 2020,
       "latitude": 36.6782316,
       "legal_dong_code": "4481025021",
       "longitude": 126.8493403,
@@ -289,9 +444,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1982-10-25",
+      "approval_year": 1982,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1982186532633529973200000000",
+      "last_flood_year": 2020,
       "latitude": 36.6781349,
       "legal_dong_code": "4481025021",
       "longitude": 126.8500984,
@@ -300,9 +460,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1984-07-28",
+      "approval_year": 1984,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1984186683803531544000000000",
+      "last_flood_year": 2020,
       "latitude": 36.6795481,
       "legal_dong_code": "4481025021",
       "longitude": 126.8518238,
@@ -311,9 +476,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1981-03-05",
+      "approval_year": 1981,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1981185959403529259200000000",
+      "last_flood_year": 2020,
       "latitude": 36.6774633,
       "legal_dong_code": "4481025021",
       "longitude": 126.8437244,
@@ -322,9 +492,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1983-12-10",
+      "approval_year": 1983,
       "building_use_code": "04000",
       "building_use_name": "제2종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1983186452063529420500000000",
+      "last_flood_year": 2020,
       "latitude": 36.677599,
       "legal_dong_code": "4481025021",
       "longitude": 126.8492361,
@@ -333,9 +508,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1996-12-28",
+      "approval_year": 1996,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1996186618443530872400000000",
+      "last_flood_year": 2020,
       "latitude": 36.6789306,
       "legal_dong_code": "4481025021",
       "longitude": 126.8511091,
@@ -344,9 +524,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1991-10-24",
+      "approval_year": 1991,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1991186169513528513700000000",
+      "last_flood_year": 2020,
       "latitude": 36.6767986,
       "legal_dong_code": "4481025021",
       "longitude": 126.8460697,
@@ -355,9 +540,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1982-08-12",
+      "approval_year": 1982,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1982186625363530577200000000",
+      "last_flood_year": 2020,
       "latitude": 36.6786686,
       "legal_dong_code": "4481025021",
       "longitude": 126.8511608,
@@ -366,9 +556,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1981-08-13",
+      "approval_year": 1981,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1981185474913530821900000000",
+      "last_flood_year": 2020,
       "latitude": 36.678908,
       "legal_dong_code": "4481025021",
       "longitude": 126.8382999,
@@ -377,9 +572,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1983-06-20",
+      "approval_year": 1983,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1983185735633529022100000000",
+      "last_flood_year": 2020,
       "latitude": 36.6772582,
       "legal_dong_code": "4481025021",
       "longitude": 126.8412182,
@@ -388,9 +588,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1983-09-14",
+      "approval_year": 1983,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1983185717323529150600000000",
+      "last_flood_year": 2020,
       "latitude": 36.6773625,
       "legal_dong_code": "4481025021",
       "longitude": 126.841014,
@@ -399,9 +604,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1991-10-19",
+      "approval_year": 1991,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1991186255973528638000000000",
+      "last_flood_year": 2020,
       "latitude": 36.6769193,
       "legal_dong_code": "4481025021",
       "longitude": 126.8470407,
@@ -410,9 +620,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1983-12-08",
+      "approval_year": 1983,
       "building_use_code": "03000",
       "building_use_name": "제1종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1983186444993529195700000000",
+      "last_flood_year": 2020,
       "latitude": 36.6774517,
       "legal_dong_code": "4481025021",
       "longitude": 126.8491735,
@@ -421,9 +636,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1994-01-14",
+      "approval_year": 1994,
       "building_use_code": "04000",
       "building_use_name": "제2종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1994186714983533237000000000",
+      "last_flood_year": 2020,
       "latitude": 36.6810707,
       "legal_dong_code": "4481025021",
       "longitude": 126.8521627,
@@ -432,9 +652,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1982-10-25",
+      "approval_year": 1982,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1982186661783531819100000000",
+      "last_flood_year": 2020,
       "latitude": 36.6797897,
       "legal_dong_code": "4481025021",
       "longitude": 126.8515858,
@@ -443,9 +668,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1996-12-20",
+      "approval_year": 1996,
       "building_use_code": "04000",
       "building_use_name": "제2종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1996186627933531212800000000",
+      "last_flood_year": 2020,
       "latitude": 36.6792348,
       "legal_dong_code": "4481025021",
       "longitude": 126.8512027,
@@ -454,9 +684,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1983-08-02",
+      "approval_year": 1983,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1983185956303528634900000000",
+      "last_flood_year": 2020,
       "latitude": 36.6769113,
       "legal_dong_code": "4481025021",
       "longitude": 126.8436872,
@@ -465,9 +700,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1994-03-10",
+      "approval_year": 1994,
       "building_use_code": "07000",
       "building_use_name": "판매시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2017,
       "gis_building_id": "1994212809563666446600000000",
+      "last_flood_year": 2017,
       "latitude": 36.8011859,
       "legal_dong_code": "4413111400",
       "longitude": 127.1442897,
@@ -476,9 +716,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1992-03-13",
+      "approval_year": 1992,
       "building_use_code": "04000",
       "building_use_name": "제2종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1992212215593680360800000000",
+      "last_flood_year": 2020,
       "latitude": 36.8136568,
       "legal_dong_code": "4413310200",
       "longitude": 127.1376962,
@@ -487,9 +732,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1994-06-28",
+      "approval_year": 1994,
       "building_use_code": "04000",
       "building_use_name": "제2종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1994212002493681096500000000",
+      "last_flood_year": 2020,
       "latitude": 36.8143129,
       "legal_dong_code": "4413310200",
       "longitude": 127.1353117,
@@ -498,9 +748,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1995-07-08",
+      "approval_year": 1995,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1995186662143534970800000000",
+      "last_flood_year": 2020,
       "latitude": 36.6826187,
       "legal_dong_code": "4481025022",
       "longitude": 126.8515647,
@@ -509,9 +764,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1983-02-14",
+      "approval_year": 1983,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2017,
       "gis_building_id": "1983212854943665270200000000",
+      "last_flood_year": 2017,
       "latitude": 36.8000583,
       "legal_dong_code": "4413111400",
       "longitude": 127.1448332,
@@ -520,9 +780,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "2003-09-06",
+      "approval_year": 2003,
       "building_use_code": "04000",
       "building_use_name": "제2종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "2003213470823732697400000000",
+      "last_flood_year": 2020,
       "latitude": 36.8608043,
       "legal_dong_code": "4413311000",
       "longitude": 127.1518559,
@@ -531,9 +796,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1986-09-09",
+      "approval_year": 1986,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1986212875693670711600000000",
+      "last_flood_year": 2020,
       "latitude": 36.8049468,
       "legal_dong_code": "4413310100",
       "longitude": 127.145078,
@@ -542,9 +812,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1984-08-08",
+      "approval_year": 1984,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1984226608533623161000000000",
+      "last_flood_year": 2020,
       "latitude": 36.7618199,
       "legal_dong_code": "4413136022",
       "longitude": 127.2987993,
@@ -553,9 +828,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1989-01-09",
+      "approval_year": 1989,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1989226633673623292700000000",
+      "last_flood_year": 2020,
       "latitude": 36.7619383,
       "legal_dong_code": "4413136022",
       "longitude": 127.2990808,
@@ -564,9 +844,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1995-04-26",
+      "approval_year": 1995,
       "building_use_code": "04000",
       "building_use_name": "제2종근린생활시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1995226510573622619000000000",
+      "last_flood_year": 2020,
       "latitude": 36.7613381,
       "legal_dong_code": "4413136022",
       "longitude": 127.2977776,
@@ -575,9 +860,14 @@
       "underground_floor_count": 1
     },
     {
+      "approval_date": "1993-10-21",
+      "approval_year": 1993,
       "building_use_code": "01000",
       "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2020,
       "gis_building_id": "1993212176643679467500000000",
+      "last_flood_year": 2020,
       "latitude": 36.8128518,
       "legal_dong_code": "4413310200",
       "longitude": 127.1372585,
@@ -591,6 +881,14 @@
   "province_name": "충청남도",
   "source_dir": "data/raw/vworld-buildings/national/AL_D010_44_20260809",
   "source_epsg": "5186",
+  "timeline": {
+    "approval_date_missing": 3,
+    "approval_year_unparsed": 0,
+    "approved_after_first_flood": 0,
+    "approved_after_last_flood": 0,
+    "approved_before_or_same_year": 493,
+    "flood_year_unknown": 0
+  },
   "totals": {
     "basement_buildings": 27489,
     "geometry_missing": 0,

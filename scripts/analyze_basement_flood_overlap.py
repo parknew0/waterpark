@@ -130,6 +130,15 @@ def dbf_layout(path: Path) -> tuple[int, int, int, dict[str, tuple[int, int]]]:
     return row_count, header_length, record_length, fields
 
 
+def approval_year(value: str) -> int | None:
+    """Year from A13 사용승인일자, which appears as YYYYMMDD or YYYY-MM-DD."""
+    digits = re.sub(r"\D", "", value or "")
+    if len(digits) < 4:
+        return None
+    year = int(digits[:4])
+    return year if 1800 <= year <= 2100 else None
+
+
 def integer_or_none(value: str) -> int | None:
     text = value.strip()
     if not text:
@@ -147,7 +156,7 @@ def basement_record_indexes(dbf_path: Path) -> tuple[dict[int, dict[str, Any]], 
     reader can pick out the matching geometry by position.
     """
     row_count, header_length, record_length, fields = dbf_layout(dbf_path)
-    required = {"A1", "A2", "A3", "A8", "A9", "A27"}
+    required = {"A1", "A2", "A3", "A8", "A9", "A13", "A27"}
     missing = sorted(required - fields.keys())
     if missing:
         raise OverlapError(f"{dbf_path.name} is missing expected fields: {missing}")
@@ -195,6 +204,7 @@ def basement_record_indexes(dbf_path: Path) -> tuple[dict[int, dict[str, Any]], 
                     "legal_dong_code": ascii_value("A3"),
                     "building_use_code": ascii_value("A8"),
                     "building_use_name": korean_value("A9"),
+                    "approval_date": ascii_value("A13"),
                     "underground_floor_count": underground,
                 }
         finally:
@@ -304,8 +314,35 @@ def polygonal_only(geometry):
     return None
 
 
-def load_province_flood_union(province_code: str) -> tuple[Any, dict[str, int]]:
-    """Union every flood polygon recorded for one province."""
+def flood_year(props: dict[str, Any]) -> int | None:
+    """Best available event year for one flood polygon.
+
+    ``fldn_bgng_ymd`` is preferred because it is the surveyed start date.
+    ``fldn_yr`` is the fallback, except for the literal 0 that the Esri
+    export uses for the source's ``외`` value, which is not a real year.
+    """
+    ymd = str(props.get("fldn_bgng_ymd") or "").strip()
+    if len(ymd) >= 4 and ymd[:4].isdigit():
+        year = int(ymd[:4])
+        if 1900 <= year <= 2100:
+            return year
+    raw_year = str(props.get("fldn_yr") or "").strip()
+    if raw_year.isdigit():
+        year = int(raw_year)
+        if 1900 <= year <= 2100:
+            return year
+    return None
+
+
+def load_province_floods(
+    province_code: str,
+) -> tuple[Any, list[Any], list[int | None], dict[str, Any]]:
+    """Flood polygons for one province, as a union and as indexed parts.
+
+    The union drives the inside/outside decision.  The individual polygons
+    and their years are kept alongside so a flooded building can be dated
+    against the specific events that cover it.
+    """
     if not FLOOD_GEOJSON.exists():
         raise OverlapError(f"Flood source missing: {FLOOD_GEOJSON}")
 
@@ -313,13 +350,16 @@ def load_province_flood_union(province_code: str) -> tuple[Any, dict[str, int]]:
         payload = json.load(handle)
 
     wanted_codes = set(flood_codes_for(province_code))
-    geoms = []
+    geoms: list[Any] = []
+    years: list[int | None] = []
     stats: dict[str, Any] = {
         "province_polygons": 0,
         "invalid_repaired": 0,
         "dropped": 0,
+        "polygons_without_year": 0,
         "flood_province_codes": sorted(wanted_codes),
         "polygons_by_flood_code": {},
+        "flood_year_range": [],
     }
     per_code: Counter[str] = Counter()
     for feature in payload.get("features", []):
@@ -340,12 +380,19 @@ def load_province_flood_union(province_code: str) -> tuple[Any, dict[str, int]]:
                 stats["dropped"] += 1
                 continue
             stats["invalid_repaired"] += 1
+        year = flood_year(props)
+        if year is None:
+            stats["polygons_without_year"] += 1
         geoms.append(geom)
+        years.append(year)
 
     stats["polygons_by_flood_code"] = dict(sorted(per_code.items()))
+    known_years = [y for y in years if y is not None]
+    if known_years:
+        stats["flood_year_range"] = [min(known_years), max(known_years)]
     if not geoms:
-        return None, stats
-    return unary_union(geoms), stats
+        return None, [], [], stats
+    return unary_union(geoms), geoms, years, stats
 
 
 def analyse(province_code: str, shp_dir: Path) -> dict[str, Any]:
@@ -353,10 +400,16 @@ def analyse(province_code: str, shp_dir: Path) -> dict[str, Any]:
     if not dbf_paths:
         raise OverlapError(f"No DBF found under {shp_dir}")
 
-    flood_union, flood_stats = load_province_flood_union(province_code)
+    flood_union, flood_parts, flood_years, flood_stats = load_province_floods(
+        province_code
+    )
     if flood_union is None:
         raise OverlapError(f"No flood polygons for province {province_code}")
     prepared_flood = prep(flood_union)
+    # Individual polygons stay indexed so a flooded building can be dated
+    # against the specific events covering it, not just the province range.
+    flood_tree = STRtree(flood_parts)
+    prepared_parts = [prep(part) for part in flood_parts]
 
     # Source is EPSG:5186 for snapshots from 2023-08-08, EPSG:5174 before.
     prj_paths = sorted(shp_dir.glob("*.prj"))
@@ -381,6 +434,17 @@ def analyse(province_code: str, shp_dir: Path) -> dict[str, Any]:
     # input the Building HUB collector needs to confirm underground parking.
     flooded_rows: list[dict[str, Any]] = []
     use_counts: Counter[str] = Counter()
+    # Timeline check: a 2026 snapshot can contain buildings that did not
+    # exist when the flood was surveyed.
+    age = {
+        "approval_date_missing": 0,
+        "approval_year_unparsed": 0,
+        "flood_year_unknown": 0,
+        "approved_after_last_flood": 0,
+        "approved_after_first_flood": 0,
+        "approved_before_or_same_year": 0,
+    }
+    approval_years: Counter[int] = Counter()
 
     for dbf_path in dbf_paths:
         shp_path = dbf_path.with_suffix(".shp")
@@ -406,12 +470,50 @@ def analyse(province_code: str, shp_dir: Path) -> dict[str, Any]:
         for index, x, y in iter_shp_centroids(shp_path, wanted):
             resolved += 1
             lon, lat = transformer.transform(x, y)
-            if prepared_flood.contains(Point(lon, lat)):
+            point = Point(lon, lat)
+            if prepared_flood.contains(point):
                 totals["inside_flood_polygon"] += 1
                 record = dict(kept[index])
                 record["longitude"] = round(lon, 7)
                 record["latitude"] = round(lat, 7)
                 record["source_dbf"] = dbf_path.name
+
+                covering = [
+                    flood_years[i]
+                    for i in flood_tree.query(point)
+                    if prepared_parts[i].contains(point)
+                ]
+                known = [year for year in covering if year is not None]
+                last_flood = max(known) if known else None
+                first_flood = min(known) if known else None
+                record["last_flood_year"] = last_flood if last_flood else ""
+                record["first_flood_year"] = first_flood if first_flood else ""
+
+                approved = approval_year(record["approval_date"])
+                record["approval_year"] = approved if approved else ""
+                if approved:
+                    approval_years[approved] += 1
+                if not record["approval_date"]:
+                    age["approval_date_missing"] += 1
+                elif approved is None:
+                    age["approval_year_unparsed"] += 1
+                elif last_flood is None:
+                    age["flood_year_unknown"] += 1
+                elif approved > last_flood:
+                    # Newer than every event covering it: it cannot have been
+                    # flooded by any of them.
+                    age["approved_after_last_flood"] += 1
+                    record["existed_at_flood"] = "NO"
+                else:
+                    age["approved_before_or_same_year"] += 1
+                    record["existed_at_flood"] = "YES"
+                    if first_flood is not None and approved > first_flood:
+                        # Existed for the later events but not the earliest,
+                        # so a per-event table must drop those earlier rows.
+                        age["approved_after_first_flood"] += 1
+                        record["existed_at_flood"] = "PARTIAL"
+                record.setdefault("existed_at_flood", "UNKNOWN")
+
                 flooded_rows.append(record)
                 use_counts[record["building_use_name"] or "(미기재)"] += 1
                 if len(flooded_samples) < 50:
@@ -434,6 +536,11 @@ def analyse(province_code: str, shp_dir: Path) -> dict[str, Any]:
         "building_use_code",
         "building_use_name",
         "underground_floor_count",
+        "approval_date",
+        "approval_year",
+        "first_flood_year",
+        "last_flood_year",
+        "existed_at_flood",
         "longitude",
         "latitude",
         "source_dbf",
@@ -446,6 +553,8 @@ def analyse(province_code: str, shp_dir: Path) -> dict[str, Any]:
     return {
         "flooded_csv": display_path(flooded_csv),
         "building_use_top20": dict(use_counts.most_common(20)),
+        "timeline": age,
+        "approval_year_histogram": dict(sorted(approval_years.items())),
         "province_code": province_code,
         "province_name": PROVINCE_NAMES.get(province_code, province_code),
         "source_dir": display_path(shp_dir),
@@ -480,6 +589,14 @@ def run_one(province: str, shp_dir: Path) -> dict[str, Any]:
     print(f"  좌표 확인됨          : {totals['geometry_resolved']:,}동")
     print(f"  침수 Polygon 내부    : {totals['inside_flood_polygon']:,}동")
     print(f"  비율                : {result['inside_rate'] * 100:.2f}%")
+    age = result["timeline"]
+    checked = age["approved_after_last_flood"] + age["approved_before_or_same_year"]
+    if checked:
+        after = age["approved_after_last_flood"]
+        print(
+            f"  사건 후 준공(제외대상): {after:,}동 / 판정가능 {checked:,}동"
+            f" ({after / checked * 100:.1f}%)"
+        )
     print(f"  저장                : {display_path(out_path)}")
     print(flush=True)
     return result
