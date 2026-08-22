@@ -33,10 +33,11 @@
   ],
   "bundle_dir": "data/processed/serving-bundle",
   "files": {
-    "grid_meta.json": 738,
+    "grid_meta.json": 979,
     "parking.json": 150516,
     "risk_bands.json": 851,
-    "risk_grid.npz": 14098804
+    "risk_grid.npz": 6869375,
+    "stations.json": 297768
   },
   "notes": [
     "이 묶음만 Lambda에 올린다. DEM·하천·건물 원본은 올리지 않는다.",
@@ -44,5 +45,6 @@
     "risk_score는 순위 점수다. 확률로 표기하면 안 된다."
   ],
   "parking_count": 1233,
-  "total_bytes": 14250909
+  "station_count": 11914,
+  "total_bytes": 7319489
 }

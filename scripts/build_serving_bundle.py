@@ -35,6 +35,7 @@ from data_paths import ROOT
 
 GRID_DIR = ROOT / "data/processed/risk-grid"
 PARKING_CSV = ROOT / "data/interim/building-register/flooded_building_underground_parking.csv"
+STATION_CSV = ROOT / "data/raw/kma-stations/kma_station_list.csv"
 BUNDLE_DIR = ROOT / "data/processed/serving-bundle"
 MANIFEST = ROOT / "outputs/flooded-building-register/serving_bundle.manifest.json"
 
@@ -55,6 +56,41 @@ TRIGGER_BY_LEVEL = {
     "LOW": "극한호우",
     "VERY_LOW": "극한호우",
 }
+
+
+def quantize_grid(grid: Any, destination: Path) -> None:
+    """Store the grid as integers rather than float32.
+
+    float32 costs four bytes to carry precision nothing downstream uses.  The
+    score only has to place a cell in one of five bands and shade a map, and
+    the response already states it is a ranking score rather than a
+    probability, so 1/254 steps are finer than the number means.  Elevations
+    are reported to one decimal, so decimetres lose nothing either.
+
+    Halving the payload also keeps the deployment package under the 10 MB
+    ceiling for a browser upload, which is the difference between deploying
+    from the console and needing S3 as an intermediate step.
+    """
+    risk = grid["risk_score"]
+    valid = np.isfinite(risk)
+    # 0 is reserved for nodata so a missing cell can never read as a real
+    # score of zero; real scores occupy 1..255.
+    risk_u8 = np.zeros(risk.shape, dtype="uint8")
+    risk_u8[valid] = np.clip(np.round(risk[valid] * 254.0) + 1, 1, 255).astype("uint8")
+
+    def to_decimetres(band: np.ndarray) -> np.ndarray:
+        out = np.full(band.shape, np.iinfo("int16").min, dtype="int16")
+        finite = np.isfinite(band)
+        out[finite] = np.clip(np.round(band[finite] * 10.0), -32767, 32767).astype("int16")
+        return out
+
+    np.savez_compressed(
+        destination,
+        risk_score_u8=risk_u8,
+        rel_elev_500m_dm=to_decimetres(grid["rel_elev_500m"]),
+        elev_above_national_river_dm=to_decimetres(grid["elev_above_national_river"]),
+        dist_flood_m=grid["dist_flood_m"],
+    )
 
 
 def build_bands(scores: np.ndarray) -> dict[str, Any]:
@@ -85,6 +121,28 @@ def build_bands(scores: np.ndarray) -> dict[str, Any]:
             "모델을 다시 학습하면 다시 계산해야 한다."
         ),
     }
+
+
+def build_stations() -> dict[str, list[float]]:
+    """Station id to coordinates, for locating the nearest rain gauge.
+
+    The KMA hourly endpoint returns readings keyed by station id and no
+    coordinates at all, so the service cannot tell which reading is nearest
+    without this table.  The source lists a row per station per period, so
+    later rows win and each station keeps its most recent position.
+    """
+    if not STATION_CSV.exists():
+        raise SystemExit(f"관측소 목록이 없다: {STATION_CSV}")
+    out: dict[str, list[float]] = {}
+    with STATION_CSV.open(encoding="utf-8-sig") as handle:
+        for row in csv.reader(handle):
+            if len(row) < 8 or not row[0].strip().isdigit():
+                continue
+            try:
+                out[row[0].strip()] = [round(float(row[6]), 5), round(float(row[7]), 5)]
+            except ValueError:
+                continue
+    return out
 
 
 def build_parking() -> list[dict[str, Any]]:
@@ -129,11 +187,11 @@ def main() -> None:
         raise SystemExit(f"격자가 없다: {grid_path}. build_risk_grid.py 먼저 실행한다.")
 
     args.out.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(grid_path, args.out / "risk_grid.npz")
-
     grid = np.load(grid_path)
+    quantize_grid(grid, args.out / "risk_grid.npz")
     bands = build_bands(grid["risk_score"])
     parking = build_parking()
+    stations = build_stations()
 
     (args.out / "grid_meta.json").write_text(
         json.dumps(
@@ -141,7 +199,12 @@ def main() -> None:
                 "grid": grid_manifest["grid"],
                 "bands": grid_manifest["bands"],
                 "coverage": grid_manifest["coverage"],
-                "nodata": {"float_bands": "NaN", "dist_flood_m": 65535},
+                "encoding": {
+                "risk_score_u8": "uint8. score = (v - 1) / 254. v=0은 미조사",
+                "rel_elev_500m_dm": "int16 데시미터. m = v / 10. -32768은 결측",
+                "elev_above_national_river_dm": "int16 데시미터. m = v / 10. -32768은 결측",
+                "dist_flood_m": "uint16 미터. 65535는 미조사",
+            },
             },
             ensure_ascii=False,
             indent=2,
@@ -158,6 +221,10 @@ def main() -> None:
         json.dumps(parking, ensure_ascii=False, separators=(",", ":")) + "\n",
         encoding="utf-8",
     )
+    (args.out / "stations.json").write_text(
+        json.dumps(stations, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
 
     sizes = {p.name: p.stat().st_size for p in sorted(args.out.iterdir()) if p.is_file()}
     total = sum(sizes.values())
@@ -170,6 +237,7 @@ def main() -> None:
                 "files": sizes,
                 "total_bytes": total,
                 "parking_count": len(parking),
+                "station_count": len(stations),
                 "bands": bands["bands"],
                 "notes": [
                     "이 묶음만 Lambda에 올린다. DEM·하천·건물 원본은 올리지 않는다.",
@@ -189,7 +257,7 @@ def main() -> None:
     for name, size in sizes.items():
         print(f"  {name:<20} {size / 1e6:>8.2f} MB")
     print(f"  {'합계':<20} {total / 1e6:>8.2f} MB")
-    print(f"\n  지하주차장 {len(parking):,}동")
+    print(f"\n  지하주차장 {len(parking):,}동 / 관측소 {len(stations):,}곳")
     print("  위험 구간:")
     for band in bands["bands"]:
         print(f"    {band['level']:<10} score >= {band['min_score']:.4f}  → {band['rain_trigger']}")
