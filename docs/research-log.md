@@ -364,6 +364,16 @@
 - 출처: [카카오맵 REST API 장소 검색](https://developers.kakao.com/docs/ko/kakaomap/rest-api), [Daum 이미지 검색 REST API](https://developers.kakao.com/docs/ko/daum-search/dev-guide)
 - 확인일: 2026-08-23
 
+### 2026-08-23 — 우방신세계타운 1차 실제 이미지 URL 후보
+
+- `FACT`: 단지명과 주소가 일치하는 우방신세계타운 1차 106동 전경 이미지 URL을 확인했다. 원본은 2048×1536 JPEG이며 현재 HTTP 200으로 응답한다.
+- `FACT`: 동아일보의 2022년 9월 7일 힌남노 보도에서 우방신세계타운 1차 침수 현장으로 명시한 640×449 JPEG URL을 확인했다. 현재 HTTP 200으로 응답한다.
+- 단지 전경 URL: `https://image.hogangnono.com/image/original/apt/82Y81/20240419120232_k5U3CmU46WZtMRMXbw?q=100&s=2048x180&t=outside`
+- 힌남노 현장 URL: `https://t1.daumcdn.net/news/202209/07/donga/20220907030059842cmpo.jpg`
+- `LIMITATION`: 두 이미지는 카카오맵 장소 검색 API가 제공한 사진이 아니다. 각 매체의 저작물이므로 발표 자료나 앱에서 재게시하기 전에 이용 허락·라이선스를 확인해야 하며, 외부 URL의 영구 제공도 보장되지 않는다.
+- 출처: [호갱노노 우방신세계타운 1차 단지 페이지](https://hogangnono.com/apt/82Y81), [동아일보 힌남노 보도](https://www.donga.com/news/Society/article/all/20220907/115344711/1)
+- 확인일: 2026-08-23
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |
