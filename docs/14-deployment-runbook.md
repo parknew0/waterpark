@@ -1,6 +1,6 @@
 # 배포 실행서
 
-> 확인일: 2026-08-23
+> 확인일: 2026-08-23 (배포 후 갱신)
 >
 > 상태: `FACT`는 로컬에서 실제로 확인한 값, `PROPOSAL`은 아직 실행하지 않은 절차다.
 >
@@ -38,26 +38,30 @@ dist/assets/index-*.js          228.41 kB
 
 | 산출물 | 크기 | 확인 |
 | --- | ---: | --- |
-| `data/processed/serving-bundle/risk_grid.npz` | 14.10 MB | 격자 4밴드 |
+| `data/processed/serving-bundle/risk_grid.npz` | 6.87 MB | 격자 4밴드, 정수로 양자화 |
+| `data/processed/serving-bundle/stations.json` | 0.30 MB | 기상청 관측소 11,914곳 좌표 |
 | `data/processed/serving-bundle/parking.json` | 0.15 MB | 지하주차장 1,233동 |
-| `data/processed/serving-bundle/grid_meta.json` | 4 KB | 좌표 → 셀 변환 |
+| `data/processed/serving-bundle/grid_meta.json` | 1 KB | 좌표 → 셀 변환 |
 | `data/processed/serving-bundle/risk_bands.json` | 1 KB | 위험 구간 경계 |
 
-`FACT` 함수 코드와 번들을 합친 ZIP은 **13 MB**입니다. Lambda ZIP 제한 250 MB에 여유가 큽니다.
+`FACT` 함수 코드와 번들을 합친 ZIP은 **6.91 MB**입니다. Lambda ZIP 제한 250 MB뿐 아니라 **콘솔 직접 업로드 한도 10 MB** 아래라, S3를 거치지 않고 브라우저에서 바로 올립니다.
 
-## 2. 의존성: numpy 하나뿐
+`FACT` 격자를 float32에서 정수로 바꿔 절반으로 줄인 결과입니다. 점수는 다섯 구간을 가르고 지도를 칠하는 데만 쓰이고 응답도 확률이 아니라고 명시하므로, 1/254 눈금이 이미 값의 의미보다 촘촘합니다. 표고는 소수 한 자리로 보고하니 데시미터로 충분합니다.
 
-`FACT` 핸들러가 쓰는 외부 패키지는 numpy가 전부입니다. 좌표 투영은 [`serverless/projection.py`](../serverless/projection.py)에 직접 구현했습니다.
+## 2. 의존성: 없음
 
-**왜 pyproj를 뺐는가.** 세 가지 이유입니다.
+`FACT` 핸들러는 **외부 패키지를 하나도 쓰지 않습니다.** 표준 라이브러리만으로 돕니다.
 
-| 문제 | 내용 |
-| --- | --- |
-| 크기 | pyproj 17 MB (그중 PROJ 데이터 8.7 MB) |
-| 이식성 | 컴파일된 확장이라 **macOS에서 빌드한 것이 Lambda(Linux)에서 안 돌아감** |
-| 과잉 | 전 세계 변환 격자를 싣고 투영 하나만 씀 |
+| 원래 필요했던 것 | 대체 | 이유 |
+| --- | --- | --- |
+| pyproj | [`serverless/projection.py`](../serverless/projection.py) | 17 MB, 컴파일된 확장이라 macOS 빌드가 Lambda(Linux)에서 안 돎 |
+| numpy | [`serverless/npzreader.py`](../serverless/npzreader.py) | 셀 하나 읽는 데 배열 라이브러리가 필요 없음 |
 
-`FACT` 직접 구현한 값을 pyproj와 20,000점에서 대조했습니다.
+**numpy를 뺀 이유가 크기만은 아닙니다.** AWS가 관리하는 numpy 계층은 **Python 3.11까지만** 제공됩니다. 3.12 함수에서 쓰려면 계층 ARN을 직접 찾아 버전을 고정해야 하고, 그 버전이 폐기될 때마다 다시 고정해야 합니다. 표준 라이브러리만 쓰면 **낡을 계층 자체가 없습니다.**
+
+`FACT` .npz는 .npy를 담은 zip이고 .npy는 짧은 ASCII 헤더 뒤에 리틀엔디언 원본 바이트라, `zipfile`과 `struct`만으로 읽힙니다. 이 프로젝트가 쓰는 정수 dtype만 지원하고 나머지는 조용히 잘못 읽는 대신 예외를 냅니다.
+
+`FACT` 직접 구현한 투영을 pyproj와 20,000점에서 대조했습니다.
 
 ```text
 정방향 최대 오차   0.357 mm
@@ -65,15 +69,7 @@ dist/assets/index-*.js          228.41 kB
 격자 셀 100m 대비  0.00036 %
 ```
 
-회귀 방지용 검증은 `scripts/verify_projection.py`로 언제든 다시 돌립니다.
-
-**numpy는 AWS 제공 레이어를 씁니다.** 직접 빌드하려면 Linux용으로 크로스 컴파일해야 하는데, AWS가 관리하는 레이어를 붙이면 그 과정이 없어집니다.
-
-```text
-arn:aws:lambda:ap-northeast-2:336392948345:layer:AWSSDKPandas-Python312:<버전>
-```
-
-`OPEN` 레이어 버전 번호는 리전·시점마다 다릅니다. Lambda 콘솔의 **계층 추가 → AWS 계층**에서 최신 버전을 고르면 됩니다.
+회귀 방지용 검증은 `scripts/verify_projection.py`로 언제든 다시 돌립니다. pyproj는 로컬에만 있고 Lambda에는 일부러 없습니다.
 
 ## 3. Lambda 배포
 
@@ -82,7 +78,7 @@ arn:aws:lambda:ap-northeast-2:336392948345:layer:AWSSDKPandas-Python312:<버전>
 ```bash
 cd /Users/park/Desktop/waterpark
 rm -rf build/lambda && mkdir -p build/lambda
-cp serverless/handler.py serverless/projection.py build/lambda/
+cp serverless/handler.py serverless/projection.py serverless/npzreader.py build/lambda/
 cp -r data/processed/serving-bundle build/lambda/bundle
 cd build/lambda && zip -qr ../waterpark-flood-risk.zip . && cd -
 ```
@@ -100,8 +96,8 @@ cd build/lambda && zip -qr ../waterpark-flood-risk.zip . && cd -
 
 | 항목 | 값 | 근거 |
 | --- | --- | --- |
-| 계층 | AWSSDKPandas-Python312 | numpy 포함 |
-| 메모리 | **512 MB** | 격자 14 MB + numpy. Lambda는 메모리에 비례해 CPU도 늘어남 |
+| 계층 | **없음** | 표준 라이브러리만 씀 |
+| 메모리 | **512 MB** | 격자 6.9 MB 상주 + 기상청 12회 병렬 조회. Lambda는 메모리에 비례해 CPU도 늘어남 |
 | 타임아웃 | **10초** | 기상청 응답 대기 포함 |
 | 리전 | **ap-northeast-2** | 기상청 API 지연 최소화 |
 
@@ -111,6 +107,15 @@ cd build/lambda && zip -qr ../waterpark-flood-risk.zip . && cd -
 BUNDLE_DIR             = /var/task/bundle
 KMA_APIHUB_AUTH_KEY    = (기상청 API허브 키)
 ```
+
+`FACT` **키를 헷갈리면 조용히 실패합니다.** 이 값은 `apihub.kma.go.kr`에서 발급한 키여야 하고, `data.go.kr` 키와 형태가 다릅니다. 실제로 후자를 넣어 한참 헤맸습니다.
+
+| 출처 | 길이 | 문자 |
+| --- | --- | --- |
+| API허브 (맞음) | 22자 | 영숫자와 `_` |
+| data.go.kr (틀림) | 88자 | `+` `/` `=` 포함 |
+
+`FACT` 요청 URL에서 `authKey`는 **퍼센트 인코딩하지 않고 그대로** 붙입니다. 인코딩하면 게이트웨이가 거부합니다. `tm`은 정시여야 하며(`YYYYMMDDHH00`), 분이 `30`이면 HTTP 200에 데이터 0행이 돌아옵니다.
 
 `PROPOSAL` 키는 Secrets Manager가 정석이지만, 해커톤 규모에서는 환경 변수로 두고 **저장소에는 절대 커밋하지 않는** 것으로 충분합니다.
 
@@ -173,6 +178,22 @@ VITE_KAKAO_MAP_APP_KEY = (카카오 지도 키)
 
 5. 배포 후 **Custom domains**에서 도메인 연결
 
+### 4-2-1. 로컬 개발에서 `/api/*` 붙이기
+
+`FACT` `vite dev`는 Pages Functions를 실행하지 않습니다. 그대로 두면 `/api/flood-risk`가 로컬에서 404가 나고, 코드와 무관한 이유로 앱이 고장 난 것처럼 보입니다.
+
+`FACT` [`frontend/vite.config.ts`](../frontend/vite.config.ts)에 개발 전용 프록시를 넣어 해결했습니다. 프론트 담당자는 이것만 하면 됩니다.
+
+```bash
+cd frontend && cp .env.example .env.local && npm run dev
+```
+
+`FACT` `.env.local`의 `LAMBDA_URL`을 채우면 개발과 배포가 **같은 상대 경로**를 씁니다.
+
+`FACT` Lambda URL을 프론트 코드에 직접 넣으면 안 됩니다. Function URL은 CORS 헤더를 보내지 않아 브라우저가 차단합니다. 프록시는 Node에서 돌아 그 제약을 받지 않습니다.
+
+`FACT` `LAMBDA_URL`은 `VITE_` 접두사가 없어 클라이언트 번들에 들어가지 않습니다. `server` 설정은 개발 전용이라 빌드 산출물에 포함되지 않습니다.
+
 ### 4-3. `/api/*` → Lambda 프록시
 
 `PROPOSAL` Pages Functions로 처리합니다. `frontend/functions/api/[[path]].ts`를 만들면 Cloudflare가 자동 인식합니다.
@@ -189,7 +210,7 @@ export const onRequest: PagesFunction<{ LAMBDA_URL: string }> = async (ctx) => {
 };
 ```
 
-Pages 환경 변수에 `LAMBDA_URL`을 넣습니다.
+Pages 환경 변수에 `LAMBDA_URL`을 넣습니다. **Production과 Preview 양쪽에 넣어야 합니다.** Cloudflare는 환경별로 변수를 따로 두므로, Production에만 넣으면 브랜치 미리보기가 전부 503으로 죽습니다.
 
 **이 구조의 이점:**
 
@@ -235,8 +256,11 @@ curl -s -X POST https://example.com/api/flood-risk \
 
 ## 7. 알려진 미완 사항
 
-- `OPEN` 기상청 3시간·12시간 누적 강수가 없습니다. 현재 1시간만 조회하고 나머지는 `null`이라 **호우경보·극한호우 판정이 제한적**입니다. 추측값을 넣지 않은 이유는 없는 값을 지어내면 경보가 틀리기 때문입니다.
-- `OPEN` Cloudflare Pages Functions 프록시를 실제로 배포해 확인하지 않았습니다.
+- `DONE` 기상청 3시간·12시간 누적 강수를 붙였습니다. 정시 12회를 병렬로 조회해 합산하며, 관측소 좌표는 응답에 없어 `stations.json`(11,914곳)으로 최근접을 찾습니다.
+- `DONE` 기상청 조회 실패를 `CALM`이 아니라 `UNKNOWN`으로 보고합니다. 조회에 실패한 것을 "비가 오지 않는다"로 표시하면, 미조사 지역을 안전으로 칠하는 것과 같은 오류입니다.
+- `OPEN` Cloudflare Pages Functions 프록시를 실제로 배포해 확인하지 않았습니다. 로컬은 Vite 프록시로 확인했습니다.
+- `OPEN` 프론트가 API를 부르는 곳은 강수량 배지 하나뿐입니다. `alert.level`로 화면을 자동 전환하는 부분이 비어 있어, "차 빼세요" 화면은 아직 손으로 눌러야 나옵니다.
+- `OPEN` `EmergencyView`의 "Estimated safe time 30min"은 API에 대응하는 값이 없습니다. 침수흔적도에 시각이 없어 남은 시간을 학습할 수 없으므로, 숫자를 지어내는 대신 `alert.reasons`로 바꿔야 합니다.
 - `OPEN` 지도 전면 색칠용 타일이 없습니다. 격자를 PNG 타일로 구우면 클릭 전에 위험 지역을 볼 수 있습니다.
 - `OPEN` 격자 갱신 자동화가 없습니다. 현재는 로컬에서 수동 실행 후 재배포합니다.
 
