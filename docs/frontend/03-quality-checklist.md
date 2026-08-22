@@ -77,5 +77,6 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-22 | Figma 신규 3개 뷰 | 402×874에서 Warning·Safe 상세와 길찾기 카드·경로 확인 | 통과 |
 | 2026-08-22 | 긴급 화면 짧은 viewport | 402×720에서도 경고 원 `x=126.5, y=131`, 차 `x=167, y=171`, 뒤로가기 `x=12, y=62` 유지 | 통과 |
 | 2026-08-22 | 긴급 목적지 영문 표기 | `Hyogok-dong Street Parking 8`, `24 Yudong-gil, Nam-gu, Pohang-si, Gyeongsangbuk-do` 확인 | 통과 |
+| 2026-08-22 | 긴급 경고 동심원 | 바깥·중간·안쪽 실제 원·차량 중심이 모두 `(201, 205.5)`인지 DOM 좌표로 확인 | 통과 |
 
 초기 브라우저 검사에서 공공 원천의 중복 관리번호 때문에 React key 경고가 발생했다. 기관·관리번호·명칭·주소·좌표의 SHA-256 안정 해시로 ID를 교체했으며 이후 새 경고는 발생하지 않았다.

@@ -343,16 +343,30 @@ h3 { margin: 0; font-size: 14px; }
   animation: emergency-alert-pulse 1.15s ease-in-out infinite;
   will-change: opacity, transform;
 }
-.emergency-alert-ring--middle { top: 13px; left: 13px; width: 123px; height: 123px; }
-.emergency-alert-ring--inner { top: 19px; left: 21px; width: 116px; height: 116px; }
+.emergency-alert-ring--middle {
+  top: 50%;
+  left: 50%;
+  width: 123px;
+  height: 123px;
+  transform: translate(-50%, -50%);
+}
+.emergency-alert-ring--inner {
+  /* The exported SVG's visible circle is centered at 56/116 because of its 2px shadow offset. */
+  top: calc(50% + 2px);
+  left: calc(50% + 2px);
+  width: 116px;
+  height: 116px;
+  transform: translate(-50%, -50%);
+}
 
 .emergency-car-icon {
   position: absolute;
-  top: 40px;
-  left: 40.5px;
+  top: 50%;
+  left: 50%;
   width: 69px;
   height: 69px;
   overflow: hidden;
+  transform: translate(-50%, -50%);
 }
 
 .emergency-car-part {
