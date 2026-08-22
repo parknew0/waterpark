@@ -11,6 +11,7 @@
 | 지도 홈 | [`123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev) | 지도, 앱 제목, 현재 위치 라벨, 강수 칩, 안내 문구 |
 | 내 차 위치가 설정된 지도 | [`123:1958`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1958&m=dev) | 위치 설정 완료 뒤 현재 위치·내 차·주변 주차장 `P` 마커와 `My Location` 카드 표시 |
 | 가까운 주차장 시트 | [`123:2075`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2075&m=dev) | 지도 진입과 동시에 검색창·거리순 상위 3개 목록 표시 |
+| 주차장 검색 입력창 | [`123:1631`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1631&m=dev) | 오른쪽 눈·검색 아이콘 없이 플레이스홀더만 표시 |
 | 선택 상세 시트 | [`123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev) | 주차장 사진·주소·거리·침수 위험 영역·차량 위치 설정 버튼 |
 | 위치 라벨 | [`123:1419`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1419&m=dev) | 고정 포항 문구 대신 브라우저 현재 좌표를 주소로 변환해 표시 |
 | 현재 위치 마커 | [`123:2320`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2320&m=dev) | 청록 방향 부채꼴과 흰 테두리 청록 점을 현재 좌표에 표시하고 기기 방위에 맞춰 회전 |
@@ -71,6 +72,9 @@ Kakao 지도 Web API 공식 문서에서 웹 지도용 다크 테마 옵션은 �
 - 402×874에서 지도를 100px 드래그해 내부 지도 좌표가 실제로 100px 이동하는 것 확인
 - 현재 위치 오버레이의 포인터 이벤트를 제거하고 회전축을 현재 위치 점 중심으로 교정
 - Figma `123:2511` 기준으로 강수 아이콘의 세 빗줄기 간격 교정
+- 현재 위치 부채꼴의 회전 중심, 현재 위치 점의 중심, Kakao 오버레이 anchor를 `(32px, 54px)`로 통일해 회전 시 부채꼴과 점이 분리되지 않는지 확인
+- 480px 이하 화면에서 모바일 프레임을 `100vw × 100svh`로 확장하고, 430×932 검증에서 시트 rect가 `x=0`, `width=430`, `bottom=932`인지 확인
+- Figma `123:1631` 기준으로 검색 입력창의 잘못된 눈 아이콘과 아이콘 버튼을 모두 제거하고 내부 이미지·버튼 0개 확인
 - 임시 검증 좌표에서 Figma 현재 위치 마커 64×64 렌더링, 청록색 유지와 anchor 위치 확인 후 임시 좌표 제거
 - 브라우저 경고·오류 0건
 

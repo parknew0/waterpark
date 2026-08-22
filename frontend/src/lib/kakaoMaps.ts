@@ -229,8 +229,8 @@ export function createKakaoMap(
       map,
       position: new maps.LatLng(currentPosition.latitude, currentPosition.longitude),
       content: marker,
-      xAnchor: 0.2,
-      yAnchor: 0.72,
+      xAnchor: 0.5,
+      yAnchor: 0.84,
       zIndex: 5,
     }));
   }

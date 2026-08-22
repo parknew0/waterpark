@@ -143,9 +143,6 @@ export function ParkingHomeView({
                     placeholder="주차장 검색"
                     autoComplete="off"
                   />
-                  <button type="submit" aria-label="주차장 검색">
-                    <img src="/assets/parking/search.svg" alt="" />
-                  </button>
                 </form>
 
                 <div className="nearby-heading">

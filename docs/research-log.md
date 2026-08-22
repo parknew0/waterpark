@@ -255,8 +255,11 @@
 - 방향 부채꼴은 iOS Safari의 `webkitCompassHeading`을 우선 사용한다. 절대값이 아닌 표준 `alpha`도 상대 회전 폴백으로 사용하고, 회전축은 부채꼴 이미지 내부가 아닌 현재 위치 점 중심으로 교정했다.
 - 현재 위치 오버레이는 포인터 이벤트를 받지 않도록 변경하고 Kakao 지도에 드래그·스크롤 옵션을 명시했다. 402×874 브라우저에서 100px 드래그 후 내부 지도 레이어가 실제 100px 이동했다.
 - 개별 타일마다 적용하던 다크 필터를 타일 부모 레이어의 단일 필터로 변경해 스크린샷의 타일 경계선을 제거했다. Figma `123:2511` 기준으로 강수 아이콘의 빗줄기 간격도 교정했다.
+- Figma `123:1631`의 최종 캡처에는 검색 입력창 오른쪽 아이콘이 표시되지 않는다. 잘못 연결됐던 눈 가림 SVG와 아이콘 버튼을 모두 제거했으며 Enter/모바일 키보드 제출은 form submit으로 유지한다.
+- 현재 위치 부채꼴과 점이 회전할 때 분리되던 문제는 두 요소의 중심과 Kakao anchor를 `(32px, 54px)`로 통일해 수정했다.
+- 모바일에서도 프레임 폭을 402px로 제한해 생기던 좌우·하단 여백을 제거했다. 480px 이하에서는 `100vw × 100svh`를 사용하며 430×932 브라우저에서 시트 `x=0`, `width=430`, `bottom=932`를 확인했다.
 - 테스트 브라우저에서는 위치 권한을 확보하지 못해 실제 현재 위치와 센서 회전은 검증하지 못했다. 권한 실패 시 가짜 현재 위치를 표시하지 않는 처리, 목록 즉시 표시, 상세, 확정 후 주변 후보·차 마커·저장 카드 상태를 확인했다.
-- 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [지도 선택 `123:1958`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1958&m=dev), [현재 위치 마커 `123:2320`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2320&m=dev), [내 차 마커 `136:2639`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2639&m=dev), [W3C Device Orientation and Motion](https://www.w3.org/TR/orientation-event/), [Apple DeviceOrientationEvent](https://developer.apple.com/documentation/webkitjs/deviceorientationevent)
+- 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [지도 선택 `123:1958`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1958&m=dev), [검색 입력창 `123:1631`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1631&m=dev), [현재 위치 마커 `123:2320`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2320&m=dev), [내 차 마커 `136:2639`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2639&m=dev), [W3C Device Orientation and Motion](https://www.w3.org/TR/orientation-event/), [Apple DeviceOrientationEvent](https://developer.apple.com/documentation/webkitjs/deviceorientationevent)
 - 확인일: 2026-08-22
 
 ## 결정 로그
