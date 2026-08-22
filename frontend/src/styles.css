@@ -42,7 +42,11 @@ button:focus-visible, input:focus-visible, a:focus-visible {
   place-items: center;
   overflow: hidden;
   background: #03070a;
+  opacity: 1;
+  transition: opacity 1.1s cubic-bezier(.4, 0, .2, 1);
 }
+
+.splash-stage--exiting { opacity: 0; }
 
 .splash-phone {
   position: relative;

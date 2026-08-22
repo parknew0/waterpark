@@ -336,6 +336,7 @@
 - `FACT`: 위험 상세 `119:1140`과 안전 상세 `123:1743`이 `VITE_KAKAO_MAP_APP_KEY`를 받아 실제 Kakao 지도·계산 경로·마커를 표시하도록 변경했다.
 - `FACT`: `localhost:5173` 브라우저에서 두 상세 화면의 Kakao 지도 타일과 접근 가능한 지도 region을 확인했고 TypeScript build와 ESLint를 통과했다.
 - `LIMITATION`: Kakao 지도는 등록 origin과 활성 JavaScript 키가 필요하며, 실패 시 정적 경로 미리보기로 폴백한다.
+- `DECISION`: 스플래시는 1.6초 유지 후 1.1초 동안 전체 화면을 페이드아웃하고, 페이드가 끝난 다음 온보딩으로 전환한다. Figma 원본 노드에는 별도 모션 데이터가 없어 사용자 요청을 앱 전환 명세로 기록했다.
 - 상세: [워드마크·스플래시·상세 실지도](./frontend/09-brand-splash-and-live-detail-maps.md)
 - 출처: [Figma 워드마크 `123:2252`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2252&m=dev), [Figma 스플래시 `50:84`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=50-84&m=dev), [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev)
 
