@@ -1,0 +1,45 @@
+{
+  "created_at_kst": "2026-08-22",
+  "scope": "Gyeongsangbuk-do land boundary including Ulleungdo",
+  "row_count": 305058,
+  "municipality_count": 22,
+  "municipality_null_count": 0,
+  "elevation_non_null_count": 304929,
+  "underground_parking_true_open_map_count": 0,
+  "underground_parking_official_confirmed_count": 0,
+  "underground_parking_unknown_count": 305058,
+  "inputs": {
+    "data/raw/overture/gyeongbuk_bbox_buildings.parquet": {
+      "sha256": "b7463ee939957b169d51a0a77ac1b2c33fdcde7730533a008c39a98377de89f9",
+      "release": "2026-08-19.0"
+    },
+    "data/raw/overture/gyeongbuk_bbox_division_area.geojson": {
+      "sha256": "c4e181c641322ed9231dc9f7d427b932c54dc21c97842a5df168b07b86742a2f",
+      "release": "2026-08-19.0"
+    },
+    "dem_tiles": {
+      "count": 9,
+      "release": "GLO-30 2021"
+    }
+  },
+  "outputs": {
+    "data/processed/gyeongbuk_buildings_elevation.parquet": {
+      "sha256": "6e7ddee5c86f20fdf14b10ed3c70cb546affe5de91c3c8e8a70aef4c8ee5b4f6"
+    },
+    "data/processed/gyeongbuk_buildings_elevation.csv.gz": {
+      "sha256": "e906f2f3fbfee969e645cff73768b807c9c52db507f42b8b46d8aa31fffae3ba"
+    },
+    "outputs/gyeongbuk-buildings/gyeongbuk_buildings_elevation_sample.csv": {
+      "sha256": "11e301be5ebe5b0cbdafaec1f3c93477db49826fe09402ad0190f97f785e15f5"
+    },
+    "outputs/gyeongbuk-buildings/gyeongbuk_buildings_by_municipality.csv": {
+      "sha256": "e26be817e48a13112b36dc35880d4d5e00be75512839fa94cec1ca1f98514160"
+    }
+  },
+  "critical_limitations": [
+    "Overture is an open-map compilation, not the Korean official building register.",
+    "Underground parking is not inferred from underground floors; unknown remains unknown.",
+    "Copernicus GLO-30 is a DSM and may include buildings/vegetation.",
+    "Relative elevation is a screening feature, not HAND, flow depth, or inundation probability."
+  ]
+}

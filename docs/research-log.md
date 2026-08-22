@@ -37,9 +37,9 @@
 
 | ID | 내용 | 상태 |
 | --- | --- | --- |
-| DATA-001 | 침수흔적도·기상·건물·DEM·하천 후보의 공식 제공 경로 | `FACT` — 공식 제공 경로 확인, 전체 원본 미확보 |
-| DATA-002 | 각 데이터의 필드, 형식, 단위와 공간·시간 해상도 | `NOTE` — 건물·강수·침수 공개 명세와 샘플 확인, 실제 전체 파일 기준 재확인 필요 |
-| DATA-003 | 경상북도 22개 시군 필터 후 행 수, 과거 이력과 결측률 | `OPEN` — 주차장만 2,010행 확인 |
+| DATA-001 | 침수흔적도·기상·건물·DEM·하천 후보의 공식 제공 경로 | `FACT` — 공식 제공 경로 확인, 대체 건물·DSM 확보, 나머지 공식 원본 미확보 |
+| DATA-002 | 각 데이터의 필드, 형식, 단위와 공간·시간 해상도 | `NOTE` — 건물·강수·침수 명세 확인 및 Overture·Copernicus 실제 처리 완료, 공식 전체 파일 기준 재확인 필요 |
+| DATA-003 | 경상북도 22개 시군 필터 후 행 수, 과거 이력과 결측률 | `NOTE` — 주차장 2,010행, 대체 건물 305,058행, 표고 304,929행 확인 |
 | DATA-004 | 데이터 간 위치·시간 기준 결합 방법 | `NOTE` — 구조 분석 완료, CRS·연결 키 미확정 |
 | DATA-005 | XGBoost 입력과 정답 데이터로 사용할 수 있는 항목 | `NOTE` — 구조상 가능, 라벨 품질·독립 사건 수 미확인 |
 | DATA-006 | 데이터별 라이선스, 호출 제한과 재배포 조건 | `OPEN` — 일부 페이지 표기만 확인 |
@@ -77,6 +77,23 @@
 - 국토지리정보원 DEM은 무료이나 국토정보플랫폼 로그인과 영역 지정 다운로드가 필요하다.
 - 산출물: `data/processed/gyeongbuk_parking_seed.csv`, `data/processed/waterpark_gyeongbuk_integration.xlsx`
 - 출처: [전국주차장정보표준데이터](https://www.data.go.kr/data/15012896/standard.do), [기존 침수흔적도](https://www.safetydata.go.kr/disaster-data/view?dataSn=108), [새 침수흔적도 위선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846), [국토지리정보원 DEM](https://www.data.go.kr/data/15059920/fileData.do)
+- 확인일: 2026-08-22
+
+## 2026-08-22 경상북도 건물·고도 실제 추출 결과
+
+- 상태: `FACT` — 대체 공개 원천의 실제 다운로드·공간절단·표고 추출 완료. 공식 지하주차장 여부는 `OPEN_AUTH`.
+- Overture Maps `2026-08-19.0` 릴리스에서 경북 경계상자 건물 634,311개와 행정경계를 내려받았다.
+- `country=KR`, `region=KR-47`, `admin_level=1`, `class=land`, 명칭 `경상북도`인 행정경계로 건물 대표점을 절단해 305,058행을 만들었다.
+- 경북 `admin_level=2` 시군 Polygon으로 22개 시군을 배정했으며 시군 결측은 0행이다.
+- Copernicus DEM GLO-30 Public 2021의 30m DSM 타일 9개를 내려받아 304,929행에 표고를 붙였다. 표고 결측은 129행이다.
+- 경북 전체 건물점 DSM 표고 중앙값은 약 64.61m다. 일부 해안 값은 -6.07m까지 있어 수직기준·해안 픽셀·DSM 오차 확인이 필요하다.
+- 주변 대비 표고는 0.01도 격자 3×3 근방의 건물 대표점 DSM 최저값 대비 차이로 계산했다. HAND·지형 전체 최저값·침수심이 아니다.
+- Overture의 지하층수 값은 경북에서 6행뿐이었다. 지하주차장 공식 확정은 0행이고 305,058행 모두 미상으로 보존했다.
+- VWorld 연속수치지형도 건물 경북 파일은 `dsId=30162`, `fileNo=25`, 화면 표시 279MB로 확인했다. 비로그인 직접 호출은 0바이트였고 화면 스크립트도 로그인 여부를 검사한다.
+- 건축HUB OpenAPI `15134735`는 `serviceKey`, `sigunguCd`, `bjdongCd`가 필수다. 현재 환경에는 서비스키가 없어 표제부·층별개요 전수 수집을 실행하지 못했다.
+- 산출물: `data/processed/gyeongbuk_buildings_elevation.parquet`, `data/processed/gyeongbuk_buildings_elevation.csv.gz`, `outputs/gyeongbuk-buildings/waterpark_gyeongbuk_buildings_elevation.xlsx`
+- 상세 문서: [경상북도 건물·고도 실제 추출 결과](./05-gyeongbuk-building-elevation-extraction.md)
+- 출처: [Overture 공개 데이터](https://registry.opendata.aws/overture/), [Overture Python Client](https://docs.overturemaps.org/getting-data/overturemaps-py/), [Copernicus DEM 공개 데이터](https://registry.opendata.aws/copernicus-dem/), [VWorld 건물 데이터](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?dsId=30162), [건축HUB API](https://www.data.go.kr/data/15134735/openapi.do)
 - 확인일: 2026-08-22
 
 ## 결정 로그

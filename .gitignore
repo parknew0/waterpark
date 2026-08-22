@@ -1,0 +1,9 @@
+.DS_Store
+
+# Large reproducible source downloads kept locally.
+data/raw/dem/
+data/raw/overture/
+data/interim/
+
+# Generated inspection sidecar.
+outputs/**/*.inspect.ndjson
