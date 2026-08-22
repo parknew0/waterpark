@@ -37,5 +37,6 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-22 | 데스크톱 브라우저 | 검색·목록·선택 구조 정상 | Kakao Marker 클릭 상세 연결은 다음 단계 |
 | 2026-08-22 | 402×874 모바일 | Figma 바텀시트 구조, 48×48 위치 버튼, overflow 정상 | 실제 기기 safe-area 확인 |
 | 2026-08-22 | `포항시` 검색 | 포항 주차장 20개 표시, 첫 결과 주소 확인 | 검색 반경·정렬 정책은 사용자 테스트 후 조정 |
+| 2026-08-22 | Kakao SDK 실호출 | 키 로딩 정상, Kakao 응답 `401 domain mismatched` | JavaScript SDK 도메인 등록 후 재검증 |
 
 초기 브라우저 검사에서 공공 원천의 중복 관리번호 때문에 React key 경고가 발생했다. 기관·관리번호·명칭·주소·좌표의 SHA-256 안정 해시로 ID를 교체했으며 이후 새 경고는 발생하지 않았다.
