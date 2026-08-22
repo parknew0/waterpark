@@ -1,0 +1,177 @@
+{
+  "attribute_field_count": 16,
+  "attribute_fields": [
+    "objectid",
+    "sn",
+    "fldn_dst_nm",
+    "fldn_grade",
+    "fldn_dowa",
+    "fldn_area",
+    "fldn_yr",
+    "fldn_bgng_ymd",
+    "fldn_bgng_tm",
+    "fldn_end_ymd",
+    "fldn_end_tm",
+    "fldn_cs_dtl_nm",
+    "stdg_sgg_cd",
+    "stdg_ctpv_cd",
+    "SHAPE__Length",
+    "SHAPE__Area"
+  ],
+  "dataset": "전국 침수흔적도(2002-2022)",
+  "downloaded_at_utc": "2026-08-22T11:04:41.524122+00:00",
+  "feature_count": 38003,
+  "geometry": {
+    "coordinate_position_count": 992580,
+    "missing_geometry_count": 0,
+    "output_types": {
+      "MultiPolygon": 105,
+      "Polygon": 37898
+    },
+    "source_esri_type": "esriGeometryPolygon",
+    "topology": {
+      "checked": true,
+      "empty_count": 0,
+      "empty_object_ids": [],
+      "feature_count": 38003,
+      "invalid_count": 22,
+      "invalid_features": [
+        {
+          "objectid": 24845,
+          "reason": "Ring Self-intersection[126.922718817842 37.5040199718242]"
+        },
+        {
+          "objectid": 26446,
+          "reason": "Ring Self-intersection[128.841844739795 35.4086061039248]"
+        },
+        {
+          "objectid": 26739,
+          "reason": "Ring Self-intersection[127.054219461581 37.5078170840611]"
+        },
+        {
+          "objectid": 27045,
+          "reason": "Ring Self-intersection[128.840469764946 35.4135886005968]"
+        },
+        {
+          "objectid": 27089,
+          "reason": "Ring Self-intersection[128.740334484767 35.3712344386608]"
+        },
+        {
+          "objectid": 29481,
+          "reason": "Ring Self-intersection[127.025470196944 37.5005421819997]"
+        },
+        {
+          "objectid": 30273,
+          "reason": "Ring Self-intersection[126.886169826547 34.4601196614829]"
+        },
+        {
+          "objectid": 30888,
+          "reason": "Ring Self-intersection[126.986947087744 34.5664097048816]"
+        },
+        {
+          "objectid": 31251,
+          "reason": "Ring Self-intersection[126.924715575987 37.4811307399158]"
+        },
+        {
+          "objectid": 31501,
+          "reason": "Ring Self-intersection[126.869487896125 36.3541835238051]"
+        },
+        {
+          "objectid": 34504,
+          "reason": "Ring Self-intersection[126.801345459019 36.3642558537656]"
+        },
+        {
+          "objectid": 35798,
+          "reason": "Ring Self-intersection[127.078942325298 37.6759101304471]"
+        },
+        {
+          "objectid": 35894,
+          "reason": "Ring Self-intersection[126.902336156335 37.4557469720444]"
+        },
+        {
+          "objectid": 36013,
+          "reason": "Ring Self-intersection[126.914839341447 37.4788679891876]"
+        },
+        {
+          "objectid": 36782,
+          "reason": "Ring Self-intersection[126.890279098847 37.4538282701959]"
+        },
+        {
+          "objectid": 36830,
+          "reason": "Ring Self-intersection[126.946779669908 37.5042377994098]"
+        },
+        {
+          "objectid": 37012,
+          "reason": "Ring Self-intersection[126.932569995674 37.469809154291]"
+        },
+        {
+          "objectid": 37048,
+          "reason": "Ring Self-intersection[126.928723661156 37.4688448233275]"
+        },
+        {
+          "objectid": 37118,
+          "reason": "Ring Self-intersection[126.939023265401 37.485243361336]"
+        },
+        {
+          "objectid": 37476,
+          "reason": "Ring Self-intersection[126.9263598433 37.4800105031908]"
+        },
+        {
+          "objectid": 37743,
+          "reason": "Ring Self-intersection[126.929286554496 37.4867333916208]"
+        },
+        {
+          "objectid": 37808,
+          "reason": "Ring Self-intersection[126.914184858575 37.48007610665]"
+        }
+      ],
+      "invalid_reason_counts": {
+        "Ring Self-intersection": 22
+      },
+      "raw_geometry_modified": false,
+      "valid_count": 37981
+    }
+  },
+  "object_ids": {
+    "field": "objectid",
+    "maximum": 38003,
+    "minimum": 1,
+    "sha256": "393a072ad116bfd5c487ee5d7aacf015a7e2894918cb3c70600ea013ea2206e1",
+    "unique_count": 38003
+  },
+  "output": {
+    "bytes": 56963218,
+    "crs": "EPSG:4326 / OGC:CRS84 coordinate order",
+    "format": "GeoJSON FeatureCollection (RFC 7946 longitude/latitude)",
+    "path": "data/raw/flood-trace/korea_flood_2002_2022.geojson",
+    "sha256": "e46e69e1e633144fd2d09497508281b3172a76a7e9ddb1a295d8183535f3e0ea"
+  },
+  "paging": {
+    "page_count": 20,
+    "requested_page_size": 2000,
+    "source_max_record_count": 2000
+  },
+  "source": {
+    "copyright_text": "",
+    "item_rights_notice": "All rights reserved by Ministry of the Interior and Safety of Korea.",
+    "item_url": "https://www.arcgis.com/home/item.html?id=36b15209737c49b3893332c71db04a27",
+    "layer_name": "Flood_2002_2022",
+    "layer_url": "https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer/0",
+    "original_approval_url": "https://www.safetydata.go.kr/disaster-data/view?dataSn=108",
+    "redistribution_review": "Raw nationwide GeoJSON is kept out of Git until reuse and redistribution terms are confirmed.",
+    "service_current_version": 12.1,
+    "service_url": "https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer",
+    "source_crs": "EPSG:3857",
+    "source_last_edit_epoch_ms": 1756187338686,
+    "supported_query_formats": "JSON, geoJSON, PBF"
+  },
+  "validation": {
+    "all_coordinates_valid_longitude_latitude": true,
+    "all_geometries_present": true,
+    "all_object_ids_unique_and_match_source_snapshot": true,
+    "all_source_attribute_fields_present": true,
+    "expected_feature_count": 38003,
+    "feature_count_matches": true,
+    "source_snapshot_unchanged_during_download": true
+  }
+}

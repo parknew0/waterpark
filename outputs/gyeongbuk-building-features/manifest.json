@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-22T16:41:56+09:00",
+  "generated_at": "2026-08-22T20:31:53+09:00",
   "row_unit": "one GIS building whose own GIS attribute A27 (지하층수) is >= 1",
   "row_count": 25336,
   "crs": "WGS84 (EPSG:4326), converted from source EPSG:5186",
   "sources": {
-    "geometry": "GIS건물통합정보_경북/AL_D010_47_20251204 (VWorld, EPSG:5186)",
-    "register": "data/processed/gyeongbuk-building-register/gyeongbuk_underground_parking_candidates.csv"
+    "geometry": "data/raw/vworld-buildings/gyeongbuk/AL_D010_47_20251204 (VWorld, EPSG:5186)",
+    "register": "data/interim/building-register/gyeongbuk_underground_parking_candidates.csv"
   },
   "register_input": {
     "register_rows": 43681,
@@ -27,7 +27,7 @@
   "buildings_located": 25336,
   "buildings_requested": 25340,
   "outputs": {
-    "data/processed/gyeongbuk_building_underground_parking_features.csv": {
+    "data/processed/buildings/gyeongbuk_building_underground_parking_features.csv": {
       "sha256": "75173b2b7cd6d773f4198082cc36a004d7ee88033f8668397a4404893a2cb79c"
     }
   },

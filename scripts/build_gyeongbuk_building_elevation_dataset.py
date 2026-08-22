@@ -20,17 +20,17 @@ import rasterio
 import shapely
 from shapely.geometry import shape
 
+from data_paths import PROCESSED_BUILDINGS, ROOT
 
-ROOT = Path(__file__).resolve().parents[1]
 BUILDINGS = ROOT / "data/raw/overture/gyeongbuk_bbox_buildings.parquet"
 DIVISIONS = ROOT / "data/raw/overture/gyeongbuk_bbox_division_area.geojson"
 BOUNDARY = ROOT / "data/interim/gyeongbuk_boundary.geojson"
 DEM_DIR = ROOT / "data/raw/dem"
-OUT_PARQUET = ROOT / "data/processed/gyeongbuk_buildings_elevation.parquet"
-OUT_CSV_GZ = ROOT / "data/processed/gyeongbuk_buildings_elevation.csv.gz"
+OUT_PARQUET = PROCESSED_BUILDINGS / "gyeongbuk_buildings_elevation.parquet"
+OUT_CSV_GZ = PROCESSED_BUILDINGS / "gyeongbuk_buildings_elevation.csv.gz"
 OUT_SAMPLE = ROOT / "outputs/gyeongbuk-buildings/gyeongbuk_buildings_elevation_sample.csv"
 OUT_MUNICIPALITY = ROOT / "outputs/gyeongbuk-buildings/gyeongbuk_buildings_by_municipality.csv"
-OUT_MANIFEST = ROOT / "data/processed/gyeongbuk_buildings_elevation.manifest.json"
+OUT_MANIFEST = PROCESSED_BUILDINGS / "gyeongbuk_buildings_elevation.manifest.json"
 
 OVERTURE_RELEASE = "2026-08-19.0"
 COPERNICUS_RELEASE = "GLO-30 2021"

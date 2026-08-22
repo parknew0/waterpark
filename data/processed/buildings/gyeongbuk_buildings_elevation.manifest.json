@@ -23,10 +23,10 @@
     }
   },
   "outputs": {
-    "data/processed/gyeongbuk_buildings_elevation.parquet": {
+    "data/processed/buildings/gyeongbuk_buildings_elevation.parquet": {
       "sha256": "6e7ddee5c86f20fdf14b10ed3c70cb546affe5de91c3c8e8a70aef4c8ee5b4f6"
     },
-    "data/processed/gyeongbuk_buildings_elevation.csv.gz": {
+    "data/processed/buildings/gyeongbuk_buildings_elevation.csv.gz": {
       "sha256": "e906f2f3fbfee969e645cff73768b807c9c52db507f42b8b46d8aa31fffae3ba"
     },
     "outputs/gyeongbuk-buildings/gyeongbuk_buildings_elevation_sample.csv": {

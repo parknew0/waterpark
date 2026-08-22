@@ -1,0 +1,95 @@
+{
+  "generated_at": "2026-08-22T20:34:18+09:00",
+  "source": {
+    "name": "VWorld GIS건물통합정보",
+    "url": "https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?dataSetSeq=18",
+    "selected_reference_date": "2022-12-03",
+    "selected_scope": "전국 17개 시도 전체데이터",
+    "current_catalog_total_records_observed": 14422486,
+    "offered_format_for_snapshot": "SHP",
+    "csv_search_result_count": 0,
+    "license_badge_observed": "CC BY",
+    "license_review": "원본 배포·2차 제공 조건은 사용 전 재확인 필요",
+    "column_dictionary_url": "https://www.vworld.kr/contents/%EA%B5%AD%EA%B0%80%EC%A4%91%EC%A0%90%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%BB%AC%EB%9F%BC%EC%A0%95%EC%9D%98%EC%84%9C(26.01.02)_%EB%B0%B0%ED%8F%AC%EC%9A%A9.xlsx",
+    "column_dictionary_sha256": "46dd29c6ab681c1e34cf00d91f8f2fe68b7e1868a853315eaa292838238ecb0f"
+  },
+  "archive": {
+    "path": "data/raw/vworld-downloads/national/2022-12-03/vworld_gis_buildings_national_2022-12-03.zip",
+    "size_bytes": 1548576788,
+    "sha256": "4bd30f10312bb7914e412c516e19c7e41f1ab049a09961b1d4d8c36bf354194d",
+    "outer_crc_checked": true,
+    "province_archive_count": 17
+  },
+  "inventory": {
+    "part_count": 24,
+    "row_count": 13885793,
+    "province_codes": [
+      "11",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "36",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48",
+      "50"
+    ],
+    "crs_counts_by_part": {
+      "EPSG:5174": 24
+    },
+    "schema_variant_count": 1,
+    "field_count_values": [
+      23
+    ],
+    "field_names": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8",
+      "A9",
+      "A10",
+      "A11",
+      "A12",
+      "A13",
+      "A14",
+      "A15",
+      "A16",
+      "A17",
+      "A18",
+      "A19",
+      "A20",
+      "A21",
+      "A22"
+    ],
+    "fields_not_present_in_2022": {
+      "A23": "원천시도시군구코드",
+      "A24": "건물명",
+      "A25": "건물동명",
+      "A26": "지상층_수",
+      "A27": "지하층_수",
+      "A28": "데이터생성변경일자"
+    }
+  },
+  "raw_geometry_modified": false,
+  "important_notes": [
+    "행 수는 DBF 헤더 기준이며 삭제 표시 행 여부는 전처리에서 다시 확인한다.",
+    "A1 단독값은 건물 기본키로 확정하지 않는다.",
+    "SHP 도형은 CSV로 버리지 않고 공간 결합용 원본으로 유지한다.",
+    "이 스냅샷은 2022년 건물 현황이며 2002~2021년 당시 존재 여부를 자동 보장하지 않는다.",
+    "VWorld 화면의 14,422,486건은 현재 데이터셋 전체 안내값이며, 2022-12-03 스냅샷의 DBF 헤더 합계는 별도로 계산한다.",
+    "2022 스냅샷은 A0~A22까지만 있어 지상층수(A26)와 지하층수(A27)가 없다. 전국 지하층 정보 원천으로 사용할 수 없다."
+  ]
+}

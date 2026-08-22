@@ -1,10 +1,15 @@
 import fs from "node:fs/promises";
-import { SpreadsheetFile, Workbook } from "/Users/neon/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/@oai/artifact-tool/dist/artifact_tool.mjs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { SpreadsheetFile, Workbook } from "@oai/artifact-tool";
 
-const samplePath = "outputs/gyeongbuk-buildings/gyeongbuk_buildings_elevation_sample.csv";
-const municipalityPath = "outputs/gyeongbuk-buildings/gyeongbuk_buildings_by_municipality.csv";
-const manifestPath = "data/processed/gyeongbuk_buildings_elevation.manifest.json";
-const outputPath = "outputs/gyeongbuk-buildings/waterpark_gyeongbuk_buildings_elevation.xlsx";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const reportsDir = path.join(root, "outputs/reports");
+const samplePath = path.join(root, "outputs/gyeongbuk-buildings/gyeongbuk_buildings_elevation_sample.csv");
+const municipalityPath = path.join(root, "outputs/gyeongbuk-buildings/gyeongbuk_buildings_by_municipality.csv");
+const manifestPath = path.join(root, "data/processed/buildings/gyeongbuk_buildings_elevation.manifest.json");
+const outputPath = path.join(reportsDir, "waterpark_gyeongbuk_buildings_elevation.xlsx");
+const previewPath = path.join(reportsDir, "waterpark_gyeongbuk_buildings_elevation_preview.png");
 
 const sampleCsv = (await fs.readFile(samplePath, "utf8")).replace(/^\uFEFF/, "");
 const municipalityCsv = await fs.readFile(municipalityPath, "utf8");
@@ -42,7 +47,7 @@ summary.getRange("A1:D12").values = [
   ["지하주차장 미상", manifest.underground_parking_unknown_count, "보수적 처리", "지하층이 있어도 지하주차장으로 추정하지 않음"],
   ["건물 원천", "Overture Maps", "대체 공개 원천", "공식 한국 건축물대장 아님"],
   ["고도 원천", "Copernicus DEM GLO-30 2021", "공개 원천", "DSM: 건물·수목 영향 가능"],
-  ["전체 파일", "Parquet + CSV.GZ", "data/processed", "이 XLSX에는 20,000행 표본만 수록"],
+  ["전체 파일", "Parquet + CSV.GZ", "data/processed/buildings", "이 XLSX에는 20,000행 표본만 수록"],
 ];
 summary.getRange("B5").formulas = [["=B4/B3"]];
 summary.getRange("B5").format.numberFormat = "0.00%";
@@ -84,7 +89,7 @@ notes.getRange("A1:D13").values = [
   ["FALSE 처리 금지", "미상은 UNKNOWN", "확정", "지하층수 0 또는 정보 없음만으로 지하주차장 없음 단정 금지"],
   ["DSM 주의", "건물·수목 포함 가능", "확정", "침수 수위와 직접 비교 금지"],
   ["음수 표고", "해안 일부 존재", "검토 필요", "지오이드·조위·DSM 오차와 해안 픽셀 확인"],
-  ["전체 데이터", "Parquet 32MB / CSV.GZ 16MB", "생성완료", "data/processed에서 사용"],
+  ["전체 데이터", "Parquet 32MB / CSV.GZ 16MB", "생성완료", "data/processed/buildings에서 사용"],
   ["XLSX 범위", "20,000행 표본", "의도적 제한", "전수 분석은 Parquet 사용"],
 ];
 notes.getRange("A1:D1").format = { fill: "#17324D", font: { bold: true, color: "#FFFFFF" }, rowHeight: 30 };
@@ -97,7 +102,8 @@ notes.showGridLines = false;
 
 const inspection = await workbook.inspect({ kind: "sheet,region", maxChars: 5000, tableMaxRows: 6, tableMaxCols: 8 });
 console.log(inspection.ndjson ?? inspection);
+await fs.mkdir(reportsDir, { recursive: true });
 const output = await SpreadsheetFile.exportXlsx(workbook);
 await output.save(outputPath);
 const preview = await workbook.render({ sheetName: "산출물_요약", autoCrop: "all", scale: 1, format: "png" });
-await fs.writeFile("outputs/gyeongbuk-buildings/waterpark_gyeongbuk_buildings_elevation_preview.png", new Uint8Array(await preview.arrayBuffer()));
+await fs.writeFile(previewPath, new Uint8Array(await preview.arrayBuffer()));

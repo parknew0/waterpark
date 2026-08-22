@@ -8,18 +8,18 @@ trained. Only 9 buildings with confirmed underground parking sit inside a flood
 polygon, because 침수흔적도 mostly surveyed farmland and river plains while
 underground parking is urban. See docs/research-log.md.
 
-So this builds the achievable target instead: **did the ground surface at this
-building flood during this rainfall event**. That is a real, officially surveyed
-fact, and the trained model becomes one input to the underground-parking risk
-score rather than the whole answer.
+So this builds the achievable target instead: **was this building point inside
+an officially surveyed surface-flood polygon during this rainfall event**. The
+trained model becomes one input to the underground-parking risk score rather
+than the whole answer.
 
 The negative-label rule
 -----------------------
 A building outside a flood polygon is NOT automatically "did not flood" -- it may
 simply never have been surveyed. docs/02 section 3.3 forbids that shortcut. So a
-building only becomes a negative when it sits within NEGATIVE_RADIUS_M of a
-polygon that WAS surveyed in that same event. Everything further away is dropped
-as unknown rather than labelled 0.
+building only becomes a weak pseudo-negative when it sits within
+NEGATIVE_RADIUS_M of a polygon surveyed in that same event. Everything further
+away is dropped as unknown rather than labelled 0.
 
 Row unit: one building x one flood event.
 """
@@ -36,23 +36,32 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import numpy as np
-from shapely.geometry import Point, shape
+from shapely import make_valid
+from shapely.geometry import GeometryCollection, MultiPolygon, Point, Polygon, shape
 from shapely.ops import unary_union
 from shapely.prepared import prep
 from shapely.strtree import STRtree
 
-ROOT = Path(__file__).resolve().parents[1]
-FLOOD_GEOJSON = ROOT / "data/raw/flood-trace/gyeongbuk_flood_2002_2022.geojson"
-BUILDINGS_GZ = ROOT / "data/processed/gyeongbuk_buildings_elevation.csv.gz"
-EVENT_RAIN_CSV = ROOT / "data/processed/gyeongbuk_flood_event_rain.csv"
-STATION_CSV = ROOT / "data/raw/kma-stations/kma_station_list.csv"
+from data_paths import (
+    PROCESSED_BUILDINGS,
+    PROCESSED_ML_TRAINING,
+    PROCESSED_RAINFALL,
+    RAW_FLOOD_TRACE,
+    RAW_KMA_STATIONS,
+    ROOT,
+)
 
-OUT_CSV = ROOT / "data/processed/gyeongbuk_flood_training_table.csv"
+FLOOD_GEOJSON = RAW_FLOOD_TRACE / "gyeongbuk_flood_2002_2022.geojson"
+BUILDINGS_GZ = PROCESSED_BUILDINGS / "gyeongbuk_buildings_elevation.csv.gz"
+EVENT_RAIN_CSV = PROCESSED_RAINFALL / "gyeongbuk_flood_event_rain.csv"
+STATION_CSV = RAW_KMA_STATIONS / "kma_station_list.csv"
+
+OUT_CSV = PROCESSED_ML_TRAINING / "gyeongbuk_flood_training_table.csv"
 OUT_DIR = ROOT / "outputs/gyeongbuk-flood-model"
 MANIFEST = OUT_DIR / "training_table_manifest.json"
 
-# A building this close to a surveyed flood polygon is treated as having been
-# inside the surveyed neighbourhood, so "not flooded" is a real observation.
+# A building this close to a surveyed flood polygon is treated as a weak
+# pseudo-negative. It is not a verified non-flood observation.
 NEGATIVE_RADIUS_M = 1000.0
 DEG = 1.0 / 111000.0  # rough metres -> degrees, fine at this latitude
 MAX_STATION_DISTANCE_KM = 30.0
@@ -60,6 +69,53 @@ MAX_STATION_DISTANCE_KM = 30.0
 
 def log(msg: str) -> None:
     print(msg, flush=True)
+
+
+def clean_text(value: object) -> str:
+    return "" if value is None else str(value).strip()
+
+
+def normalized_date(value: object) -> str:
+    text = clean_text(value)
+    if text.isdigit() and len(text) <= 8:
+        return text.zfill(8)
+    return text
+
+
+def normalized_time(value: object) -> str:
+    text = clean_text(value)
+    if text.isdigit() and len(text) <= 4:
+        return text.zfill(4)
+    return text
+
+
+def polygonal_only(geometry):
+    """Discard non-area remnants returned by make_valid."""
+    if geometry is None or geometry.is_empty:
+        return None
+    if isinstance(geometry, (Polygon, MultiPolygon)):
+        return geometry
+    if isinstance(geometry, GeometryCollection) or hasattr(geometry, "geoms"):
+        parts = []
+        for child in geometry.geoms:
+            area = polygonal_only(child)
+            if area is not None and not area.is_empty:
+                parts.append(area)
+        return unary_union(parts) if parts else None
+    return None
+
+
+def prepare_source_polygon(raw_geometry):
+    """Validate source geometry before any union, buffer, or distance operation."""
+    was_invalid = not raw_geometry.is_valid
+    candidate = make_valid(raw_geometry) if was_invalid else raw_geometry
+    candidate = polygonal_only(candidate)
+    if candidate is None or candidate.is_empty:
+        return None, was_invalid, False
+    if not candidate.is_valid:
+        candidate = polygonal_only(make_valid(candidate))
+    usable = candidate is not None and not candidate.is_empty and candidate.is_valid
+    return (candidate if usable else None), was_invalid, was_invalid and usable
 
 
 # ---------------------------------------------------------------- stations
@@ -110,14 +166,23 @@ def load_event_rain() -> dict[tuple[str, str], dict[str, dict]]:
     rain: dict[tuple[str, str], dict[str, dict]] = defaultdict(dict)
     with EVENT_RAIN_CSV.open(encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            key = (r["fldn_bgng_ymd"], r["fldn_bgng_tm"])
+            key = (
+                normalized_date(r.get("fldn_bgng_ymd")),
+                normalized_time(r.get("fldn_bgng_tm")),
+            )
             rain[key][r["station_id"]] = {
+                "event_id": r.get("event_id", ""),
+                "storm_group_id": r.get("storm_group_id", ""),
                 "rain_1h": r["rain_1h"],
                 "rain_3h": r["rain_3h"],
                 "rain_6h": r["rain_6h"],
                 "rain_12h": r["rain_12h"],
                 "rain_24h": r["rain_24h"],
-                "hours": r["hours_available_of_24"],
+                "hours_available_1h": r.get("hours_available_1h", ""),
+                "hours_available_3h": r.get("hours_available_3h", ""),
+                "hours_available_6h": r.get("hours_available_6h", ""),
+                "hours_available_12h": r.get("hours_available_12h", ""),
+                "hours_available_24h": r.get("hours_available_24h", ""),
             }
     log(f"[check] loaded rainfall for {len(rain)} events")
     return rain
@@ -159,10 +224,36 @@ def main() -> None:
     feats = json.loads(FLOOD_GEOJSON.read_text(encoding="utf-8"))["features"]
     events: dict[tuple[str, str], list] = defaultdict(list)
     event_props: dict[tuple[str, str], dict] = {}
+    event_geometry_repaired: dict[tuple[str, str], bool] = defaultdict(bool)
+    geometry_stats = {
+        "source_feature_count": len(feats),
+        "source_parse_failed": 0,
+        "source_invalid": 0,
+        "source_invalid_repaired": 0,
+        "source_dropped_empty_or_nonpolygon": 0,
+        "event_union_repaired": 0,
+    }
     for f in feats:
         p = f["properties"]
-        key = (p["fldn_bgng_ymd"], p["fldn_bgng_tm"])
-        events[key].append(shape(f["geometry"]))
+        key = (
+            normalized_date(p.get("fldn_bgng_ymd")),
+            normalized_time(p.get("fldn_bgng_tm")),
+        )
+        try:
+            raw_geometry = shape(f["geometry"])
+        except (KeyError, TypeError, ValueError):
+            geometry_stats["source_parse_failed"] += 1
+            continue
+        geometry, was_invalid, repaired = prepare_source_polygon(raw_geometry)
+        if was_invalid:
+            geometry_stats["source_invalid"] += 1
+        if repaired:
+            geometry_stats["source_invalid_repaired"] += 1
+            event_geometry_repaired[key] = True
+        if geometry is None:
+            geometry_stats["source_dropped_empty_or_nonpolygon"] += 1
+            continue
+        events[key].append(geometry)
         event_props.setdefault(key, p)
     log(f"[check] {len(feats):,} flood polygons in {len(events)} events")
 
@@ -175,6 +266,7 @@ def main() -> None:
     header = [
         "building_id",
         "event_id",
+        "storm_group_id",
         "event_date",
         "event_hour",
         "disaster_name",
@@ -190,8 +282,16 @@ def main() -> None:
         "rain_6h",
         "rain_12h",
         "rain_24h",
+        "hours_available_1h",
+        "hours_available_3h",
+        "hours_available_6h",
+        "hours_available_12h",
+        "hours_available_24h",
         "rain_station_id",
         "rain_station_distance_km",
+        "label_source",
+        "label_quality",
+        "flood_geometry_repaired",
         "flood",
     ]
 
@@ -200,13 +300,25 @@ def main() -> None:
     no_rain = 0
 
     with OUT_CSV.open("w", newline="", encoding="utf-8") as fh:
-        writer = csv.writer(fh)
+        writer = csv.writer(fh, lineterminator="\n")
         writer.writerow(header)
 
         for key in sorted(events):
             ymd, tm = key
             polys = events[key]
+            rain_for_event = event_rain.get(key, {})
+            example_rain = next(iter(rain_for_event.values()), None)
+            event_id = example_rain["event_id"] if example_rain else f"GB-{ymd}-{tm}"
+            storm_group_id = example_rain["storm_group_id"] if example_rain else ""
             union = unary_union(polys)
+            if not union.is_valid:
+                repaired_union = polygonal_only(make_valid(union))
+                if repaired_union is None or not repaired_union.is_valid:
+                    log(f"[warn] {ymd} {tm}: event union is unusable; event skipped")
+                    continue
+                union = repaired_union
+                event_geometry_repaired[key] = True
+                geometry_stats["event_union_repaired"] += 1
             buffered = union.buffer(NEGATIVE_RADIUS_M * DEG)
             p_union = prep(union)
             p_buffer = prep(buffered)
@@ -214,21 +326,38 @@ def main() -> None:
             # Candidate buildings: bbox query, then a real containment test.
             candidates = [i for i in tree.query(buffered) if p_buffer.contains(points[i])]
             if not candidates:
-                per_event_stats.append({"event": f"{ymd}-{tm}", "positive": 0, "negative": 0})
+                per_event_stats.append(
+                    {
+                        "event": event_id,
+                        "storm_group_id": storm_group_id,
+                        "positive": 0,
+                        "pseudo_negative": 0,
+                        "flood_geometry_repaired": event_geometry_repaired[key],
+                    }
+                )
                 continue
 
             # Rain: pick the nearest station that actually reported this event.
-            rain_for_event = event_rain.get(key, {})
             active = stations_active_on(stations, ymd)
             usable = [
                 (sid, lonlat)
                 for sid, lonlat in active.items()
-                if sid in rain_for_event and rain_for_event[sid]["rain_24h"] != ""
+                if sid in rain_for_event
+                and clean_text(rain_for_event[sid]["rain_24h"])
+                and clean_text(rain_for_event[sid]["hours_available_24h"]) == "24"
             ]
             if not usable:
                 no_rain += 1
                 log(f"[warn] {ymd} {tm}: no station with rainfall; event skipped")
-                per_event_stats.append({"event": f"{ymd}-{tm}", "positive": 0, "negative": 0})
+                per_event_stats.append(
+                    {
+                        "event": event_id,
+                        "storm_group_id": storm_group_id,
+                        "positive": 0,
+                        "pseudo_negative": 0,
+                        "flood_geometry_repaired": event_geometry_repaired[key],
+                    }
+                )
                 continue
             st_ids = [s[0] for s in usable]
             st_xy = np.array([[s[1][0], s[1][1]] for s in usable])
@@ -249,11 +378,18 @@ def main() -> None:
                 if d[j] > MAX_STATION_DISTANCE_KM:
                     continue
                 rain = rain_for_event[st_ids[j]]
+                if inside:
+                    label_source = "mois_flood_trace_polygon"
+                    label_quality = "observed_polygon_positive"
+                else:
+                    label_source = "pseudo_negative_1km"
+                    label_quality = "pseudo_negative_1km"
 
                 writer.writerow(
                     [
                         b["building_id"],
-                        f"GB-{ymd}-{tm}",
+                        rain["event_id"],
+                        rain["storm_group_id"],
                         f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:8]}",
                         tm[:2],
                         event_props[key].get("fldn_dst_nm", ""),
@@ -269,8 +405,16 @@ def main() -> None:
                         rain["rain_6h"],
                         rain["rain_12h"],
                         rain["rain_24h"],
+                        rain["hours_available_1h"],
+                        rain["hours_available_3h"],
+                        rain["hours_available_6h"],
+                        rain["hours_available_12h"],
+                        rain["hours_available_24h"],
                         st_ids[j],
                         round(float(d[j]), 2),
+                        label_source,
+                        label_quality,
+                        1 if event_geometry_repaired[key] else 0,
                         1 if inside else 0,
                     ]
                 )
@@ -278,11 +422,19 @@ def main() -> None:
                 pos += inside
                 neg += not inside
 
-            per_event_stats.append({"event": f"{ymd}-{tm}", "positive": pos, "negative": neg})
+            per_event_stats.append(
+                {
+                    "event": event_id,
+                    "storm_group_id": storm_group_id,
+                    "positive": pos,
+                    "pseudo_negative": neg,
+                    "flood_geometry_repaired": event_geometry_repaired[key],
+                }
+            )
             log(f"[progress] {ymd} {tm[:2]}시: 양성 {pos:5d}  음성 {neg:6d}")
 
     total_pos = sum(s["positive"] for s in per_event_stats)
-    total_neg = sum(s["negative"] for s in per_event_stats)
+    total_neg = sum(s.get("pseudo_negative", s.get("negative", 0)) for s in per_event_stats)
     log("")
     log(f"[check] wrote {OUT_CSV.relative_to(ROOT)}")
     log(f"[check] rows {written:,}  |  positive {total_pos:,} ({total_pos/max(written,1)*100:.2f}%)")
@@ -294,16 +446,19 @@ def main() -> None:
         json.dumps(
             {
                 "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
-                "target": "surface_flood_observed (건물 위치의 지표면 침수 여부)",
+                "target": "surface_flood_polygon_proxy (건물 점의 침수흔적도 포함 여부)",
                 "row_unit": "one building x one flood event",
                 "rows": written,
                 "positive": total_pos,
                 "negative": total_neg,
+                "negative_label_source": "pseudo_negative_1km",
+                "negative_label_quality": "pseudo_negative_1km",
                 "positive_rate": round(total_pos / max(written, 1), 4),
                 "events_total": len(events),
                 "events_with_positive": len(usable_events),
                 "negative_radius_m": NEGATIVE_RADIUS_M,
                 "max_station_distance_km": MAX_STATION_DISTANCE_KM,
+                "geometry_validation": geometry_stats,
                 "per_event": per_event_stats,
                 "inputs": {
                     "flood": str(FLOOD_GEOJSON.relative_to(ROOT)),
@@ -312,11 +467,15 @@ def main() -> None:
                     "stations": str(STATION_CSV.relative_to(ROOT)),
                 },
                 "critical_limitations": [
-                    "Target is SURFACE flooding at the building location, not underground "
-                    "car park flooding. They are not the same event.",
+                    "Target is inclusion of a building point in a surveyed SURFACE-flood "
+                    "polygon, not underground car park flooding.",
                     "Negatives are only buildings within "
                     f"{NEGATIVE_RADIUS_M:.0f} m of a surveyed polygon of the SAME event. "
-                    "Buildings further away are dropped as unknown, not labelled 0.",
+                    "They are weak pseudo-negatives, not verified non-flood observations; "
+                    "buildings further away are dropped as unknown, not labelled 0.",
+                    "Invalid source polygons are repaired with shapely.make_valid before "
+                    "union, buffer, containment, and distance operations; repair counts are "
+                    "recorded in geometry_validation.",
                     "Overture buildings carry no construction year, so a building built after "
                     "an event can still appear in that event's rows.",
                     "Elevation is a Copernicus GLO-30 DSM (surface, not bare earth), so tall "

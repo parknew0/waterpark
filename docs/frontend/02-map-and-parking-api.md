@@ -38,7 +38,7 @@ Vite의 `VITE_` 환경변수는 브라우저 번들에 포함되므로 비밀키
 
 ## 키가 없을 때의 폴백
 
-`data/processed/gyeongbuk_parking_seed.csv`의 원천 JSON에서 좌표가 있는 경북 주차장 1,986건을 `frontend/public/data/gyeongbuk-parking.json`으로 생성한다.
+`data/processed/parking/gyeongbuk_parking_seed.csv`의 원천 JSON에서 좌표가 있는 경북 주차장 1,986건을 `frontend/public/data/gyeongbuk-parking.json`으로 생성한다.
 
 ```bash
 node scripts/build_frontend_parking_catalog.mjs

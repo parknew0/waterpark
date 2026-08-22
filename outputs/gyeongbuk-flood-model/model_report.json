@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-22T17:09:16+09:00",
+  "generated_at": "2026-08-22T20:37:10+09:00",
   "rows": 45886,
   "positive_rate": 0.065,
   "features": [
@@ -19,6 +19,8 @@
     "latitude"
   ],
   "scale_pos_weight": 14.38,
+  "event_timestamp_count": 29,
+  "storm_group_count": 13,
   "baseline_relative_elevation_only": {
     "n": 45886,
     "positives": 2984,
@@ -32,78 +34,81 @@
   "temporal_holdout": {
     "n": 7640,
     "positives": 477,
-    "pr_auc": 0.1035,
-    "roc_auc": 0.6437,
-    "precision": 0.1292,
-    "recall": 0.2558,
-    "f1": 0.1717,
+    "pr_auc": 0.1188,
+    "roc_auc": 0.6906,
+    "precision": 0.0532,
+    "recall": 0.0776,
+    "f1": 0.0631,
     "baseline_pr_auc": 0.0624,
     "train_years": "<=2018",
     "test_years": ">=2019"
   },
-  "grouped_cv_by_event": {
+  "grouped_cv_by_storm": {
     "n": 45886,
     "positives": 2984,
-    "pr_auc": 0.0991,
-    "roc_auc": 0.6741,
-    "precision": 0.1134,
-    "recall": 0.0597,
-    "f1": 0.0782,
-    "baseline_pr_auc": 0.065
+    "pr_auc": 0.1257,
+    "roc_auc": 0.7231,
+    "precision": 0.1416,
+    "recall": 0.0697,
+    "f1": 0.0934,
+    "baseline_pr_auc": 0.065,
+    "storm_groups": 13,
+    "completed_folds": 5
   },
   "grouped_cv_by_building": {
     "n": 45886,
     "positives": 2984,
-    "pr_auc": 0.8247,
+    "pr_auc": 0.8233,
     "roc_auc": 0.9825,
-    "precision": 0.5098,
-    "recall": 0.9481,
-    "f1": 0.6631,
+    "precision": 0.5066,
+    "recall": 0.9491,
+    "f1": 0.6606,
     "baseline_pr_auc": 0.065
   },
   "feature_importance_gain": [
     {
       "feature": "relative_elevation_m",
-      "importance": 0.2096
-    },
-    {
-      "feature": "rain_6h",
-      "importance": 0.1615
-    },
-    {
-      "feature": "rain_3h",
-      "importance": 0.1239
+      "importance": 0.2112
     },
     {
       "feature": "rain_1h",
-      "importance": 0.1122
+      "importance": 0.1419
     },
     {
-      "feature": "rain_24h",
-      "importance": 0.1069
+      "feature": "rain_6h",
+      "importance": 0.1202
     },
     {
       "feature": "rain_12h",
-      "importance": 0.0908
+      "importance": 0.1148
+    },
+    {
+      "feature": "rain_24h",
+      "importance": 0.1065
+    },
+    {
+      "feature": "rain_3h",
+      "importance": 0.1064
     },
     {
       "feature": "local_min_elevation_m",
-      "importance": 0.0836
+      "importance": 0.0846
     },
     {
       "feature": "rain_station_distance_km",
-      "importance": 0.0638
+      "importance": 0.0642
     },
     {
       "feature": "surface_elevation_m",
-      "importance": 0.0477
+      "importance": 0.05
     }
   ],
   "critical_limitations": [
     "Target is surface flooding, NOT underground car park flooding.",
-    "Event CV and building CV disagree with each other; the event split is the honest estimate for a new storm, the building split for a new location.",
-    "Only 21 of 30 events contain any positive, and 2012 Typhoon Sanba dominates, so the model largely learns that one storm's terrain.",
-    "Negatives exist only within 1 km of a surveyed polygon, so the model is calibrated for 'near a known flood area', not for all of Gyeongbuk.",
+    "Storm-group CV and building CV answer different questions: the storm split estimates a new storm, while the building split estimates a new location.",
+    "The 29 timestamp-level events are conservatively collapsed into 13 storm groups using same/consecutive dates. This grouping is derived, not an official disaster identifier.",
+    "The largest storm group contains 68.2% of positive rows, so performance remains sensitive to a small number of storms.",
+    "Negative labels are pseudo_negative_1km, not verified non-flood observations. The model is calibrated for 'near a known flood polygon', not all Gyeongbuk.",
     "Rainfall comes from the nearest station, so buildings sharing a station in one event share identical rain features.",
     "Elevation is a DSM, so it includes buildings and tree canopy."
   ]

@@ -8,9 +8,10 @@ Leakage rules applied here
 2. Longitude and latitude are DROPPED. The same building appears in several
    events, so coordinates let the model memorise "this exact spot floods" and
    that memory survives an event-based split.
-3. Splits are never random. docs/02 section 6 requires event-level separation;
-   we additionally report a building-disjoint split, because a building present
-   in both train and test leaks its terrain.
+3. Splits are never random. Timestamp-level records from the same storm are
+   kept together with ``storm_group_id``; we additionally report a
+   building-disjoint split, because a building present in both train and test
+   leaks its terrain.
 
 Metrics: accuracy is meaningless at a 6.5% positive rate, so we report PR-AUC,
 ROC-AUC, precision and recall, plus a terrain-only baseline for comparison.
@@ -28,8 +29,9 @@ from sklearn.metrics import average_precision_score, precision_recall_fscore_sup
 from sklearn.model_selection import GroupKFold
 from xgboost import XGBClassifier
 
-ROOT = Path(__file__).resolve().parents[1]
-TABLE = ROOT / "data/processed/gyeongbuk_flood_training_table.csv"
+from data_paths import PROCESSED_ML_TRAINING, ROOT
+
+TABLE = PROCESSED_ML_TRAINING / "gyeongbuk_flood_training_table.csv"
 OUT_DIR = ROOT / "outputs/gyeongbuk-flood-model"
 REPORT = OUT_DIR / "model_report.json"
 
@@ -93,6 +95,11 @@ def main() -> None:
     df = pd.read_csv(TABLE)
     log(f"[check] {len(df):,} rows, {int(df['flood'].sum()):,} positive ({df['flood'].mean()*100:.2f}%)")
 
+    if "storm_group_id" not in df.columns or df["storm_group_id"].isna().any():
+        raise SystemExit(
+            "training table must contain a non-null storm_group_id for every row"
+        )
+
     for col in FEATURES:
         df[col] = pd.to_numeric(df[col], errors="coerce")
     before = len(df)
@@ -107,6 +114,8 @@ def main() -> None:
     X = df[FEATURES].to_numpy(dtype=float)
     y = df["flood"].to_numpy(dtype=int)
     pos_weight = float((y == 0).sum() / max((y == 1).sum(), 1))
+    storm_group_count = int(df["storm_group_id"].nunique())
+    event_timestamp_count = int(df["event_id"].nunique())
     report: dict = {
         "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
         "rows": int(len(df)),
@@ -114,6 +123,8 @@ def main() -> None:
         "features": FEATURES,
         "excluded_as_leakage": LEAKY,
         "scale_pos_weight": round(pos_weight, 2),
+        "event_timestamp_count": event_timestamp_count,
+        "storm_group_count": storm_group_count,
     }
 
     # ---- 1. terrain-only baseline (no model) ---------------------------
@@ -129,29 +140,43 @@ def main() -> None:
     tr, te = df["year"] <= 2018, df["year"] >= 2019
     log(f"\n[split] temporal  train {tr.sum():,} rows / test {te.sum():,} rows")
     if y[te.to_numpy()].sum() > 0 and y[tr.to_numpy()].sum() > 0:
-        m = make_model(pos_weight)
-        m.fit(X[tr.to_numpy()], y[tr.to_numpy()])
+        y_train = y[tr.to_numpy()]
+        train_pos_weight = float(
+            (y_train == 0).sum() / max((y_train == 1).sum(), 1)
+        )
+        m = make_model(train_pos_weight)
+        m.fit(X[tr.to_numpy()], y_train)
         s = m.predict_proba(X[te.to_numpy()])[:, 1]
         report["temporal_holdout"] = evaluate(y[te.to_numpy()], s)
         report["temporal_holdout"]["train_years"] = "<=2018"
         report["temporal_holdout"]["test_years"] = ">=2019"
         log(f"[result] temporal  {json.dumps(report['temporal_holdout'], ensure_ascii=False)}")
 
-    # ---- 3. grouped CV by event ----------------------------------------
-    groups = df["event_id"].to_numpy()
-    n_ev = len(np.unique(groups))
-    folds = min(5, n_ev)
-    log(f"\n[split] GroupKFold by event ({n_ev} events, {folds} folds)")
-    oof = np.zeros(len(y))
+    # ---- 3. grouped CV by independent storm proxy ----------------------
+    groups = df["storm_group_id"].to_numpy()
+    n_storms = len(np.unique(groups))
+    folds = min(5, n_storms)
+    if folds < 2:
+        raise SystemExit("at least two storm_group_id values are required for GroupKFold")
+    log(f"\n[split] GroupKFold by storm ({n_storms} storm groups, {folds} folds)")
+    oof = np.full(len(y), np.nan)
+    completed_folds = 0
     for k, (a, b) in enumerate(GroupKFold(n_splits=folds).split(X, y, groups), 1):
         if y[a].sum() == 0:
+            log(f"   fold {k}: skipped because the training fold has no positives")
             continue
         m = make_model(float((y[a] == 0).sum() / max((y[a] == 1).sum(), 1)))
         m.fit(X[a], y[a])
         oof[b] = m.predict_proba(X[b])[:, 1]
+        completed_folds += 1
         log(f"   fold {k}: train {len(a):,} / test {len(b):,} (test positives {int(y[b].sum())})")
-    report["grouped_cv_by_event"] = evaluate(y, oof)
-    log(f"[result] event CV  {json.dumps(report['grouped_cv_by_event'], ensure_ascii=False)}")
+    evaluated = ~np.isnan(oof)
+    if not evaluated.any():
+        raise SystemExit("no storm-group fold could be evaluated")
+    report["grouped_cv_by_storm"] = evaluate(y[evaluated], oof[evaluated])
+    report["grouped_cv_by_storm"]["storm_groups"] = n_storms
+    report["grouped_cv_by_storm"]["completed_folds"] = completed_folds
+    log(f"[result] storm CV  {json.dumps(report['grouped_cv_by_storm'], ensure_ascii=False)}")
 
     # ---- 4. building-disjoint CV ---------------------------------------
     bgroups = df["building_id"].to_numpy()
@@ -177,14 +202,19 @@ def main() -> None:
     for f, v in imp:
         log(f"   {v:7.4f}  {f}")
 
+    positive_by_storm = df.groupby("storm_group_id")["flood"].sum()
+    dominant_positive_share = float(positive_by_storm.max() / max(positive_by_storm.sum(), 1))
     report["critical_limitations"] = [
         "Target is surface flooding, NOT underground car park flooding.",
-        "Event CV and building CV disagree with each other; the event split is the "
-        "honest estimate for a new storm, the building split for a new location.",
-        "Only 21 of 30 events contain any positive, and 2012 Typhoon Sanba dominates, "
-        "so the model largely learns that one storm's terrain.",
-        "Negatives exist only within 1 km of a surveyed polygon, so the model is "
-        "calibrated for 'near a known flood area', not for all of Gyeongbuk.",
+        "Storm-group CV and building CV answer different questions: the storm split "
+        "estimates a new storm, while the building split estimates a new location.",
+        f"The {event_timestamp_count} timestamp-level events are conservatively collapsed "
+        f"into {storm_group_count} storm groups using same/consecutive dates. This grouping "
+        "is derived, not an official disaster identifier.",
+        f"The largest storm group contains {dominant_positive_share:.1%} of positive rows, "
+        "so performance remains sensitive to a small number of storms.",
+        "Negative labels are pseudo_negative_1km, not verified non-flood observations. "
+        "The model is calibrated for 'near a known flood polygon', not all Gyeongbuk.",
         "Rainfall comes from the nearest station, so buildings sharing a station in one "
         "event share identical rain features.",
         "Elevation is a DSM, so it includes buildings and tree canopy.",

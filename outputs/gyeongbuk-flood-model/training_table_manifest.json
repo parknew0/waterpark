@@ -1,176 +1,247 @@
 {
-  "generated_at": "2026-08-22T17:04:24+09:00",
-  "target": "surface_flood_observed (건물 위치의 지표면 침수 여부)",
+  "generated_at": "2026-08-22T20:37:09+09:00",
+  "target": "surface_flood_polygon_proxy (건물 점의 침수흔적도 포함 여부)",
   "row_unit": "one building x one flood event",
   "rows": 45920,
   "positive": 2993,
   "negative": 42927,
+  "negative_label_source": "pseudo_negative_1km",
+  "negative_label_quality": "pseudo_negative_1km",
   "positive_rate": 0.0652,
   "events_total": 30,
   "events_with_positive": 21,
   "negative_radius_m": 1000.0,
   "max_station_distance_km": 30.0,
+  "geometry_validation": {
+    "source_feature_count": 1402,
+    "source_parse_failed": 0,
+    "source_invalid": 0,
+    "source_invalid_repaired": 0,
+    "source_dropped_empty_or_nonpolygon": 0,
+    "event_union_repaired": 0
+  },
   "per_event": [
     {
-      "event": "20020831-1600",
+      "event": "GB-20020831-1600",
+      "storm_group_id": "GB-STORM-20020831",
       "positive": 84,
-      "negative": 360
+      "pseudo_negative": 360,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20080724-1600",
+      "event": "GB-20080724-1600",
+      "storm_group_id": "GB-STORM-20080724",
       "positive": 0,
-      "negative": 6
+      "pseudo_negative": 6,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20110709-1000",
+      "event": "GB-20110709-1000",
+      "storm_group_id": "GB-STORM-20110709",
       "positive": 171,
-      "negative": 1185
+      "pseudo_negative": 1185,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20110709-1900",
+      "event": "GB-20110709-1900",
+      "storm_group_id": "GB-STORM-20110709",
       "positive": 99,
-      "negative": 81
+      "pseudo_negative": 81,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120823-0000",
+      "event": "GB-20120823-0000",
+      "storm_group_id": "GB-STORM-20120823",
       "positive": 0,
-      "negative": 74
+      "pseudo_negative": 74,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120917-0000",
+      "event": "GB-20120917-0000",
+      "storm_group_id": "GB-STORM-20120917",
       "positive": 15,
-      "negative": 435
+      "pseudo_negative": 435,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120917-0500",
+      "event": "GB-20120917-0500",
+      "storm_group_id": "GB-STORM-20120917",
       "positive": 252,
-      "negative": 3073
+      "pseudo_negative": 3073,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120917-0800",
+      "event": "GB-20120917-0800",
+      "storm_group_id": "GB-STORM-20120917",
       "positive": 484,
-      "negative": 5872
+      "pseudo_negative": 5872,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120917-1000",
+      "event": "GB-20120917-1000",
+      "storm_group_id": "GB-STORM-20120917",
       "positive": 243,
-      "negative": 6081
+      "pseudo_negative": 6081,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120917-1200",
+      "event": "GB-20120917-1200",
+      "storm_group_id": "GB-STORM-20120917",
       "positive": 286,
-      "negative": 957
+      "pseudo_negative": 957,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120917-1300",
+      "event": "GB-20120917-1300",
+      "storm_group_id": "GB-STORM-20120917",
       "positive": 306,
-      "negative": 2832
+      "pseudo_negative": 2832,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120917-1400",
+      "event": "GB-20120917-1400",
+      "storm_group_id": "GB-STORM-20120917",
       "positive": 368,
-      "negative": 4615
+      "pseudo_negative": 4615,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120917-1500",
+      "event": "GB-20120917-1500",
+      "storm_group_id": "GB-STORM-20120917",
       "positive": 67,
-      "negative": 5861
+      "pseudo_negative": 5861,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20120917-1600",
+      "event": "GB-20120917-1600",
+      "storm_group_id": "GB-STORM-20120917",
       "positive": 23,
-      "negative": 315
+      "pseudo_negative": 315,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20180704-2000",
+      "event": "GB-20180704-2000",
+      "storm_group_id": "GB-STORM-20180704",
       "positive": 0,
-      "negative": 1199
+      "pseudo_negative": 1199,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20181005-0000",
+      "event": "GB-20181005-0000",
+      "storm_group_id": "GB-STORM-20181005",
       "positive": 12,
-      "negative": 263
+      "pseudo_negative": 263,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20181006-0000",
+      "event": "GB-20181006-0000",
+      "storm_group_id": "GB-STORM-20181005",
       "positive": 3,
-      "negative": 0
+      "pseudo_negative": 0,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20181006-0600",
+      "event": "GB-20181006-0600",
+      "storm_group_id": "GB-STORM-20181005",
       "positive": 103,
-      "negative": 2550
+      "pseudo_negative": 2550,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20190922-1600",
+      "event": "GB-20190922-1600",
+      "storm_group_id": "GB-STORM-20190922",
       "positive": 13,
-      "negative": 1095
+      "pseudo_negative": 1095,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20191002-0000",
+      "event": "GB-20191002-0000",
+      "storm_group_id": "GB-STORM-20191002",
       "positive": 0,
-      "negative": 71
+      "pseudo_negative": 71,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20191002-2000",
+      "event": "GB-20191002-2000",
+      "storm_group_id": "GB-STORM-20191002",
       "positive": 119,
-      "negative": 730
+      "pseudo_negative": 730,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20191002-2200",
+      "event": "GB-20191002-2200",
+      "storm_group_id": "GB-STORM-20191002",
       "positive": 117,
-      "negative": 1687
+      "pseudo_negative": 1687,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20191002-2300",
+      "event": "GB-20191002-2300",
+      "storm_group_id": "GB-STORM-20191002",
       "positive": 0,
-      "negative": 126
+      "pseudo_negative": 126,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20191003-1200",
+      "event": "GB-20191003-1200",
+      "storm_group_id": "GB-STORM-20191002",
       "positive": 204,
-      "negative": 2598
+      "pseudo_negative": 2598,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20200724-0100",
+      "event": "GB-20200724-0100",
+      "storm_group_id": "GB-STORM-20200724",
       "positive": 21,
-      "negative": 124
+      "pseudo_negative": 124,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20200807-1500",
+      "event": "GB-20200807-1500",
+      "storm_group_id": "GB-STORM-20200807",
       "positive": 3,
-      "negative": 300
+      "pseudo_negative": 300,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20210711-0000",
+      "event": "GB-20210711-0000",
+      "storm_group_id": "GB-STORM-20210711",
       "positive": 0,
-      "negative": 122
+      "pseudo_negative": 122,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20210711-1900",
+      "event": "GB-20210711-1900",
+      "storm_group_id": "GB-STORM-20210711",
       "positive": 0,
-      "negative": 313
+      "pseudo_negative": 313,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20210824-0700",
+      "event": "GB-20210824-0700",
+      "storm_group_id": "GB-STORM-20210824",
       "positive": 0,
-      "negative": 0
+      "pseudo_negative": 0,
+      "flood_geometry_repaired": false
     },
     {
-      "event": "20210824-1200",
+      "event": "GB-20210824-1200",
+      "storm_group_id": "GB-STORM-20210824",
       "positive": 0,
-      "negative": 2
+      "pseudo_negative": 2,
+      "flood_geometry_repaired": false
     }
   ],
   "inputs": {
     "flood": "data/raw/flood-trace/gyeongbuk_flood_2002_2022.geojson",
-    "buildings": "data/processed/gyeongbuk_buildings_elevation.csv.gz",
-    "rain": "data/processed/gyeongbuk_flood_event_rain.csv",
+    "buildings": "data/processed/buildings/gyeongbuk_buildings_elevation.csv.gz",
+    "rain": "data/processed/rainfall/gyeongbuk_flood_event_rain.csv",
     "stations": "data/raw/kma-stations/kma_station_list.csv"
   },
   "critical_limitations": [
-    "Target is SURFACE flooding at the building location, not underground car park flooding. They are not the same event.",
-    "Negatives are only buildings within 1000 m of a surveyed polygon of the SAME event. Buildings further away are dropped as unknown, not labelled 0.",
+    "Target is inclusion of a building point in a surveyed SURFACE-flood polygon, not underground car park flooding.",
+    "Negatives are only buildings within 1000 m of a surveyed polygon of the SAME event. They are weak pseudo-negatives, not verified non-flood observations; buildings further away are dropped as unknown, not labelled 0.",
+    "Invalid source polygons are repaired with shapely.make_valid before union, buffer, containment, and distance operations; repair counts are recorded in geometry_validation.",
     "Overture buildings carry no construction year, so a building built after an event can still appear in that event's rows.",
     "Elevation is a Copernicus GLO-30 DSM (surface, not bare earth), so tall buildings and tree canopy bias it upward.",
     "Rainfall is the nearest reporting station's value, not rainfall measured at the building; rain_station_distance_km records how far that was.",

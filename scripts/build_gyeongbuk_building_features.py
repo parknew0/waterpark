@@ -37,17 +37,17 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-GIS_ROOT = ROOT / "GIS건물통합정보_경북"
-REGISTER_CSV = (
-    ROOT
-    / "data/processed/gyeongbuk-building-register/gyeongbuk_underground_parking_candidates.csv"
+from data_paths import (
+    INTERIM_BUILDING_REGISTER,
+    PROCESSED_BUILDINGS,
+    RAW_VWORLD_GYEONGBUK,
+    ROOT,
 )
-CANDIDATES_CSV = (
-    ROOT
-    / "data/processed/gyeongbuk-building-register/gyeongbuk_gis_basement_candidates.csv"
-)
-OUT_CSV = ROOT / "data/processed/gyeongbuk_building_underground_parking_features.csv"
+
+GIS_ROOT = RAW_VWORLD_GYEONGBUK
+REGISTER_CSV = INTERIM_BUILDING_REGISTER / "gyeongbuk_underground_parking_candidates.csv"
+CANDIDATES_CSV = INTERIM_BUILDING_REGISTER / "gyeongbuk_gis_basement_candidates.csv"
+OUT_CSV = PROCESSED_BUILDINGS / "gyeongbuk_building_underground_parking_features.csv"
 OUT_DIR = ROOT / "outputs/gyeongbuk-building-features"
 MANIFEST = OUT_DIR / "manifest.json"
 SAMPLE_CSV = OUT_DIR / "gyeongbuk_building_underground_parking_features_sample.csv"
@@ -170,10 +170,15 @@ def verify_projection() -> None:
 
 
 def latest_gis_dir() -> Path:
-    dirs = [d for d in GIS_ROOT.glob("AL_D010_47_*") if d.is_dir() and list(d.glob("*.dbf"))]
+    dirs = {
+        directory
+        for pattern in ("AL_D010_47_*", "AL_47_D010_*")
+        for directory in GIS_ROOT.glob(pattern)
+        if directory.is_dir() and any(directory.glob("*.dbf"))
+    }
     if not dirs:
-        raise SystemExit(f"No AL_D010_47_* directory with DBF files under {GIS_ROOT}")
-    return sorted(dirs)[-1]
+        raise SystemExit(f"No Gyeongbuk GIS-building directory with DBF files under {GIS_ROOT}")
+    return max(dirs, key=lambda path: path.name.rsplit("_", 1)[-1])
 
 
 def dbf_layout(path: Path):
@@ -511,7 +516,7 @@ def main() -> None:
         "row_count": written,
         "crs": "WGS84 (EPSG:4326), converted from source EPSG:5186",
         "sources": {
-            "geometry": f"GIS건물통합정보_경북/{gis_dir.name} (VWorld, EPSG:5186)",
+            "geometry": f"{gis_dir.relative_to(ROOT)} (VWorld, EPSG:5186)",
             "register": str(REGISTER_CSV.relative_to(ROOT)),
         },
         "register_input": reg_stats,
