@@ -15,8 +15,16 @@ interface ParkingMapProps {
 function CurrentLocationMarker() {
   return (
     <span className="current-map-marker" role="img" aria-label="현재 위치">
-      <img className="current-map-marker-direction" src="/assets/parking/current-location-direction.svg" alt="" />
-      <img className="current-map-marker-dot" src="/assets/parking/current-location-dot.svg" alt="" />
+      <span className="current-map-marker-direction-frame" aria-hidden="true">
+        <span className="current-map-marker-direction-rotator">
+          <span className="current-map-marker-direction-canvas">
+            <img className="current-map-marker-direction" src="/assets/parking/current-location-direction.svg" alt="" />
+          </span>
+        </span>
+      </span>
+      <span className="current-map-marker-dot-frame" aria-hidden="true">
+        <img className="current-map-marker-dot" src="/assets/parking/current-location-dot.svg" alt="" />
+      </span>
     </span>
   );
 }

@@ -75,9 +75,13 @@ Kakao 지도 Web API 공식 문서에서 웹 지도용 다크 테마 옵션은 �
 - 현재 위치 부채꼴의 회전 중심, 현재 위치 점의 중심, Kakao 오버레이 anchor를 `(32px, 54px)`로 통일해 회전 시 부채꼴과 점이 분리되지 않는지 확인
 - 480px 이하 화면에서 모바일 프레임을 `100vw × 100svh`로 확장하고, 430×932 검증에서 시트 rect가 `x=0`, `width=430`, `bottom=932`인지 확인
 - Figma `123:1631` 기준으로 검색 입력창의 잘못된 눈 아이콘과 아이콘 버튼을 모두 제거하고 내부 이미지·버튼 0개 확인
+- Figma `123:2320`의 중첩 레이어·inset·기본 `-135°` 회전을 그대로 구현하고, 센서 방위는 이 기본 회전에 합성한다. Kakao anchor는 Figma 점 중심에 맞춘 `x=0.3`, `y=0.71`이다.
+- Figma `123:2360`에서 홈 인디케이터가 차지하던 34px 공간을 웹 CTA 하단 여백으로 반영했다. 402×874에서 버튼은 `top=778`, `bottom=828`, 화면 하단 간격 `46px`이다.
+- Figma `176:2956`에 따라 `My Location`을 강조색이 아닌 `#EDEDED`로 표시하고 라벨→주차장명 간격 17px, 주차장명→주소 간격 8px을 적용했다.
+- 최종 카드의 주차장명·주소는 영문으로 표시한다. 포항 데모 주차장 3곳은 검토한 영문 표기를 사용하고, 다른 동적 결과는 한글 음절을 영문자로 변환하는 폴백을 사용한다. 이는 외부 번역 API 결과가 아니다.
 - 임시 검증 좌표에서 Figma 현재 위치 마커 64×64 렌더링, 청록색 유지와 anchor 위치 확인 후 임시 좌표 제거
 - 브라우저 경고·오류 0건
 
 테스트 브라우저에서는 위치 권한을 확보하지 못해 기본 중심 데이터가 표시됐다. 실제 위치 라벨과 실제 거리순 결과는 사용자가 브라우저 위치 권한을 허용한 환경에서 최종 확인해야 한다.
 
-출처: [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/), [W3C Device Orientation and Motion](https://www.w3.org/TR/orientation-event/), [Apple DeviceOrientationEvent](https://developer.apple.com/documentation/webkitjs/deviceorientationevent)
+출처: [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/), [Figma 상세 CTA `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev), [Figma My Location 카드 `176:2956`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=176-2956&m=dev), [W3C Device Orientation and Motion](https://www.w3.org/TR/orientation-event/), [Apple DeviceOrientationEvent](https://developer.apple.com/documentation/webkitjs/deviceorientationevent)

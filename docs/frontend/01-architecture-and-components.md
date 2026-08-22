@@ -29,6 +29,7 @@
 | `ParkingCard` | 주차장명, 주소, 거리, 유형, 주차면수 표시 |
 | `useParkingSearch` | Kakao 검색과 공공데이터 폴백 전환 |
 | `useDeviceHeading` | iOS·표준 Device Orientation 이벤트를 기기 방위각으로 정규화하고 CSS 변수로 전달 |
+| `getEnglishParkingLabel` | 데모 주요 주차장 영문명·영문주소와 나머지 한글 값의 영문자 표기 폴백 생성 |
 | `OnboardingCarView` | 차량 보호 가치 제안과 다음 단계 이동 |
 | `LocationConsentView` | 위치 권한 사용 목적 안내와 지도 진입 |
 | `OnboardingProgress` | 2단계 온보딩 진행 상태 |

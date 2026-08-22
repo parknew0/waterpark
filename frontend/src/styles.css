@@ -374,35 +374,59 @@ h3 { margin: 0; font-size: 14px; }
 
 .current-map-marker {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 63.797px;
+  height: 63.797px;
   padding: 0;
   border: 0;
   display: block;
   overflow: visible;
   background: transparent;
   pointer-events: none;
+  container-type: size;
 }
 
-.current-map-marker-direction {
+.current-map-marker-direction-frame {
   position: absolute;
-  top: 0;
-  left: 6px;
-  width: 52.29px;
-  height: 54.27px;
-  max-width: none;
-  transform: rotate(var(--device-heading, 0deg));
-  transform-origin: 50% 100%;
+  inset: -36.39% -36.39% -10.71% -10.71%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.current-map-marker-direction-rotator {
+  width: hypot(-45.4883cqw, -45.4883cqh);
+  height: hypot(54.5117cqw, -54.5117cqh);
+  flex: none;
+  transform: rotate(calc(-135deg + var(--device-heading, 0deg)));
   transition: transform 120ms linear;
   will-change: transform;
 }
 
+.current-map-marker-direction-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.current-map-marker-direction {
+  position: absolute;
+  inset: 0 6.7% 25%;
+  width: 86.6%;
+  height: 75%;
+  max-width: none;
+}
+
+.current-map-marker-dot-frame {
+  position: absolute;
+  inset: 54.86% 54.54% 13.79% 14.11%;
+}
+
 .current-map-marker-dot {
   position: absolute;
-  top: 42px;
-  left: 20px;
-  width: 24px;
-  height: 24px;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
   max-width: none;
 }
 
@@ -559,9 +583,16 @@ h3 { margin: 0; font-size: 14px; }
   box-shadow: 0 8px 28px rgb(0 0 0 / 28%);
 }
 
-.parked-car-card span { margin-bottom: 2px; color: #00e8ec; font-size: 14px; }
+.parked-car-card span { margin-bottom: 17px; color: #ededed; font-size: 14px; }
+.parked-car-card strong,
+.parked-car-card p {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .parked-car-card strong { font: 600 18px/1.4 "Plus Jakarta Sans", "Noto Sans KR", sans-serif; }
-.parked-car-card p { margin: 5px 0 0; color: #adadad; font-size: 12px; }
+.parked-car-card p { margin: 8px 0 0; color: #c7c7c7; font-size: 12px; }
 
 .parking-sheet-scrim {
   position: absolute;
@@ -727,8 +758,8 @@ h3 { margin: 0; font-size: 14px; }
   z-index: 3;
   left: 0;
   right: 0;
-  bottom: 0;
-  padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+  bottom: max(34px, env(safe-area-inset-bottom));
+  padding: 12px 16px;
   background: linear-gradient(180deg, rgb(42 44 44 / 0%), #2a2c2c 20%);
 }
 .parking-detail-footer button {

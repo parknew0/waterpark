@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
 import type { Coordinate, ParkingPlace, SearchSource } from "../../types/parking";
 import { ParkingMap } from "../ParkingMap";
 
@@ -59,6 +60,7 @@ export function ParkingHomeView({
 }: ParkingHomeViewProps) {
   const [query, setQuery] = useState("");
   const nearbyPlaces = places.slice(0, 3);
+  const parkedLabel = parkedPlace ? getEnglishParkingLabel(parkedPlace) : undefined;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -110,8 +112,8 @@ export function ParkingHomeView({
         {parkedPlace && !isCarLocationOpen ? (
           <article className="parked-car-card" aria-label="저장된 내 차 위치">
             <span>My Location</span>
-            <strong>{parkedPlace.name}</strong>
-            <p>{parkedPlace.address || "주소 정보 없음"}</p>
+            <strong>{parkedLabel?.name}</strong>
+            <p>{parkedLabel?.address}</p>
           </article>
         ) : null}
 
@@ -140,6 +142,11 @@ export function ParkingHomeView({
                     id="car-location-query"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key !== "Enter") return;
+                      event.preventDefault();
+                      onSearch(query);
+                    }}
                     placeholder="주차장 검색"
                     autoComplete="off"
                   />

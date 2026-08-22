@@ -214,23 +214,37 @@ export function createKakaoMap(
     marker.setAttribute("role", "img");
     marker.setAttribute("aria-label", "현재 위치");
 
+    const directionFrame = document.createElement("span");
+    directionFrame.className = "current-map-marker-direction-frame";
+    directionFrame.setAttribute("aria-hidden", "true");
+    const directionRotator = document.createElement("span");
+    directionRotator.className = "current-map-marker-direction-rotator";
+    const directionCanvas = document.createElement("span");
+    directionCanvas.className = "current-map-marker-direction-canvas";
     const direction = document.createElement("img");
     direction.className = "current-map-marker-direction";
     direction.src = "/assets/parking/current-location-direction.svg";
     direction.alt = "";
+    directionCanvas.append(direction);
+    directionRotator.append(directionCanvas);
+    directionFrame.append(directionRotator);
 
+    const dotFrame = document.createElement("span");
+    dotFrame.className = "current-map-marker-dot-frame";
+    dotFrame.setAttribute("aria-hidden", "true");
     const dot = document.createElement("img");
     dot.className = "current-map-marker-dot";
     dot.src = "/assets/parking/current-location-dot.svg";
     dot.alt = "";
+    dotFrame.append(dot);
 
-    marker.append(direction, dot);
+    marker.append(directionFrame, dotFrame);
     overlays.push(new maps.CustomOverlay({
       map,
       position: new maps.LatLng(currentPosition.latitude, currentPosition.longitude),
       content: marker,
-      xAnchor: 0.5,
-      yAnchor: 0.84,
+      xAnchor: 0.3,
+      yAnchor: 0.71,
       zIndex: 5,
     }));
   }
