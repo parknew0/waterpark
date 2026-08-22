@@ -7,7 +7,7 @@ export function BrandLogo({ className = "", variant = "default" }: BrandLogoProp
   return (
     <span className={`brand-logo ${className}`.trim()} aria-label="Waterpark">
       <img
-        src={variant === "splash" ? "/assets/brand/waterpark-logo-gradient.png" : "/assets/brand/waterpark-logo.svg"}
+        src={variant === "splash" ? "/assets/brand/waterpark-logo-gradient.svg" : "/assets/brand/waterpark-logo.svg"}
         alt=""
       />
     </span>
