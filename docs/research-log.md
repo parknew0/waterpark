@@ -238,12 +238,13 @@
 - 위치 권한이 허용되면 `navigator.geolocation` 좌표로 경북 공영주차장을 거리순 재정렬하고 Kakao `coord2Address` 결과를 상단 현재 위치 라벨에 표시한다.
 - 위치 권한이 없으면 기본 경북 중심 결과와 실패 메시지를 유지한다. 테스트 브라우저는 위치 권한을 확보하지 못했으므로 실제 주소 표시는 아직 최종 확인하지 못했다.
 - Figma 사진·아이콘은 로컬에 저장했다. Kakao 지도가 없을 때만 Figma 지도 이미지를 폴백으로 사용한다.
-- Kakao 지도 Web API에는 확인 가능한 웹용 다크 테마 옵션이 없어 지도 타일이 포함된 첫 렌더링 레이어에만 CSS 색상 필터를 적용했다. Kakao 저작권·브랜드 링크 레이어는 필터 밖에 유지한다.
+- Kakao 지도 Web API에는 확인 가능한 웹용 다크 테마 옵션이 없어 `/tile/` 지도 이미지에만 CSS 색상 필터를 적용했다. 현재 위치 마커와 Kakao 저작권·브랜드 링크는 필터 밖에 유지한다.
 - 강수 API와 위험 예측 API가 아직 연결되지 않아 예시 수치 `30mm`와 특정 주차장 `High risk` 판정을 사용하지 않았다. 각각 `--mm`, `Risk assessment is not connected yet`으로 명시했다.
 - 빗방울 충돌 효과는 10개에서 16개로 늘렸다.
-- 가까운 주차장 시트는 지도 진입 시 460ms 동안 아래에서 위로 올라오고 배경 스크림은 360ms 동안 나타난다.
+- Figma `123:2320`의 방향 부채꼴과 청록 점 에셋을 Kakao `CustomOverlay`로 현재 좌표에 표시한다. 위치 권한 실패 시에는 마커를 표시하지 않는다.
+- 가까운 주차장 시트는 지도 진입 시 1.2초 동안 아래에서 위로 올라오고 배경 스크림은 360ms 동안 나타난다.
 - 상세: [지도 홈·내 차 위치 설정 흐름](./frontend/05-parking-home-and-location-flow.md)
-- 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [가까운 주차장 `123:2075`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2075&m=dev), [선택 상세 `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev), [현재 위치 라벨 `123:1419`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1419&m=dev), [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/)
+- 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [가까운 주차장 `123:2075`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2075&m=dev), [선택 상세 `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev), [현재 위치 라벨 `123:1419`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1419&m=dev), [현재 위치 마커 `123:2320`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2320&m=dev), [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/)
 - 확인일: 2026-08-22
 
 ## 결정 로그

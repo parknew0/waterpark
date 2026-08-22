@@ -30,6 +30,10 @@ interface KakaoMarkerInstance {
   setMap(map: KakaoMapInstance | null): void;
 }
 
+interface KakaoCustomOverlayInstance {
+  setMap(map: KakaoMapInstance | null): void;
+}
+
 interface KakaoLatLngBounds {
   extend(position: KakaoLatLng): void;
 }
@@ -40,6 +44,14 @@ interface KakaoMapsApi {
   LatLngBounds: new () => KakaoLatLngBounds;
   Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMapInstance;
   Marker: new (options: { map: KakaoMapInstance; position: KakaoLatLng; title?: string }) => KakaoMarkerInstance;
+  CustomOverlay: new (options: {
+    map: KakaoMapInstance;
+    position: KakaoLatLng;
+    content: HTMLElement;
+    xAnchor: number;
+    yAnchor: number;
+    zIndex: number;
+  }) => KakaoCustomOverlayInstance;
   services: {
     Status: { OK: string; ZERO_RESULT: string; ERROR: string };
     SortBy: { DISTANCE: string };
@@ -178,15 +190,47 @@ export function createKakaoMap(
   container: HTMLElement,
   center: Coordinate,
   places: ParkingPlace[],
+  currentPosition?: Coordinate,
 ): () => void {
   const map = new maps.Map(container, {
     center: new maps.LatLng(center.latitude, center.longitude),
     level: 7,
   });
   const markers: KakaoMarkerInstance[] = [];
+  let currentLocationOverlay: KakaoCustomOverlayInstance | undefined;
+
+  if (currentPosition) {
+    const marker = document.createElement("div");
+    marker.className = "current-map-marker";
+    marker.setAttribute("role", "img");
+    marker.setAttribute("aria-label", "현재 위치");
+
+    const direction = document.createElement("img");
+    direction.className = "current-map-marker-direction";
+    direction.src = "/assets/parking/current-location-direction.svg";
+    direction.alt = "";
+
+    const dot = document.createElement("img");
+    dot.className = "current-map-marker-dot";
+    dot.src = "/assets/parking/current-location-dot.svg";
+    dot.alt = "";
+
+    marker.append(direction, dot);
+    currentLocationOverlay = new maps.CustomOverlay({
+      map,
+      position: new maps.LatLng(currentPosition.latitude, currentPosition.longitude),
+      content: marker,
+      xAnchor: 0.2,
+      yAnchor: 0.72,
+      zIndex: 5,
+    });
+  }
 
   if (places.length > 0) {
     const bounds = new maps.LatLngBounds();
+    if (currentPosition) {
+      bounds.extend(new maps.LatLng(currentPosition.latitude, currentPosition.longitude));
+    }
     places.forEach((place) => {
       const position = new maps.LatLng(place.latitude, place.longitude);
       bounds.extend(position);
@@ -197,5 +241,8 @@ export function createKakaoMap(
     map.setCenter(new maps.LatLng(center.latitude, center.longitude));
   }
 
-  return () => markers.forEach((marker) => marker.setMap(null));
+  return () => {
+    markers.forEach((marker) => marker.setMap(null));
+    currentLocationOverlay?.setMap(null);
+  };
 }

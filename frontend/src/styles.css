@@ -357,7 +357,7 @@ h3 { margin: 0; font-size: 14px; }
   background: #071412;
 }
 
-.parking-home-map .kakao-map > div:first-child {
+.parking-home-map .kakao-map img[src*="/tile/"] {
   filter: grayscale(1) invert(.88) sepia(.2) saturate(.76) hue-rotate(112deg) brightness(.82) contrast(1.24);
 }
 
@@ -368,6 +368,34 @@ h3 { margin: 0; font-size: 14px; }
   border: 2px solid #fefefe;
   background: #00e8ec;
   box-shadow: 0 0 0 18px rgb(0 232 236 / 20%);
+}
+
+.current-map-marker {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.current-map-marker-direction {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  width: 52.29px;
+  height: 54.27px;
+  max-width: none;
+  transform: rotate(-135deg);
+}
+
+.current-map-marker-dot {
+  position: absolute;
+  top: 34px;
+  left: 1px;
+  width: 24px;
+  height: 24px;
+  max-width: none;
 }
 
 .parking-home-header {
@@ -490,7 +518,7 @@ h3 { margin: 0; font-size: 14px; }
   color: #fefefe;
   background: #2a2c2c;
   scrollbar-width: none;
-  animation: parking-sheet-rise 460ms cubic-bezier(.22, 1, .36, 1) both;
+  animation: parking-sheet-rise 1.2s cubic-bezier(.22, 1, .36, 1) both;
 }
 
 .car-location-sheet::-webkit-scrollbar { display: none; }

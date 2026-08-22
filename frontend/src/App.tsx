@@ -19,6 +19,7 @@ function getInitialView(): AppView {
 export default function App() {
   const [view, setView] = useState<AppView>(getInitialView);
   const [center, setCenter] = useState<Coordinate>(DEFAULT_CENTER);
+  const [currentPosition, setCurrentPosition] = useState<Coordinate>();
   const [selected, setSelected] = useState<ParkingPlace>();
   const [isCarLocationOpen, setIsCarLocationOpen] = useState(view === "map");
   const [locationPending, setLocationPending] = useState(false);
@@ -61,6 +62,7 @@ export default function App() {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         };
+        setCurrentPosition(nextCenter);
         setCenter(nextCenter);
         setSelected(undefined);
         setLocationPending(false);
@@ -106,6 +108,7 @@ export default function App() {
     <ParkingHomeView
       appKey={kakaoAppKey}
       center={center}
+      currentPosition={currentPosition}
       currentLocationLabel={currentLocationLabel}
       error={error}
       isCarLocationOpen={isCarLocationOpen}

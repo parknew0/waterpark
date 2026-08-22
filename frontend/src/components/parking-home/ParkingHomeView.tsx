@@ -5,6 +5,7 @@ import { ParkingMap } from "../ParkingMap";
 interface ParkingHomeViewProps {
   appKey?: string;
   center: Coordinate;
+  currentPosition?: Coordinate;
   currentLocationLabel: string;
   error: string | null;
   isCarLocationOpen: boolean;
@@ -38,6 +39,7 @@ function formatDistance(distance?: number) {
 export function ParkingHomeView({
   appKey,
   center,
+  currentPosition,
   currentLocationLabel,
   error,
   isCarLocationOpen,
@@ -65,7 +67,14 @@ export function ParkingHomeView({
     <main className="parking-home-stage">
       <section className="parking-home-phone" aria-label="내 차 위치와 가까운 주차장">
         <div className="parking-home-map">
-          <ParkingMap appKey={appKey} center={center} places={places} selected={selected} onSelect={onSelect} />
+          <ParkingMap
+            appKey={appKey}
+            center={center}
+            currentPosition={currentPosition}
+            places={places}
+            selected={selected}
+            onSelect={onSelect}
+          />
         </div>
 
         <header className="parking-home-header">
