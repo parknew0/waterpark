@@ -86,7 +86,7 @@ export function loadKakaoMaps(appKey: string): Promise<KakaoMapsApi> {
       window.kakao.maps.load(() => resolve(window.kakao!.maps));
     });
     script.addEventListener("error", () => reject(new Error(
-      `Kakao 지도 SDK를 불러오지 못했습니다. Kakao Developers의 JavaScript SDK 도메인에 ${window.location.origin}을 등록하고 JavaScript 키인지 확인해 주세요.`,
+      `Kakao 지도 SDK를 불러오지 못했습니다. Kakao Developers에서 카카오맵 사용 설정을 ON으로 켜고, JavaScript SDK 도메인에 ${window.location.origin}을 등록했는지 확인해 주세요.`,
     )));
     document.head.append(script);
   });

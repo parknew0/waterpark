@@ -2,7 +2,7 @@
 
 > 확인일: 2026-08-22
 >
-> 상태: Kakao JavaScript SDK 연결 코드를 구현했다. 실제 외부 호출은 프로젝트 JavaScript 키 등록 후 활성화된다.
+> 상태: Kakao JavaScript SDK 연결 코드를 구현했다. JavaScript 키와 SDK 도메인은 확인됐고, Kakao Developers의 카카오맵 API 활성화가 남았다.
 
 ## 선택
 
@@ -29,7 +29,12 @@ cp .env.example .env
 VITE_KAKAO_MAP_APP_KEY=발급받은_JavaScript_키
 ```
 
-Kakao Developers에서 `http://localhost:5173`과 실제 배포 도메인을 JavaScript SDK 도메인으로 등록해야 한다. Vite의 `VITE_` 환경변수는 브라우저 번들에 포함되므로 비밀키 저장소가 아니다. 여기에 REST API 키나 서버 비밀키를 넣지 않는다.
+Kakao Developers에서 다음 두 설정을 모두 완료해야 한다.
+
+1. **앱 → 플랫폼 키 → JavaScript 키 → JavaScript SDK 도메인**에 `http://localhost:5173`, `http://127.0.0.1:5173`, 실제 배포 도메인을 등록한다.
+2. **카카오맵 → 사용 설정 → 상태**를 `ON`으로 켠다.
+
+Vite의 `VITE_` 환경변수는 브라우저 번들에 포함되므로 비밀키 저장소가 아니다. 여기에 REST API 키나 서버 비밀키를 넣지 않는다.
 
 ## 키가 없을 때의 폴백
 
@@ -53,14 +58,16 @@ node scripts/build_frontend_parking_catalog.mjs
 ## 2026-08-22 실제 연결 점검
 
 - `.env`의 32자 JavaScript 키 로딩과 production build는 정상이다.
-- `http://localhost:5173`과 `http://127.0.0.1:5173`를 호출 도메인으로 Kakao 지도 SDK를 요청했으나 모두 HTTP `401`과 `domain mismatched` 응답을 받았다.
-- 따라서 코드는 연결됐지만 Kakao Developers의 **앱 대표 도메인**이 아니라 **플랫폼 키 → JavaScript 키 → JavaScript SDK 도메인**에 개발 주소를 등록해야 실제 지도가 열린다.
-- 등록 후 Vite 서버를 재시작하고 같은 요청이 HTTP `200`인지 다시 확인한다.
+- 최초 점검에서는 `http://localhost:5173`과 `http://127.0.0.1:5173` 모두 HTTP `401 domain mismatched`였다.
+- JavaScript SDK 도메인 등록 후 재점검에서는 도메인 오류가 사라지고 HTTP `403`과 `App(Waterpark) disabled OPEN_MAP_AND_LOCAL service.` 응답을 받았다.
+- 이는 키와 호출 도메인은 인식됐지만 **카카오맵 → 사용 설정 → 상태**가 활성화되지 않았음을 뜻한다. 공식 안내상 2026-07-21부터 카카오맵 API 사용 전에 이 설정을 `ON`으로 켜야 한다.
+- 카카오맵 사용 설정 후 SDK 응답 HTTP `200`, 실제 지도 DOM, 주소 검색 결과의 `Kakao 실시간 검색` 배지, 브라우저 오류 로그를 다시 확인한다.
 
 ## 공식 출처
 
 | 출처 | 확인 내용 | 확인일 |
 | --- | --- | --- |
+| [Kakao Developers 카카오맵 이해하기](https://developers.kakao.com/docs/ko/kakaomap/common) | 카카오맵 API 활성화 경로, JavaScript 키·SDK 도메인, 2026-07-21 이후 무료 쿼터 정책 | 2026-08-22 |
 | [Kakao 지도 Web API 가이드](https://apis.map.kakao.com/web/guide/) | JavaScript 키, SDK 도메인 등록, WGS84 위경도 | 2026-08-22 |
 | [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/) | `Geocoder.addressSearch`, `Places.keywordSearch`, 거리순 정렬 | 2026-08-22 |
 | [키워드 장소 검색 예제](https://apis.map.kakao.com/web/sample/keywordBasic/) | 검색 결과 Marker 표시 방식 | 2026-08-22 |
