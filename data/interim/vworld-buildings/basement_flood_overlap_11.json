@@ -29,7 +29,13 @@
   },
   "flood": {
     "dropped": 0,
+    "flood_province_codes": [
+      "11"
+    ],
     "invalid_repaired": 15,
+    "polygons_by_flood_code": {
+      "11": 9002
+    },
     "province_polygons": 9002
   },
   "flooded_csv": "data/interim/vworld-buildings/basement_flood_overlap_11_flooded.csv",

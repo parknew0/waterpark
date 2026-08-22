@@ -31,6 +31,7 @@ import argparse
 import csv
 import json
 import mmap
+import re
 import struct
 import sys
 from pathlib import Path
@@ -55,6 +56,7 @@ SHAPE_TYPE_NULL = 0
 
 PROVINCE_NAMES = {
     "11": "서울특별시",
+    "12": "전남광주통합특별시",
     "26": "부산광역시",
     "27": "대구광역시",
     "28": "인천광역시",
@@ -63,15 +65,36 @@ PROVINCE_NAMES = {
     "31": "울산광역시",
     "36": "세종특별자치시",
     "41": "경기도",
-    "42": "강원특별자치도",
+    "42": "강원도",
     "43": "충청북도",
     "44": "충청남도",
-    "45": "전북특별자치도",
+    "45": "전라북도",
     "46": "전라남도",
     "47": "경상북도",
     "48": "경상남도",
     "50": "제주특별자치도",
+    "51": "강원특별자치도",
+    "52": "전북특별자치도",
 }
+
+# The 2026 building snapshots use post-reorganisation province codes, while the
+# 2002-2022 flood traces still carry the codes that were current when each
+# survey was filed.  Mapping them is required or three provinces silently
+# produce zero flood polygons.
+#
+#   강원도 42        -> 강원특별자치도 51   (2023-06-11)
+#   전라북도 45      -> 전북특별자치도 52   (2024-01-18)
+#   광주 29 + 전남 46 -> 전남광주통합특별시 12
+BUILDING_TO_FLOOD_PROVINCES = {
+    "12": ["29", "46"],
+    "51": ["42"],
+    "52": ["45"],
+}
+
+
+def flood_codes_for(province_code: str) -> list[str]:
+    """Flood-trace province codes that cover one building-snapshot province."""
+    return BUILDING_TO_FLOOD_PROVINCES.get(province_code, [province_code])
 
 
 class OverlapError(RuntimeError):
@@ -289,13 +312,23 @@ def load_province_flood_union(province_code: str) -> tuple[Any, dict[str, int]]:
     with FLOOD_GEOJSON.open(encoding="utf-8") as handle:
         payload = json.load(handle)
 
+    wanted_codes = set(flood_codes_for(province_code))
     geoms = []
-    stats = {"province_polygons": 0, "invalid_repaired": 0, "dropped": 0}
+    stats: dict[str, Any] = {
+        "province_polygons": 0,
+        "invalid_repaired": 0,
+        "dropped": 0,
+        "flood_province_codes": sorted(wanted_codes),
+        "polygons_by_flood_code": {},
+    }
+    per_code: Counter[str] = Counter()
     for feature in payload.get("features", []):
         props = feature.get("properties") or {}
-        if str(props.get("stdg_ctpv_cd") or "").strip() != province_code:
+        code = str(props.get("stdg_ctpv_cd") or "").strip()
+        if code not in wanted_codes:
             continue
         stats["province_polygons"] += 1
+        per_code[code] += 1
         try:
             geom = shape(feature["geometry"])
         except Exception:
@@ -309,6 +342,7 @@ def load_province_flood_union(province_code: str) -> tuple[Any, dict[str, int]]:
             stats["invalid_repaired"] += 1
         geoms.append(geom)
 
+    stats["polygons_by_flood_code"] = dict(sorted(per_code.items()))
     if not geoms:
         return None, stats
     return unary_union(geoms), stats
@@ -424,31 +458,7 @@ def analyse(province_code: str, shp_dir: Path) -> dict[str, Any]:
     }
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--province",
-        required=True,
-        help="two-digit 법정 시도코드, e.g. 11 for Seoul",
-    )
-    parser.add_argument(
-        "--dir",
-        type=Path,
-        default=None,
-        help="shapefile directory (defaults to the matching folder under data/raw/vworld-buildings/national)",
-    )
-    args = parser.parse_args()
-
-    province = args.province.strip()
-    shp_dir = args.dir
-    if shp_dir is None:
-        matches = sorted(RAW_NATIONAL.glob(f"AL_D010_{province}_*"))
-        if not matches:
-            raise SystemExit(
-                f"No shapefile directory for province {province} under {RAW_NATIONAL}"
-            )
-        shp_dir = matches[-1]
-
+def run_one(province: str, shp_dir: Path) -> dict[str, Any]:
     name = PROVINCE_NAMES.get(province, province)
     print(f"[start] {name}({province}) — {shp_dir.name}", flush=True)
 
@@ -462,14 +472,116 @@ def main() -> None:
     )
 
     totals = result["totals"]
+    codes = "+".join(result["flood"]["flood_province_codes"])
     print()
     print(f"[결과] {name}({province})")
-    print(f"  침수 Polygon        : {result['flood']['province_polygons']:,}건")
+    print(f"  침수 Polygon        : {result['flood']['province_polygons']:,}건 (시도코드 {codes})")
     print(f"  지하층 보유 건물     : {totals['basement_buildings']:,}동")
     print(f"  좌표 확인됨          : {totals['geometry_resolved']:,}동")
     print(f"  침수 Polygon 내부    : {totals['inside_flood_polygon']:,}동")
     print(f"  비율                : {result['inside_rate'] * 100:.2f}%")
     print(f"  저장                : {display_path(out_path)}")
+    print(flush=True)
+    return result
+
+
+def discover_provinces() -> list[tuple[str, Path]]:
+    """Every downloaded national snapshot, newest snapshot per province."""
+    latest: dict[str, Path] = {}
+    for directory in sorted(RAW_NATIONAL.glob("AL_D010_*")):
+        if not directory.is_dir():
+            continue
+        match = re.match(r"AL_D010_(\d{2})_(20\d{6})$", directory.name)
+        if not match:
+            continue
+        latest[match.group(1)] = directory
+    return sorted(latest.items())
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--province",
+        help="two-digit 법정 시도코드, e.g. 11 for Seoul",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="run every downloaded province under data/raw/vworld-buildings/national",
+    )
+    parser.add_argument(
+        "--dir",
+        type=Path,
+        default=None,
+        help="shapefile directory (defaults to the matching folder under data/raw/vworld-buildings/national)",
+    )
+    args = parser.parse_args()
+
+    if not args.all and not args.province:
+        raise SystemExit("Pass --province <코드> or --all")
+
+    if args.all:
+        targets = discover_provinces()
+        if not targets:
+            raise SystemExit(f"No snapshots found under {RAW_NATIONAL}")
+        print(f"[plan] {len(targets)}개 시도 처리: {', '.join(c for c, _ in targets)}\n")
+        results: list[dict[str, Any]] = []
+        failures: list[tuple[str, str]] = []
+        for province, shp_dir in targets:
+            try:
+                results.append(run_one(province, shp_dir))
+            except OverlapError as exc:
+                failures.append((province, str(exc)))
+                print(f"[skip] {province}: {exc}\n", flush=True)
+        print_summary(results, failures)
+        return
+
+    province = args.province.strip()
+    shp_dir = args.dir
+    if shp_dir is None:
+        matches = sorted(RAW_NATIONAL.glob(f"AL_D010_{province}_*"))
+        if not matches:
+            raise SystemExit(
+                f"No shapefile directory for province {province} under {RAW_NATIONAL}"
+            )
+        shp_dir = matches[-1]
+    run_one(province, shp_dir)
+
+
+def print_summary(
+    results: list[dict[str, Any]], failures: list[tuple[str, str]]
+) -> None:
+    ordered = sorted(
+        results, key=lambda r: r["totals"]["inside_flood_polygon"], reverse=True
+    )
+    print("=" * 72)
+    print(f"{'시도':<20}{'침수Poly':>9}{'지하층건물':>11}{'침수내부':>9}{'비율':>8}")
+    print("-" * 72)
+    for result in ordered:
+        totals = result["totals"]
+        print(
+            f"{result['province_name']:<20}"
+            f"{result['flood']['province_polygons']:>9,}"
+            f"{totals['basement_buildings']:>11,}"
+            f"{totals['inside_flood_polygon']:>9,}"
+            f"{result['inside_rate'] * 100:>7.2f}%"
+        )
+    print("-" * 72)
+    total_basement = sum(r["totals"]["basement_buildings"] for r in ordered)
+    total_inside = sum(r["totals"]["inside_flood_polygon"] for r in ordered)
+    rate = total_inside / total_basement * 100 if total_basement else 0.0
+    print(
+        f"{'전국 합계':<20}"
+        f"{sum(r['flood']['province_polygons'] for r in ordered):>9,}"
+        f"{total_basement:>11,}"
+        f"{total_inside:>9,}"
+        f"{rate:>7.2f}%"
+    )
+    print("=" * 72)
+    if failures:
+        print("\n[처리 실패]")
+        for province, message in failures:
+            print(f"  {province}: {message}")
 
 
 if __name__ == "__main__":

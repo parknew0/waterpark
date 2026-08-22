@@ -1,16 +1,39 @@
 {
+  "building_use_top20": {
+    "(미기재)": 1,
+    "공동주택": 38,
+    "공장": 1,
+    "교육연구시설": 4,
+    "노유자시설": 1,
+    "단독주택": 48,
+    "동.식물 관련시설": 1,
+    "방송통신시설": 1,
+    "숙박시설": 9,
+    "업무시설": 6,
+    "의료시설": 1,
+    "제1종근린생활시설": 32,
+    "제2종근린생활시설": 27,
+    "판매시설": 5
+  },
   "dbf": {
-    "a27_missing_or_blank": 5315,
-    "a27_zero_or_negative": 1977655,
-    "basement_rows": 25340,
-    "dbf_declared_rows": 2008310,
+    "a27_missing_or_blank": 7964,
+    "a27_zero_or_negative": 1974749,
+    "basement_rows": 25345,
+    "dbf_declared_rows": 2008058,
     "deleted_rows": 0
   },
   "flood": {
     "dropped": 0,
+    "flood_province_codes": [
+      "47"
+    ],
     "invalid_repaired": 0,
+    "polygons_by_flood_code": {
+      "47": 1402
+    },
     "province_polygons": 1402
   },
+  "flooded_csv": "data/interim/vworld-buildings/basement_flood_overlap_47_flooded.csv",
   "flooded_samples": [
     {
       "building_use_code": "14000",
@@ -20,6 +43,18 @@
       "legal_dong_code": "4715011900",
       "longitude": 128.1225862,
       "pnu": "4715011900105400001",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "01000",
+      "building_use_name": "단독주택",
+      "gis_building_id": "1991414201612877633100000000",
+      "latitude": 36.0667827,
+      "legal_dong_code": "4711312100",
+      "longitude": 129.3782821,
+      "pnu": "4711312100108710009",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -30,6 +65,7 @@
       "legal_dong_code": "4777031032",
       "longitude": 129.3796702,
       "pnu": "4777031032100470007",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -40,6 +76,7 @@
       "legal_dong_code": "4777031032",
       "longitude": 129.3802839,
       "pnu": "4777031032100760009",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -50,6 +87,7 @@
       "legal_dong_code": "4777025023",
       "longitude": 129.3696033,
       "pnu": "4777025023100260050",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -60,6 +98,7 @@
       "legal_dong_code": "4777031032",
       "longitude": 129.3802855,
       "pnu": "4777031032100430004",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -70,6 +109,7 @@
       "legal_dong_code": "4777031032",
       "longitude": 129.3801501,
       "pnu": "4777031032100430004",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -80,6 +120,7 @@
       "legal_dong_code": "4777035032",
       "longitude": 129.4470588,
       "pnu": "4777035032100860017",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -90,6 +131,7 @@
       "legal_dong_code": "4782025339",
       "longitude": 128.7712688,
       "pnu": "4782025339105160007",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -100,6 +142,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7477745,
       "pnu": "4782025321107540005",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -110,6 +153,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7456783,
       "pnu": "4782025321108210011",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -120,6 +164,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7507227,
       "pnu": "4782025321110340008",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -130,6 +175,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7458657,
       "pnu": "4782025321108230005",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -140,6 +186,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7473774,
       "pnu": "4782025321108420003",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -150,6 +197,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7482371,
       "pnu": "4782025321108340004",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -160,6 +208,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7464535,
       "pnu": "4782025321108110005",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -170,6 +219,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7468001,
       "pnu": "4782025321108510001",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -180,6 +230,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7468021,
       "pnu": "4782025321108480000",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -190,6 +241,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7452012,
       "pnu": "4782025321108040005",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -200,6 +252,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7484796,
       "pnu": "4782025321108400002",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -210,6 +263,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7460648,
       "pnu": "4782025321108170022",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -220,6 +274,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7490582,
       "pnu": "4782025321108750000",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -230,6 +285,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7483218,
       "pnu": "4782025321108400002",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -240,6 +296,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7453847,
       "pnu": "4782025321108030001",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -250,6 +307,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7469731,
       "pnu": "4782025321108310051",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -260,6 +318,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7461948,
       "pnu": "4782025321108090008",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -270,6 +329,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7459829,
       "pnu": "4782025321108210000",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -280,6 +340,7 @@
       "legal_dong_code": "4782025321",
       "longitude": 128.7484613,
       "pnu": "4782025321108590001",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -290,6 +351,7 @@
       "legal_dong_code": "4784025021",
       "longitude": 128.287581,
       "pnu": "4784025021100030008",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -300,6 +362,7 @@
       "legal_dong_code": "4784025024",
       "longitude": 128.2927516,
       "pnu": "4784025024100240001",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -310,6 +373,7 @@
       "legal_dong_code": "4784025021",
       "longitude": 128.2868739,
       "pnu": "4784025021100200001",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -320,6 +384,7 @@
       "legal_dong_code": "4784025024",
       "longitude": 128.2917154,
       "pnu": "4784025024120920019",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -330,6 +395,7 @@
       "legal_dong_code": "4784025024",
       "longitude": 128.2882412,
       "pnu": "4784025024100550005",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -340,6 +406,7 @@
       "legal_dong_code": "4784025024",
       "longitude": 128.2905615,
       "pnu": "4784025024120990000",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -350,6 +417,7 @@
       "legal_dong_code": "4784025024",
       "longitude": 128.290696,
       "pnu": "4784025024120940000",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -360,6 +428,7 @@
       "legal_dong_code": "4784025028",
       "longitude": 128.2901695,
       "pnu": "4784025028107940009",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -370,6 +439,7 @@
       "legal_dong_code": "4784025024",
       "longitude": 128.2906138,
       "pnu": "4784025024121010004",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -380,6 +450,7 @@
       "legal_dong_code": "4784025028",
       "longitude": 128.2920377,
       "pnu": "4784025028103120004",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -390,6 +461,7 @@
       "legal_dong_code": "4784025024",
       "longitude": 128.2892537,
       "pnu": "4784025024121020005",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -400,6 +472,7 @@
       "legal_dong_code": "4784025021",
       "longitude": 128.2884666,
       "pnu": "4784025021107720007",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -410,6 +483,7 @@
       "legal_dong_code": "4784025028",
       "longitude": 128.2898333,
       "pnu": "4784025028107950000",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -420,26 +494,18 @@
       "legal_dong_code": "4784025021",
       "longitude": 128.28719,
       "pnu": "4784025021100030017",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
-      "building_use_code": "21000",
-      "building_use_name": "동.식물 관련시설",
-      "gis_building_id": "1996365157183896710000000000",
-      "latitude": 36.9941969,
-      "legal_dong_code": "4792034025",
-      "longitude": 128.8560038,
-      "pnu": "4792034025103950005",
-      "underground_floor_count": 1
-    },
-    {
-      "building_use_code": "24000",
-      "building_use_name": "방송통신시설",
-      "gis_building_id": "1976413817293908401300000000",
-      "latitude": 36.9949285,
-      "legal_dong_code": "4793025021",
-      "longitude": 129.4025474,
-      "pnu": "4793025021105130001",
+      "building_use_code": "01000",
+      "building_use_name": "단독주택",
+      "gis_building_id": "1984319661642937312800000000",
+      "latitude": 36.1367611,
+      "legal_dong_code": "4719010300",
+      "longitude": 128.3302153,
+      "pnu": "4719010300105610013",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -450,6 +516,29 @@
       "legal_dong_code": "4793025021",
       "longitude": 129.398034,
       "pnu": "4793025021102030003",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "21000",
+      "building_use_name": "동.식물 관련시설",
+      "gis_building_id": "1996365157183896710000000000",
+      "latitude": 36.9941969,
+      "legal_dong_code": "4792034025",
+      "longitude": 128.8560038,
+      "pnu": "4792034025103950005",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "24000",
+      "building_use_name": "방송통신시설",
+      "gis_building_id": "1976413817293908401300000000",
+      "latitude": 36.9949285,
+      "legal_dong_code": "4793025021",
+      "longitude": 129.4025474,
+      "pnu": "4793025021105130001",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -460,6 +549,7 @@
       "legal_dong_code": "4793025321",
       "longitude": 129.4392748,
       "pnu": "4793025321105530000",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -470,6 +560,7 @@
       "legal_dong_code": "4793025021",
       "longitude": 129.4013976,
       "pnu": "4793025021105160015",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -480,6 +571,7 @@
       "legal_dong_code": "4793038022",
       "longitude": 129.4408156,
       "pnu": "4793038022103150003",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     },
     {
@@ -490,38 +582,19 @@
       "legal_dong_code": "4793038022",
       "longitude": 129.4405737,
       "pnu": "4793038022103150008",
-      "underground_floor_count": 1
-    },
-    {
-      "building_use_code": "01000",
-      "building_use_name": "단독주택",
-      "gis_building_id": "1979418107723559298400000000",
-      "latitude": 36.6796568,
-      "legal_dong_code": "4793038022",
-      "longitude": 129.4407012,
-      "pnu": "4793038022103150002",
-      "underground_floor_count": 1
-    },
-    {
-      "building_use_code": "01000",
-      "building_use_name": "단독주택",
-      "gis_building_id": "1979418085173558846800000000",
-      "latitude": 36.6792603,
-      "legal_dong_code": "4793038022",
-      "longitude": 129.440434,
-      "pnu": "4793038022102940012",
+      "source_dbf": "AL_D010_47_20260809(2).dbf",
       "underground_floor_count": 1
     }
   ],
-  "inside_rate": 0.006906,
+  "inside_rate": 0.006905,
   "province_code": "47",
   "province_name": "경상북도",
-  "source_dir": "data/raw/vworld-buildings/gyeongbuk/AL_D010_47_20251204",
+  "source_dir": "data/raw/vworld-buildings/national/AL_D010_47_20260809",
   "source_epsg": "5186",
   "totals": {
-    "basement_buildings": 25340,
+    "basement_buildings": 25345,
     "geometry_missing": 0,
-    "geometry_resolved": 25340,
+    "geometry_resolved": 25345,
     "inside_flood_polygon": 175
   }
 }

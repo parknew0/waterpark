@@ -1,0 +1,72 @@
+{
+  "building_use_top20": {
+    "공동주택": 1,
+    "제1종근린생활시설": 1,
+    "제2종근린생활시설": 1
+  },
+  "dbf": {
+    "a27_missing_or_blank": 1073,
+    "a27_zero_or_negative": 339731,
+    "basement_rows": 41893,
+    "dbf_declared_rows": 382697,
+    "deleted_rows": 0
+  },
+  "flood": {
+    "dropped": 0,
+    "flood_province_codes": [
+      "27"
+    ],
+    "invalid_repaired": 0,
+    "polygons_by_flood_code": {
+      "27": 5
+    },
+    "province_polygons": 5
+  },
+  "flooded_csv": "data/interim/vworld-buildings/basement_flood_overlap_27_flooded.csv",
+  "flooded_samples": [
+    {
+      "building_use_code": "04000",
+      "building_use_name": "제2종근린생활시설",
+      "gis_building_id": "2012154512912642942600000000",
+      "latitude": 35.8778123,
+      "legal_dong_code": "2771025625",
+      "longitude": 128.4969086,
+      "pnu": "2771025625100640007",
+      "source_dbf": "AL_D010_27_20260809.dbf",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "03000",
+      "building_use_name": "제1종근린생활시설",
+      "gis_building_id": "2008154550032640944200000000",
+      "latitude": 35.8759872,
+      "legal_dong_code": "2771025625",
+      "longitude": 128.4973627,
+      "pnu": "2771025625101340001",
+      "source_dbf": "AL_D010_27_20260809.dbf",
+      "underground_floor_count": 1
+    },
+    {
+      "building_use_code": "02000",
+      "building_use_name": "공동주택",
+      "gis_building_id": "2003154599592640674700000000",
+      "latitude": 35.8757507,
+      "legal_dong_code": "2771025625",
+      "longitude": 128.4978868,
+      "pnu": "2771025625101370002",
+      "source_dbf": "AL_D010_27_20260809.dbf",
+      "underground_floor_count": 1
+    }
+  ],
+  "inside_rate": 7.2e-05,
+  "province_code": "27",
+  "province_name": "대구광역시",
+  "source_dir": "data/raw/vworld-buildings/national/AL_D010_27_20260809",
+  "source_epsg": "5186",
+  "totals": {
+    "basement_buildings": 41893,
+    "geometry_missing": 0,
+    "geometry_resolved": 41893,
+    "inside_flood_polygon": 3
+  }
+}

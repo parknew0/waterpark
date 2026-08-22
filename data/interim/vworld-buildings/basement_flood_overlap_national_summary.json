@@ -1,0 +1,263 @@
+{
+  "building_use_counts": {
+    "(미기재)": 14,
+    "공동주택": 2964,
+    "공장": 82,
+    "관광휴게시설": 2,
+    "교육연구및복지시설": 2,
+    "교육연구시설": 98,
+    "교정및군사시설": 2,
+    "근린생활시설": 38,
+    "노유자시설": 71,
+    "단독주택": 10232,
+    "동.식물 관련시설": 8,
+    "문화및집회시설": 23,
+    "방송통신시설": 1,
+    "분뇨.쓰레기처리시설": 13,
+    "숙박시설": 567,
+    "업무시설": 330,
+    "운동시설": 15,
+    "운수시설": 7,
+    "위락시설": 68,
+    "위험물저장및처리시설": 20,
+    "의료시설": 64,
+    "자동차관련시설": 41,
+    "장례식장": 1,
+    "제1종근린생활시설": 2385,
+    "제2종근린생활시설": 2530,
+    "종교시설": 51,
+    "창고시설": 53,
+    "판매및영업시설": 1,
+    "판매시설": 62
+  },
+  "gyeongbuk_confirmation_rates": {
+    "공동주택": 0.148333,
+    "공장": 0.005747,
+    "관광휴게시설": 0.0,
+    "교육연구시설": 0.06281,
+    "노유자시설": 0.012255,
+    "단독주택": 0.052065,
+    "동.식물 관련시설": 0.0,
+    "문화및집회시설": 0.055,
+    "분뇨.쓰레기처리시설": 0.0,
+    "숙박시설": 0.049442,
+    "업무시설": 0.167674,
+    "운동시설": 0.077519,
+    "위락시설": 0.018349,
+    "위험물저장및처리시설": 0.0,
+    "의료시설": 0.101322,
+    "자동차관련시설": 0.307692,
+    "제1종근린생활시설": 0.065819,
+    "제2종근린생활시설": 0.038269,
+    "종교시설": 0.031161,
+    "창고시설": 0.00813,
+    "판매시설": 0.147541
+  },
+  "gyeongbuk_overall_confirmation_rate": 0.070532,
+  "notes": [
+    "expected_confirmed_parking는 경북에서 측정한 용도별 확정률을 다른 시도에 적용한 추정이다.",
+    "표본 50동 미만인 용도는 확정률을 적용하지 않았다.",
+    "정답 라벨은 지표면 침수이며 지하주차장 침수 기록이 아니다."
+  ],
+  "per_province": [
+    {
+      "basement_buildings": 377157,
+      "csv_present": true,
+      "expected_confirmed_parking": 590.7,
+      "flood_polygons": 9002,
+      "flooded": 9498,
+      "flooded_deep_2f_plus": 179,
+      "flooded_rate": 0.025183,
+      "province_code": "11",
+      "province_name": "서울특별시"
+    },
+    {
+      "basement_buildings": 256098,
+      "csv_present": true,
+      "expected_confirmed_parking": 287.8,
+      "flood_polygons": 6730,
+      "flooded": 3341,
+      "flooded_deep_2f_plus": 40,
+      "flooded_rate": 0.013046,
+      "province_code": "41",
+      "province_name": "경기도"
+    },
+    {
+      "basement_buildings": 55432,
+      "csv_present": true,
+      "expected_confirmed_parking": 177.1,
+      "flood_polygons": 479,
+      "flooded": 2343,
+      "flooded_deep_2f_plus": 145,
+      "flooded_rate": 0.042268,
+      "province_code": "26",
+      "province_name": "부산광역시"
+    },
+    {
+      "basement_buildings": 37938,
+      "csv_present": true,
+      "expected_confirmed_parking": 63.7,
+      "flood_polygons": 3806,
+      "flooded": 1019,
+      "flooded_deep_2f_plus": 60,
+      "flooded_rate": 0.02686,
+      "province_code": "48",
+      "province_name": "경상남도"
+    },
+    {
+      "basement_buildings": 11847,
+      "csv_present": true,
+      "expected_confirmed_parking": 52.8,
+      "flood_polygons": 402,
+      "flooded": 756,
+      "flooded_deep_2f_plus": 14,
+      "flooded_rate": 0.063814,
+      "province_code": "31",
+      "province_name": "울산광역시"
+    },
+    {
+      "basement_buildings": 14374,
+      "csv_present": true,
+      "expected_confirmed_parking": 30.9,
+      "flood_polygons": 2016,
+      "flooded": 509,
+      "flooded_deep_2f_plus": 15,
+      "flooded_rate": 0.035411,
+      "province_code": "50",
+      "province_name": "제주특별자치도"
+    },
+    {
+      "basement_buildings": 27489,
+      "csv_present": true,
+      "expected_confirmed_parking": 33.6,
+      "flood_polygons": 1989,
+      "flooded": 496,
+      "flooded_deep_2f_plus": 1,
+      "flooded_rate": 0.018044,
+      "province_code": "44",
+      "province_name": "충청남도"
+    },
+    {
+      "basement_buildings": 21106,
+      "csv_present": true,
+      "expected_confirmed_parking": 31.7,
+      "flood_polygons": 1329,
+      "flooded": 461,
+      "flooded_deep_2f_plus": 6,
+      "flooded_rate": 0.021842,
+      "province_code": "52",
+      "province_name": "전북특별자치도"
+    },
+    {
+      "basement_buildings": 31789,
+      "csv_present": true,
+      "expected_confirmed_parking": 26.5,
+      "flood_polygons": 5218,
+      "flooded": 454,
+      "flooded_deep_2f_plus": 2,
+      "flooded_rate": 0.014282,
+      "province_code": "43",
+      "province_name": "충청북도"
+    },
+    {
+      "basement_buildings": 35582,
+      "csv_present": true,
+      "expected_confirmed_parking": 27.4,
+      "flood_polygons": 2919,
+      "flooded": 416,
+      "flooded_deep_2f_plus": 6,
+      "flooded_rate": 0.011691,
+      "province_code": "12",
+      "province_name": "전남광주통합특별시"
+    },
+    {
+      "basement_buildings": 39477,
+      "csv_present": true,
+      "expected_confirmed_parking": 10.9,
+      "flood_polygons": 2366,
+      "flooded": 205,
+      "flooded_deep_2f_plus": 0,
+      "flooded_rate": 0.005193,
+      "province_code": "51",
+      "province_name": "강원특별자치도"
+    },
+    {
+      "basement_buildings": 25345,
+      "csv_present": true,
+      "expected_confirmed_parking": 13.8,
+      "flood_polygons": 1402,
+      "flooded": 175,
+      "flooded_deep_2f_plus": 1,
+      "flooded_rate": 0.006905,
+      "province_code": "47",
+      "province_name": "경상북도"
+    },
+    {
+      "basement_buildings": 43924,
+      "csv_present": true,
+      "expected_confirmed_parking": 3.7,
+      "flood_polygons": 171,
+      "flooded": 65,
+      "flooded_deep_2f_plus": 2,
+      "flooded_rate": 0.00148,
+      "province_code": "30",
+      "province_name": "대전광역시"
+    },
+    {
+      "basement_buildings": 41893,
+      "csv_present": true,
+      "expected_confirmed_parking": 0.3,
+      "flood_polygons": 5,
+      "flooded": 3,
+      "flooded_deep_2f_plus": 0,
+      "flooded_rate": 7.2e-05,
+      "province_code": "27",
+      "province_name": "대구광역시"
+    },
+    {
+      "basement_buildings": 1516,
+      "csv_present": true,
+      "expected_confirmed_parking": 0.2,
+      "flood_polygons": 25,
+      "flooded": 3,
+      "flooded_deep_2f_plus": 0,
+      "flooded_rate": 0.001979,
+      "province_code": "36",
+      "province_name": "세종특별자치시"
+    },
+    {
+      "basement_buildings": 69142,
+      "csv_present": true,
+      "expected_confirmed_parking": 0.1,
+      "flood_polygons": 144,
+      "flooded": 1,
+      "flooded_deep_2f_plus": 0,
+      "flooded_rate": 1.4e-05,
+      "province_code": "28",
+      "province_name": "인천광역시"
+    }
+  ],
+  "totals": {
+    "basement_buildings": 1090109,
+    "expected_confirmed_parking": 1351.2,
+    "flood_polygons": 38003,
+    "flooded": 19745,
+    "flooded_deep_2f_plus": 471,
+    "use_rate_covered": 19679
+  },
+  "underground_depth_by_group": {
+    "그 외": {
+      "1": 9045,
+      "2": 310,
+      "3": 79,
+      "4": 44,
+      "5": 22,
+      "6": 6,
+      "7": 7
+    },
+    "단독주택": {
+      "1": 10229,
+      "2": 3
+    }
+  }
+}
