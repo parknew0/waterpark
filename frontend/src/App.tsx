@@ -10,11 +10,12 @@ import { useParkingSearch } from "./hooks/useParkingSearch";
 import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
+import { fetchLiveDrivingRoute } from "./lib/liveDrivingRoute";
 import { getEnglishParkingLabel } from "./lib/parkingEnglish";
-import { buildDangerParkingRoute } from "./lib/parkingDetailRoute";
 import { resolveParkingRiskBranch } from "./lib/parkingRisk";
 import { getHistoricalScenario } from "./scenarios/hinnamnorScenario";
 import type { Coordinate, ParkingPlace } from "./types/parking";
+import type { FloodAwareRoute } from "./types/routing";
 
 const DEFAULT_CENTER: Coordinate = { latitude: 36.576, longitude: 128.505 };
 const kakaoAppKey = import.meta.env.VITE_KAKAO_MAP_APP_KEY?.trim();
@@ -44,6 +45,7 @@ export default function App() {
   const [isRiskSelectionMode, setIsRiskSelectionMode] = useState(false);
   const [riskAssessmentPending, setRiskAssessmentPending] = useState(false);
   const [assessedPlace, setAssessedPlace] = useState<ParkingPlace>();
+  const [assessedRoute, setAssessedRoute] = useState<FloodAwareRoute>();
   const hasRequestedLocation = useRef(false);
   const historicalAlertTimer = useRef<number | undefined>(undefined);
   const requestHeadingPermission = useDeviceHeading();
@@ -90,13 +92,6 @@ export default function App() {
     () => lowerRiskParkingPlace ? [dangerParkingPlace, lowerRiskParkingPlace] : [dangerParkingPlace],
     [dangerParkingPlace, lowerRiskParkingPlace],
   );
-  const dangerDetailRoute = useMemo(
-    () => evacuationRoute
-      ? buildDangerParkingRoute(evacuationRoute, assessedPlace ?? dangerParkingPlace)
-      : undefined,
-    [assessedPlace, dangerParkingPlace, evacuationRoute],
-  );
-
   const selectedPlace = useMemo(
     () => visiblePlaces.find((place) => place.id === selected?.id) ?? selected,
     [selected, visiblePlaces],
@@ -216,6 +211,13 @@ export default function App() {
           dangerParkingId: dangerParkingPlace.id,
           lowerRiskParkingId: lowerRiskParkingPlace.id,
         });
+        const routeOrigin = branch === "danger"
+          ? (currentPosition ?? historicalScenario?.origin ?? center)
+          : (parkedPlace ?? currentPosition ?? historicalScenario?.origin ?? center);
+        const liveRoute = evacuationRoute
+          ? await fetchLiveDrivingRoute(routeOrigin, place, evacuationRoute).catch(() => undefined)
+          : undefined;
+        setAssessedRoute(liveRoute);
         navigateToView(branch === "danger" ? "risk-detail" : "safe-detail");
       } finally {
         setRiskAssessmentPending(false);
@@ -225,7 +227,7 @@ export default function App() {
     setSelected(place);
     setCenter({ latitude: place.latitude, longitude: place.longitude });
     setIsCarLocationOpen(true);
-  }, [dangerParkingPlace.id, isRiskSelectionMode, lowerRiskParkingPlace, navigateToView]);
+  }, [center, currentPosition, dangerParkingPlace.id, evacuationRoute, isRiskSelectionMode, lowerRiskParkingPlace, navigateToView, parkedPlace]);
 
   const handleSetCarLocation = useCallback(() => {
     if (selectedPlace) setParkedPlace(selectedPlace);
@@ -255,9 +257,11 @@ export default function App() {
         safeTimeLabel={historicalScenario?.safeTimeLabel}
         onMoveNow={() => {
           setIsRiskSelectionMode(true);
+          setAssessedPlace(undefined);
+          setAssessedRoute(undefined);
           setShowParkingMarkers(true);
           setIsCarLocationOpen(false);
-          setCenter(evacuationRoute?.origin ?? historicalScenario?.origin ?? { latitude: 36.014, longitude: 129.325 });
+          setCenter(parkedPlace ?? currentPosition ?? historicalScenario?.origin ?? { latitude: 36.014, longitude: 129.325 });
           navigateToView("map");
         }}
       />
@@ -268,14 +272,10 @@ export default function App() {
       <FloodLocationDetailView
         appKey={kakaoAppKey}
         variant="danger"
-        route={dangerDetailRoute}
+        route={assessedRoute}
         place={assessedPlace ?? dangerParkingPlace}
         rainfallLabel={historicalScenario?.rainfallLabel}
         rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}
-        currentParkingName={historicalScenario?.currentParkingName}
-        currentParkingAddress={historicalScenario?.currentParkingAddress}
-        comparisonMetric={historicalScenario ? "B1" : undefined}
-        riskReasons={historicalScenario ? ["Confirmed underground parking use", "Peak 1-hour rainfall reached 77mm"] : undefined}
         ctaLabel="Move Your Car Now"
         onContinue={() => {
           setIsRiskSelectionMode(true);
@@ -291,12 +291,10 @@ export default function App() {
       <FloodLocationDetailView
         appKey={kakaoAppKey}
         variant="safe"
-        route={evacuationRoute}
+        route={assessedRoute}
         place={assessedPlace ?? lowerRiskParkingPlace}
         rainfallLabel={historicalScenario?.rainfallLabel}
         rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}
-        comparisonMetric={historicalScenario ? "26 spaces" : undefined}
-        riskReasons={historicalScenario ? ["Public-data parking candidate", "Route avoids static high-risk zones"] : undefined}
         ctaLabel="Move Your Car Now"
         onContinue={() => {
           setIsRiskSelectionMode(false);
@@ -310,8 +308,8 @@ export default function App() {
     return (
       <EvacuationRouteView
         appKey={kakaoAppKey}
-        route={evacuationRoute}
-        currentLocationName={historicalScenario?.currentParkingName}
+        route={assessedRoute}
+        currentLocationName={parkedPlace ? getEnglishParkingLabel(parkedPlace).name : currentLocationLabel}
         onBack={() => navigateToView("safe-detail")}
       />
     );
@@ -338,10 +336,8 @@ export default function App() {
       places={isRiskSelectionMode ? riskSelectionPlaces : visiblePlaces}
       selected={selectedPlace}
       routeError={routeError}
-      replayLabel={historicalScenario?.replayLabel}
       rainfallLabel={historicalScenario?.rainfallLabel}
       rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}
-      historicalRiskPreview={Boolean(historicalScenario)}
       assessmentMode={isRiskSelectionMode}
       assessmentPending={riskAssessmentPending || !lowerRiskParkingPlace}
     />

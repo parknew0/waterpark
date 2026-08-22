@@ -860,12 +860,12 @@ h3 { margin: 0; font-size: 14px; }
   height: 32px;
   display: grid;
   place-items: center;
-  border: 2px solid #001817;
+  border: 0;
   border-radius: 50%;
   color: #001817;
   background: #43ff76;
   font: 700 17px/1 "Plus Jakarta Sans", sans-serif;
-  box-shadow: 0 4px 14px rgb(0 0 0 / 45%);
+  box-shadow: 0 0 0 1px rgb(0 24 23 / 45%), 0 4px 14px rgb(0 0 0 / 45%);
 }
 .parking-home-map .map-pulse {
   width: 24px;

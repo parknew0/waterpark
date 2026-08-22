@@ -383,6 +383,16 @@
 - 출처: [Kakao 지도 Web API RoadviewClient](https://apis.map.kakao.com/web/documentation/)
 - 확인일: 2026-08-23
 
+### 2026-08-23 — 힌남노 입력과 실제 제품 흐름 분리
+
+- `DECISION`: 힌남노 시나리오는 과거 강우·위험 판정 입력으로만 사용하며 화면에는 `Hinnamnor Replay`, `Historical scenario inputs`, 침수 당시 보도 사진을 노출하지 않는다.
+- `DECISION`: 힌남노 재연은 발표자의 현재 GPS가 아니라 오천읍 구정길 `35.9816, 129.4103`을 사용자 시연 위치로 사용한다. 위험 상세는 이 위치에서 저장한 내 차까지, 안전 상세는 저장한 내 차에서 선택한 안전 후보까지의 서로 다른 두 경로를 계산한다.
+- `FACT`: OSRM Route Service는 전달한 좌표 순서대로 자동차 도로 경로를 계산하며 GeoJSON 형상·거리·시간을 반환한다.
+- `DECISION`: 위험·안전 주차장 선택 시 저장한 내 차 위치와 선택 장소를 OSRM에 전달해 경로를 다시 계산한다. 공개 라우터 장애 시 운영 품질을 보장할 수 없으므로 현재 구현은 시연용이다.
+- `DECISION`: 목적지 마커의 검은 테두리를 제거하고 경로의 마지막 좌표를 정확한 목적지로 연결해 선이 `P` 아래까지 이어지게 한다.
+- 출처: [OSRM Route API](https://project-osrm.org/docs/v26.4.0/http/#route-service), [OpenStreetMap 저작권](https://www.openstreetmap.org/copyright)
+- 확인일: 2026-08-23
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |

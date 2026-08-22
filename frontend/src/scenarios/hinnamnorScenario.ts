@@ -2,7 +2,6 @@ import type { Coordinate, ParkingPlace } from "../types/parking";
 
 export interface HistoricalWaterparkScenario {
   id: "hinnamnor";
-  replayLabel: string;
   locationLabel: string;
   origin: Coordinate;
   rainfallLabel: string;
@@ -17,11 +16,10 @@ export interface HistoricalWaterparkScenario {
 
 export const HINNAMNOR_SCENARIO: HistoricalWaterparkScenario = {
   id: "hinnamnor",
-  replayLabel: "HINNAMNOR REPLAY · SEP 6, 2022",
-  locationLabel: "Indeok-dong, Nam-gu · Sep 6, 2022",
-  origin: { latitude: 35.9835575, longitude: 129.406536 },
+  locationLabel: "Gujeong-gil, Ocheon-eup",
+  origin: { latitude: 35.9816, longitude: 129.4103 },
   rainfallLabel: "77mm",
-  rainfallAriaLabel: "Historical peak one-hour rainfall: 77 millimeters",
+  rainfallAriaLabel: "One-hour rainfall: 77 millimeters",
   safeTimeLabel: "1 hour",
   routeDataUrl: "/data/hinnamnor-waterpark-flow.geojson",
   alertDelayMs: 1_800,
@@ -34,9 +32,8 @@ export const HINNAMNOR_SCENARIO: HistoricalWaterparkScenario = {
       address: "경상북도 포항시 남구 인덕동 7",
       latitude: 35.9835575,
       longitude: 129.406536,
-      distanceMeters: 0,
+      distanceMeters: 481,
       parkingType: "지하",
-      imageUrl: "https://t1.daumcdn.net/news/202209/07/donga/20220907030059842cmpo.jpg",
       source: "public-data",
     },
     {

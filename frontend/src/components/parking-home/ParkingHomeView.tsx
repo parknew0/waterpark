@@ -27,10 +27,8 @@ interface ParkingHomeViewProps {
   places: ParkingPlace[];
   selected?: ParkingPlace;
   routeError: string | null;
-  replayLabel?: string;
   rainfallLabel?: string;
   rainfallAriaLabel?: string;
-  historicalRiskPreview?: boolean;
   assessmentMode?: boolean;
   assessmentPending?: boolean;
 }
@@ -69,10 +67,8 @@ export function ParkingHomeView({
   places,
   selected,
   routeError,
-  replayLabel,
   rainfallLabel = "--mm",
   rainfallAriaLabel = "강수량 API 연결 대기 중",
-  historicalRiskPreview = false,
   assessmentMode = false,
   assessmentPending = false,
 }: ParkingHomeViewProps) {
@@ -115,7 +111,6 @@ export function ParkingHomeView({
 
         <header className="parking-home-header">
           <BrandLogo />
-          {replayLabel ? <span className="historical-replay-label">{replayLabel}</span> : null}
           <button className="current-location-button" type="button" onClick={onOpenSheet}>
             <span className="current-location-icon" aria-hidden="true">
               <img src="/assets/parking/location.svg" alt="" />
@@ -166,7 +161,6 @@ export function ParkingHomeView({
                 appKey={appKey}
                 place={selected}
                 onSetCarLocation={onSetCarLocation}
-                historicalRiskPreview={historicalRiskPreview}
               />
             ) : (
               <>
@@ -227,12 +221,10 @@ function ParkingDetail({
   appKey,
   place,
   onSetCarLocation,
-  historicalRiskPreview,
 }: {
   appKey?: string;
   place: ParkingPlace;
   onSetCarLocation: () => void;
-  historicalRiskPreview: boolean;
 }) {
   return (
     <div className="parking-detail">
@@ -243,31 +235,18 @@ function ParkingDetail({
         place={place}
       />
       <div className="parking-detail-copy">
-        <span className="prototype-warning">{historicalRiskPreview ? "Hinnamnor Replay" : "Prototype"}</span>
+        <span className="prototype-warning">Warning</span>
         <h2>{place.name}</h2>
         <p>{place.address || "주소 정보 없음"}</p>
         <span className="parking-detail-distance">{formatDistance(place.distanceMeters)}</span>
       </div>
       <div className="parking-risk-preview">
-        {historicalRiskPreview ? (
-          <>
-            <h3><span>High flood risk</span><br />within the next 1 hour</h3>
-            <p>Historical scenario inputs</p>
-            <ul>
-              <li>Confirmed underground parking use</li>
-              <li>Peak 1-hour rainfall: 77mm</li>
-            </ul>
-          </>
-        ) : (
-          <>
-            <h3><span>Risk assessment</span><br />is not connected yet</h3>
-            <p>Prediction API 연결 후 표시할 정보</p>
-            <ul>
-              <li>건물의 주변 대비 고도</li>
-              <li>최근 강수량과 침수 위험도</li>
-            </ul>
-          </>
-        )}
+        <h3><span>High risk of flooding</span><br />in the next 1 hour</h3>
+        <p>Here’s Why</p>
+        <ul>
+          <li>Building is lower than the surrounding</li>
+          <li>Rainfall over the past 6 hours</li>
+        </ul>
       </div>
       <footer className="parking-detail-footer">
         <button type="button" onClick={onSetCarLocation}>Set My Car’s Location</button>
