@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Orbitron:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap");
 
 :root {
   color-scheme: dark;
@@ -25,6 +25,82 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: rgba(0, 232, 2
 button:focus-visible, input:focus-visible, a:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
+}
+
+.brand-logo {
+  display: inline-block;
+  color: var(--text-primary);
+  font: 600 20px/1.4 "Orbitron", sans-serif;
+  letter-spacing: -.2px;
+  white-space: nowrap;
+}
+
+/* Splash: Figma 50:84. The iOS example status bar is intentionally omitted. */
+.splash-stage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #03070a;
+}
+
+.splash-phone {
+  position: relative;
+  width: min(402px, 100vw);
+  height: min(874px, 100svh);
+  min-height: 720px;
+  overflow: hidden;
+  background: #03070a;
+}
+
+.splash-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 402px;
+  height: auto;
+  max-width: none;
+  opacity: .2;
+  transform: translate(-50%, -50%);
+}
+
+.splash-button {
+  position: absolute;
+  top: 308px;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 61px;
+  object-fit: cover;
+  transform: translateX(-50%);
+  box-shadow: 2px 2px 50px rgb(0 251 255 / 22%);
+  animation: splash-button-arrive 900ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.splash-logo {
+  position: absolute;
+  top: 541px;
+  left: 50%;
+  color: transparent;
+  background: linear-gradient(90deg, #00e8ec, #c4feff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -.4px;
+  text-shadow: 2px 2px 50px #000;
+  transform: translateX(-50%);
+  animation: splash-logo-arrive 700ms 280ms ease-out both;
+}
+
+@keyframes splash-button-arrive {
+  from { opacity: 0; transform: translateX(-50%) scale(.88); }
+  to { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+@keyframes splash-logo-arrive {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 .skip-link {
@@ -558,6 +634,7 @@ h3 { margin: 0; font-size: 14px; }
 .flood-detail-map .map-wrap,
 .flood-detail-map .fallback-map,
 .flood-detail-map .kakao-map { position: absolute; inset: 0 0 auto; width: 100%; height: 304px; min-height: 304px; }
+.flood-detail-map .kakao-map { overflow: hidden; background: #071412; touch-action: none; }
 
 .flood-detail-map .fallback-map,
 .evacuation-directions-map .fallback-map { background: #000 url("/assets/routing/flood-route-map.png") center / cover no-repeat; }
@@ -577,7 +654,7 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 .flood-detail-header { position: absolute; z-index: 6; top: 62px; left: 16px; display: flex; flex-direction: column; }
-.flood-detail-header strong { font-size: 24px; font-weight: 600; line-height: 1.4; letter-spacing: -.24px; }
+.flood-detail-header .brand-logo { font-size: 20px; }
 .flood-detail-header span { display: flex; align-items: center; gap: 4px; color: #ededed; font-family: "Noto Sans KR", sans-serif; font-size: 14px; line-height: 20px; }
 .flood-detail-header span img { width: 24px; height: 24px; padding: 5px; border-radius: 50%; background: #474747; }
 
@@ -737,7 +814,8 @@ h3 { margin: 0; font-size: 14px; }
   touch-action: none;
 }
 
-.parking-home-map .kakao-map div:has(> img[src*="/tile/"]) {
+.parking-home-map .kakao-map div:has(> img[src*="/tile/"]),
+.flood-detail-map .kakao-map div:has(> img[src*="/tile/"]) {
   filter: grayscale(1) invert(.88) sepia(.2) saturate(.76) hue-rotate(112deg) brightness(.82) contrast(1.24);
 }
 
@@ -902,10 +980,7 @@ h3 { margin: 0; font-size: 14px; }
   align-items: flex-start;
 }
 
-.parking-home-header > strong {
-  font: 600 24px/1.4 "Plus Jakarta Sans", sans-serif;
-  letter-spacing: -.24px;
-}
+.parking-home-header > .brand-logo { font-size: 20px; }
 
 .current-location-button {
   max-width: 260px;
@@ -1226,6 +1301,7 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 @media (max-width: 480px) {
+  .splash-phone,
   .parking-home-phone,
   .flood-location-phone,
   .evacuation-directions-phone {

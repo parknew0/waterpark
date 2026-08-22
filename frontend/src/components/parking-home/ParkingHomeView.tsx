@@ -3,6 +3,7 @@ import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
 import type { Coordinate, ParkingPlace, SearchSource } from "../../types/parking";
 import type { FloodAwareRoute } from "../../types/routing";
 import { ParkingMap } from "../ParkingMap";
+import { BrandLogo } from "../brand/BrandLogo";
 
 interface ParkingHomeViewProps {
   appKey?: string;
@@ -101,7 +102,7 @@ export function ParkingHomeView({
         {routeError ? <p className="evacuation-route-error" role="status">{routeError}</p> : null}
 
         <header className="parking-home-header">
-          <strong>APP</strong>
+          <BrandLogo />
           <button className="current-location-button" type="button" onClick={onOpenSheet}>
             <span className="current-location-icon" aria-hidden="true">
               <img src="/assets/parking/location.svg" alt="" />

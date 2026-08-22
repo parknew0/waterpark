@@ -1,8 +1,10 @@
 import { ParkingMap } from "../ParkingMap";
 import type { FloodAwareRoute } from "../../types/routing";
 import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
+import { BrandLogo } from "../brand/BrandLogo";
 
 interface FloodLocationDetailViewProps {
+  appKey?: string;
   variant: "danger" | "safe";
   route?: FloodAwareRoute;
   onContinue: () => void;
@@ -14,6 +16,7 @@ function formatDistance(distanceMeters: number) {
 }
 
 export function FloodLocationDetailView({
+  appKey,
   variant,
   route,
   onContinue,
@@ -28,9 +31,10 @@ export function FloodLocationDetailView({
   return (
     <main className="flood-location-stage">
       <section className={`flood-location-phone flood-location-phone--${variant}`} aria-labelledby="flood-location-name">
-        <div className="flood-detail-map" aria-hidden="true">
+        <div className="flood-detail-map">
           {route ? (
             <ParkingMap
+              appKey={appKey}
               center={route.origin}
               currentPosition={route.origin}
               evacuationRoute={route}
@@ -41,7 +45,7 @@ export function FloodLocationDetailView({
         </div>
 
         <header className="flood-detail-header">
-          <strong>APP</strong>
+          <BrandLogo />
           <span><img src="/assets/parking/location.svg" alt="" /> Pohang-si Nam-gu</span>
         </header>
 

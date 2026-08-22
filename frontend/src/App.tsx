@@ -5,6 +5,7 @@ import { OnboardingCarView } from "./components/onboarding/OnboardingCarView";
 import { ParkingHomeView } from "./components/parking-home/ParkingHomeView";
 import { EvacuationRouteView } from "./components/routing/EvacuationRouteView";
 import { FloodLocationDetailView } from "./components/routing/FloodLocationDetailView";
+import { SplashView } from "./components/splash/SplashView";
 import { useParkingSearch } from "./hooks/useParkingSearch";
 import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
@@ -15,11 +16,12 @@ import type { Coordinate, ParkingPlace } from "./types/parking";
 const DEFAULT_CENTER: Coordinate = { latitude: 36.576, longitude: 128.505 };
 const kakaoAppKey = import.meta.env.VITE_KAKAO_MAP_APP_KEY?.trim();
 
-type AppView = "car" | "consent" | "map" | "emergency" | "risk-detail" | "safe-detail" | "route";
+type AppView = "splash" | "car" | "consent" | "map" | "emergency" | "risk-detail" | "safe-detail" | "route";
 
 function getInitialView(): AppView {
   const view = new URLSearchParams(window.location.search).get("view");
-  return view === "consent" || view === "map" || view === "emergency" || view === "risk-detail" || view === "safe-detail" || view === "route" ? view : "car";
+  if (view === "car" || view === "consent" || view === "map" || view === "emergency" || view === "risk-detail" || view === "safe-detail" || view === "route") return view;
+  return window.history.state?.waterparkSplashSeen ? "car" : "splash";
 }
 
 export default function App() {
@@ -58,9 +60,14 @@ export default function App() {
     const url = new URL(window.location.href);
     if (nextView === "car") url.searchParams.delete("view");
     else url.searchParams.set("view", nextView);
-    window.history.pushState(null, "", url);
+    window.history.pushState({ waterparkSplashSeen: true }, "", url);
     setView(nextView);
   };
+
+  const handleSplashComplete = useCallback(() => {
+    window.history.replaceState({ ...window.history.state, waterparkSplashSeen: true }, "", window.location.href);
+    setView("car");
+  }, []);
 
   const handleUseLocation = useCallback(() => {
     if (!navigator.geolocation) {
@@ -141,6 +148,7 @@ export default function App() {
     if (currentPosition) setCenter(currentPosition);
   }, [currentPosition, selectedPlace]);
 
+  if (view === "splash") return <SplashView onComplete={handleSplashComplete} />;
   if (view === "car") return <OnboardingCarView onNext={() => navigateToView("consent")} />;
   if (view === "consent") return <LocationConsentView onAgree={handleOpenParkingHome} />;
   if (view === "emergency") {
@@ -162,6 +170,7 @@ export default function App() {
   if (view === "risk-detail") {
     return (
       <FloodLocationDetailView
+        appKey={kakaoAppKey}
         variant="danger"
         route={evacuationRoute}
         onContinue={() => navigateToView("safe-detail")}
@@ -171,6 +180,7 @@ export default function App() {
   if (view === "safe-detail") {
     return (
       <FloodLocationDetailView
+        appKey={kakaoAppKey}
         variant="safe"
         route={evacuationRoute}
         onContinue={() => navigateToView("route")}
