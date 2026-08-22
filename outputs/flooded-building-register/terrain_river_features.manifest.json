@@ -6,7 +6,7 @@
     "하천 대비 고도는 DSM을 하천 위치에서 샘플링한 값이며 실측 수위가 아니다.",
     "세류(RVC005)는 전체 선분의 84.5%지만 침수 신호가 약해 제외했다."
   ],
-  "output": "data/interim/vworld-buildings/labeled_building_sample_features.csv",
+  "output": "data/interim/vworld-buildings/labeled_building_sample_more_features.csv",
   "radii_m": [
     200.0,
     500.0,
@@ -18,13 +18,13 @@
     "RVC002": "지방하천",
     "RVC003": "소하천"
   },
-  "rows": 31046,
-  "source": "data/interim/vworld-buildings/labeled_building_sample.csv",
+  "rows": 18692,
+  "source": "data/interim/vworld-buildings/labeled_building_sample_more.csv",
   "stats": {
     "dem_sampling": {
-      "outside_tile": 12
+      "outside_tile": 28
     },
-    "river_resolved": 31040,
-    "terrain_resolved": 31040
+    "river_resolved": 18691,
+    "terrain_resolved": 18691
   }
 }

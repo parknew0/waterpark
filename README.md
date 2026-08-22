@@ -19,6 +19,9 @@ Waterpark는 경상북도 지하주차장 이용자를 위한 **공공데이터�
 - [데이터 폴더 안내와 전체 카탈로그](./data/README.md): `raw/interim/processed` 구분과 현재 35개 데이터 자산의 경로·행 수·상태
 - [전국 데이터 및 코드 감사](./docs/08-national-data-and-code-audit.md): 전국 침수·건물 다운로드 검증 결과, 필드 한계와 남은 확인 사항
 - [전국 확장 타당성 검증](./docs/09-national-expansion-feasibility.md): 서울·경북 실측 비교, 지하주차장 확정 기대치와 남은 수집 대상
+- [전국 전처리 파이프라인](./docs/10-nationwide-preprocessing-pipeline.md): 원본부터 학습표까지 각 단계와 그렇게 결정한 이유
+- [모델 설계 비교](./docs/11-model-design-comparison.md): 11개 설계를 8개 시도 홀드아웃으로 실측 비교
+- [회고와 교훈](./docs/12-retrospective-and-lessons.md): 틀렸던 판단, 어떻게 발견했는지, 방법론으로 남길 것
 - [리서치 로그](./docs/research-log.md): 확인된 사실, 미확정 사항, 조사 결과와 결정 기록
 - [AGENTS.md](./AGENTS.md): 후속 AI 에이전트가 따라야 할 작업 범위
 

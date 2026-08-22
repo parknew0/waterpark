@@ -42,6 +42,15 @@ from data_paths import ROOT
 
 OUT_DIR = ROOT / "data/interim/vworld-buildings"
 
+
+def display_path(path: Path) -> str:
+    """Repo-relative when possible; a --out anywhere else still prints."""
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(ROOT.resolve()))
+    except ValueError:
+        return str(resolved)
+
 # Matches the surveyed-influence rule used by build_flood_training_table.py.
 DEFAULT_NEGATIVE_RADIUS_M = 1000.0
 # Degrees of latitude per metre, for the buffer around surveyed polygons.
@@ -168,7 +177,7 @@ def main() -> None:
     positives = sum(1 for r in all_rows if r["flooded"] == 1)
     print()
     print(f"[결과] {len(all_rows):,}행 (양성 {positives:,} / 음성 {len(all_rows) - positives:,})")
-    print(f"  저장: {args.out.relative_to(ROOT)}")
+    print(f"  저장: {display_path(args.out)}")
     for province, counts in summary.items():
         print(f"  {PROVINCE_NAMES.get(province, province)}: {counts}")
 

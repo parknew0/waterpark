@@ -1,0 +1,22 @@
+{
+  "confirmed_buildings": 1233,
+  "confirmed_parcels": 1160,
+  "confirmed_share": 0.06327,
+  "floor_rows_collected": 38391,
+  "notes": [
+    "판정은 필지(PNU) 단위다. 같은 필지의 건물은 같은 판정을 공유한다.",
+    "정답 라벨은 지표면 침수이며 지하주차장 침수 기록이 아니다.",
+    "NO_REGISTER_ROW_COLLECTED는 미수집이며 지하주차장 없음이 아니다."
+  ],
+  "output_csv": "data/interim/building-register/flooded_building_underground_parking.csv",
+  "probable_parcels": 2271,
+  "status_counts": {
+    "CONFIRMED_BASEMENT_PARKING_USE": 1233,
+    "NO_REGISTER_ROW_COLLECTED": 1192,
+    "PROBABLE_NOT_CONFIRMED_IN_FLOOR_ROWS": 1127,
+    "REGISTER_ROW_WITHOUT_INDOOR_PARKING": 15936
+  },
+  "target_buildings": 19488,
+  "target_parcels": 19013,
+  "title_rows_collected": 19995
+}
