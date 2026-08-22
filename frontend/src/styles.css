@@ -354,10 +354,12 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 .parking-home-map .kakao-map {
+  overflow: hidden;
   background: #071412;
+  touch-action: none;
 }
 
-.parking-home-map .kakao-map img[src*="/tile/"] {
+.parking-home-map .kakao-map div:has(> img[src*="/tile/"]) {
   filter: grayscale(1) invert(.88) sepia(.2) saturate(.76) hue-rotate(112deg) brightness(.82) contrast(1.24);
 }
 
@@ -378,10 +380,8 @@ h3 { margin: 0; font-size: 14px; }
   border: 0;
   display: block;
   overflow: visible;
-  appearance: none;
   background: transparent;
-  cursor: pointer;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .current-map-marker-direction {
@@ -392,7 +392,7 @@ h3 { margin: 0; font-size: 14px; }
   height: 54.27px;
   max-width: none;
   transform: rotate(calc(-135deg + var(--device-heading, 0deg)));
-  transform-origin: 20px 41px;
+  transform-origin: 7px 46px;
   transition: transform 120ms linear;
   will-change: transform;
 }
@@ -527,8 +527,8 @@ h3 { margin: 0; font-size: 14px; }
 .weather-cloud { position: absolute; top: 1px; left: 0; width: 24px; height: 18px; }
 .weather-line { position: absolute; top: 13px; width: 2px; height: 10px; }
 .weather-line--one { left: 8px; }
-.weather-line--two { left: 14px; }
-.weather-line--three { left: 20px; }
+.weather-line--two { left: 12px; }
+.weather-line--three { left: 16px; }
 
 .parking-home-disclaimer {
   position: absolute;
@@ -541,35 +541,6 @@ h3 { margin: 0; font-size: 14px; }
   text-align: center;
   font: 500 12px/1.4 "Plus Jakarta Sans", sans-serif;
   letter-spacing: -.12px;
-}
-
-.parking-home-message {
-  position: absolute;
-  z-index: 6;
-  left: 16px;
-  right: 16px;
-  bottom: 74px;
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: 12px;
-  color: #e0e0e0;
-  background: rgb(42 44 44 / 94%);
-  font-size: 12px;
-}
-
-.parking-selection-hint {
-  position: absolute;
-  z-index: 6;
-  top: 158px;
-  left: 50%;
-  margin: 0;
-  padding: 9px 14px;
-  border-radius: 18px;
-  color: #fefefe;
-  background: rgb(42 44 44 / 92%);
-  font: 500 12px/1.4 "Noto Sans KR", sans-serif;
-  white-space: nowrap;
-  transform: translateX(-50%);
 }
 
 .parked-car-card {

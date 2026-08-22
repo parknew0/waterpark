@@ -234,15 +234,15 @@
 
 - 상태: `FACT` — Figma 노드 확인, React 구현, 402×874 브라우저 전환 검증 완료. 실제 위치 권한 환경 최종 확인은 `OPEN`.
 - 지도 홈 `123:1415`, 가까운 주차장 시트 `123:2075`, 주차장 선택 상세 `123:2360`, 위치 라벨 `123:1419`를 확인했다.
-- 온보딩 `Next`는 `?view=consent` 위치 동의 화면으로 이동한다. `Agree & Start`를 누르면 `?view=map`으로 이동하고 기본 지도에는 현재 위치만 표시한다. 가까운 주차장 시트는 상단 위치 라벨을 눌렀을 때 연다.
+- 온보딩 `Next`는 `?view=consent` 위치 동의 화면으로 이동한다. `Agree & Start`를 누르면 `?view=map`으로 이동하고 지도 위 가까운 주차장 시트를 즉시 표시한다.
 - 위치 권한이 허용되면 `navigator.geolocation` 좌표로 경북 공영주차장을 거리순 재정렬하고 Kakao `coord2Address` 결과를 상단 현재 위치 라벨에 표시한다.
-- 위치 권한이 없으면 기본 경북 중심 결과와 실패 메시지를 유지한다. 테스트 브라우저는 위치 권한을 확보하지 못했으므로 실제 주소 표시는 아직 최종 확인하지 못했다.
+- 위치 권한이 없으면 기본 경북 중심 결과와 상단 위치 라벨 상태를 유지한다. 지도를 가리는 별도 토스트는 제거했다. 테스트 브라우저는 위치 권한을 확보하지 못했으므로 실제 주소 표시는 아직 최종 확인하지 못했다.
 - Figma 사진·아이콘은 로컬에 저장했다. Kakao 지도가 없을 때만 Figma 지도 이미지를 폴백으로 사용한다.
-- Kakao 지도 Web API에는 확인 가능한 웹용 다크 테마 옵션이 없어 `/tile/` 지도 이미지에만 CSS 색상 필터를 적용했다. 현재 위치 마커와 Kakao 저작권·브랜드 링크는 필터 밖에 유지한다.
+- Kakao 지도 Web API에는 확인 가능한 웹용 다크 테마 옵션이 없어 지도 타일 부모 레이어에 CSS 색상 필터를 한 번 적용했다. 개별 타일 필터에서 생기던 가로·세로 경계선을 제거하면서 현재 위치 마커와 Kakao 저작권·브랜드 링크는 필터 밖에 유지한다.
 - 강수 API와 위험 예측 API가 아직 연결되지 않아 예시 수치 `30mm`와 특정 주차장 `High risk` 판정을 사용하지 않았다. 각각 `--mm`, `Risk assessment is not connected yet`으로 명시했다.
 - 빗방울 충돌 효과는 10개에서 16개로 늘렸다.
 - Figma `123:2320`의 방향 부채꼴과 청록 점 에셋을 Kakao `CustomOverlay`로 현재 좌표에 표시한다. 위치 권한 실패 시에는 마커를 표시하지 않는다.
-- 가까운 주차장 시트는 사용자가 열면 1.2초 동안 아래에서 위로 올라오고 배경 스크림은 360ms 동안 나타난다.
+- 가까운 주차장 시트는 지도 진입 즉시 1.2초 동안 아래에서 위로 올라오고 배경 스크림은 360ms 동안 나타난다.
 - 상세: [지도 홈·내 차 위치 설정 흐름](./frontend/05-parking-home-and-location-flow.md)
 - 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [가까운 주차장 `123:2075`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2075&m=dev), [선택 상세 `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev), [현재 위치 라벨 `123:1419`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1419&m=dev), [현재 위치 마커 `123:2320`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2320&m=dev), [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/)
 - 확인일: 2026-08-22
@@ -250,11 +250,12 @@
 ## 2026-08-22 지도 마커 상태·내 차 위치·기기 방향 구현
 
 - 상태: `FACT` — Figma 노드 확인, React 구현, lint/build와 브라우저 상태 전환 검증 완료. 실제 모바일 방향 센서 확인은 `OPEN`.
-- 기본 지도 `123:1415`에서는 현재 위치 `123:2320`만 표시하고 주변 주차장 후보는 숨긴다.
-- 현재 위치 마커를 누르면 `123:1958` 흐름으로 전환해 거리순 후보 최대 8개를 Figma의 초록 `P` 마커로 표시한다. 상단 현재 위치 라벨은 목록 시트를 여는 대체 경로다.
-- 주차장을 선택하면 상세 시트를 열고 `Set My Car’s Location` 확정 뒤 후보를 모두 숨긴다. 선택 좌표에는 `136:2639` 차 마커를 표시하고 하단 카드에 실제 선택 주차장명과 주소를 표시한다. 저장은 아직 브라우저 메모리 상태다.
-- 방향 부채꼴은 iOS Safari의 `webkitCompassHeading`을 우선 사용한다. 표준 절대 방향 이벤트는 W3C 정의에 따라 `360 - alpha`로 나침반 방위각을 계산한다. 보안 컨텍스트·사용자 권한·기기 센서 지원에 따라 이벤트가 제공되지 않을 수 있으며, 이 경우 기본 각도를 유지한다.
-- 테스트 브라우저에서는 위치 권한을 확보하지 못해 실제 현재 위치와 센서 회전은 검증하지 못했다. 대신 권한 실패 시 가짜 현재 위치를 표시하지 않는 처리, 후보 8개 표시, 선택 상세, 확정 후 후보 0개·차 마커 1개·저장 카드 표시를 확인했다.
+- `123:1415` 지도에 진입하면 `123:2075` 가까운 주차장 목록 시트를 즉시 표시한다. 목록 선택 뒤 `123:2360` 상세를 열고 설정 버튼을 누르면 `123:1958` 최종 지도로 전환한다.
+- 최종 지도는 현재 위치, 선택 좌표의 `136:2639` 내 차 마커, 선택한 곳을 제외한 주변 주차장 `P` 마커 최대 8개, 실제 주차장명·주소 카드를 함께 표시한다. 저장은 아직 브라우저 메모리 상태다.
+- 방향 부채꼴은 iOS Safari의 `webkitCompassHeading`을 우선 사용한다. 절대값이 아닌 표준 `alpha`도 상대 회전 폴백으로 사용하고, 회전축은 부채꼴 이미지 내부가 아닌 현재 위치 점 중심으로 교정했다.
+- 현재 위치 오버레이는 포인터 이벤트를 받지 않도록 변경하고 Kakao 지도에 드래그·스크롤 옵션을 명시했다. 402×874 브라우저에서 100px 드래그 후 내부 지도 레이어가 실제 100px 이동했다.
+- 개별 타일마다 적용하던 다크 필터를 타일 부모 레이어의 단일 필터로 변경해 스크린샷의 타일 경계선을 제거했다. Figma `123:2511` 기준으로 강수 아이콘의 빗줄기 간격도 교정했다.
+- 테스트 브라우저에서는 위치 권한을 확보하지 못해 실제 현재 위치와 센서 회전은 검증하지 못했다. 권한 실패 시 가짜 현재 위치를 표시하지 않는 처리, 목록 즉시 표시, 상세, 확정 후 주변 후보·차 마커·저장 카드 상태를 확인했다.
 - 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [지도 선택 `123:1958`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1958&m=dev), [현재 위치 마커 `123:2320`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2320&m=dev), [내 차 마커 `136:2639`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2639&m=dev), [W3C Device Orientation and Motion](https://www.w3.org/TR/orientation-event/), [Apple DeviceOrientationEvent](https://developer.apple.com/documentation/webkitjs/deviceorientationevent)
 - 확인일: 2026-08-22
 

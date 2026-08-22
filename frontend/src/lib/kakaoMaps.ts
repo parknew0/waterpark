@@ -42,7 +42,12 @@ interface KakaoMapsApi {
   load(callback: () => void): void;
   LatLng: new (latitude: number, longitude: number) => KakaoLatLng;
   LatLngBounds: new () => KakaoLatLngBounds;
-  Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMapInstance;
+  Map: new (container: HTMLElement, options: {
+    center: KakaoLatLng;
+    level: number;
+    draggable?: boolean;
+    scrollwheel?: boolean;
+  }) => KakaoMapInstance;
   Marker: new (options: { map: KakaoMapInstance; position: KakaoLatLng; title?: string }) => KakaoMarkerInstance;
   CustomOverlay: new (options: {
     map: KakaoMapInstance;
@@ -192,21 +197,22 @@ export function createKakaoMap(
   places: ParkingPlace[],
   currentPosition?: Coordinate,
   parkedPlace?: ParkingPlace,
-  onCurrentLocationClick?: () => void,
   onParkingSelect?: (place: ParkingPlace) => void,
 ): () => void {
   const map = new maps.Map(container, {
     center: new maps.LatLng(center.latitude, center.longitude),
     level: 7,
+    draggable: true,
+    scrollwheel: true,
   });
   const overlays: KakaoCustomOverlayInstance[] = [];
   const listenerCleanups: Array<() => void> = [];
 
   if (currentPosition) {
-    const marker = document.createElement("button");
-    marker.type = "button";
+    const marker = document.createElement("span");
     marker.className = "current-map-marker";
-    marker.setAttribute("aria-label", "현재 위치에서 주차장 찾기");
+    marker.setAttribute("role", "img");
+    marker.setAttribute("aria-label", "현재 위치");
 
     const direction = document.createElement("img");
     direction.className = "current-map-marker-direction";
@@ -219,10 +225,6 @@ export function createKakaoMap(
     dot.alt = "";
 
     marker.append(direction, dot);
-    if (onCurrentLocationClick) {
-      marker.addEventListener("click", onCurrentLocationClick);
-      listenerCleanups.push(() => marker.removeEventListener("click", onCurrentLocationClick));
-    }
     overlays.push(new maps.CustomOverlay({
       map,
       position: new maps.LatLng(currentPosition.latitude, currentPosition.longitude),

@@ -10,10 +10,8 @@ interface ParkingHomeViewProps {
   error: string | null;
   isCarLocationOpen: boolean;
   isLoading: boolean;
-  locationMessage: string | null;
   parkedPlace?: ParkingPlace;
-  parkingSelectionActive: boolean;
-  onBeginParkingSelection: () => void;
+  showParkingMarkers: boolean;
   onClearSelection: () => void;
   onCloseSheet: () => void;
   onOpenSheet: () => void;
@@ -47,10 +45,8 @@ export function ParkingHomeView({
   error,
   isCarLocationOpen,
   isLoading,
-  locationMessage,
   parkedPlace,
-  parkingSelectionActive,
-  onBeginParkingSelection,
+  showParkingMarkers,
   onClearSelection,
   onCloseSheet,
   onOpenSheet,
@@ -78,9 +74,10 @@ export function ParkingHomeView({
             center={center}
             currentPosition={currentPosition}
             parkedPlace={parkedPlace}
-            places={parkingSelectionActive ? places.slice(0, 8) : []}
+            places={showParkingMarkers
+              ? places.filter((place) => place.id !== parkedPlace?.id).slice(0, 8)
+              : []}
             selected={selected}
-            onCurrentLocationClick={onBeginParkingSelection}
             onSelect={onSelect}
           />
         </div>
@@ -109,12 +106,6 @@ export function ParkingHomeView({
           <p className="parking-home-disclaimer">
             Please also refer to emergency alerts and notices from the property management office.
           </p>
-        ) : null}
-        {locationMessage && !isCarLocationOpen ? (
-          <p className="parking-home-message" role="status">{locationMessage}</p>
-        ) : null}
-        {parkingSelectionActive && !isCarLocationOpen ? (
-          <p className="parking-selection-hint" role="status">가까운 주차장을 선택해 주세요.</p>
         ) : null}
         {parkedPlace && !isCarLocationOpen ? (
           <article className="parked-car-card" aria-label="저장된 내 차 위치">

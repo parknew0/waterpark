@@ -9,16 +9,15 @@ interface ParkingMapProps {
   parkedPlace?: ParkingPlace;
   places: ParkingPlace[];
   selected?: ParkingPlace;
-  onCurrentLocationClick: () => void;
   onSelect: (place: ParkingPlace) => void;
 }
 
-function CurrentLocationMarker({ onClick }: { onClick: () => void }) {
+function CurrentLocationMarker() {
   return (
-    <button className="current-map-marker" type="button" aria-label="현재 위치에서 주차장 찾기" onClick={onClick}>
+    <span className="current-map-marker" role="img" aria-label="현재 위치">
       <img className="current-map-marker-direction" src="/assets/parking/current-location-direction.svg" alt="" />
       <img className="current-map-marker-dot" src="/assets/parking/current-location-dot.svg" alt="" />
-    </button>
+    </span>
   );
 }
 
@@ -34,7 +33,7 @@ function ParkedCarMarker() {
   );
 }
 
-function FallbackMap({ places, selected, onSelect, currentPosition, parkedPlace, onCurrentLocationClick }: Omit<ParkingMapProps, "appKey" | "center">) {
+function FallbackMap({ places, selected, onSelect, currentPosition, parkedPlace }: Omit<ParkingMapProps, "appKey" | "center">) {
   const visiblePlaces = places.slice(0, 8);
   return (
     <div className="fallback-map" role="region" aria-label="주차장 위치 미리보기">
@@ -57,14 +56,14 @@ function FallbackMap({ places, selected, onSelect, currentPosition, parkedPlace,
         );
       })}
       <div className="map-center-copy">
-        {currentPosition ? <CurrentLocationMarker onClick={onCurrentLocationClick} /> : <span className="map-pulse" aria-hidden="true" />}
+        {currentPosition ? <CurrentLocationMarker /> : <span className="map-pulse" aria-hidden="true" />}
       </div>
       {parkedPlace ? <span className="fallback-parked-car"><ParkedCarMarker /></span> : null}
     </div>
   );
 }
 
-export function ParkingMap({ appKey, center, currentPosition, parkedPlace, places, selected, onCurrentLocationClick, onSelect }: ParkingMapProps) {
+export function ParkingMap({ appKey, center, currentPosition, parkedPlace, places, selected, onSelect }: ParkingMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapError, setMapError] = useState<string | null>(null);
 
@@ -85,7 +84,6 @@ export function ParkingMap({ appKey, center, currentPosition, parkedPlace, place
           places,
           currentPosition,
           parkedPlace,
-          onCurrentLocationClick,
           onSelect,
         );
       })
@@ -100,7 +98,7 @@ export function ParkingMap({ appKey, center, currentPosition, parkedPlace, place
       clearMarkers();
       mapContainer.replaceChildren();
     };
-  }, [appKey, center, currentPosition, onCurrentLocationClick, onSelect, parkedPlace, places, selected]);
+  }, [appKey, center, currentPosition, onSelect, parkedPlace, places, selected]);
 
   if (!appKey || mapError) {
     return (
@@ -111,7 +109,6 @@ export function ParkingMap({ appKey, center, currentPosition, parkedPlace, place
           onSelect={onSelect}
           currentPosition={currentPosition}
           parkedPlace={parkedPlace}
-          onCurrentLocationClick={onCurrentLocationClick}
         />
         {mapError ? <p className="map-error" role="status">{mapError}</p> : null}
       </div>

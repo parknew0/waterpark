@@ -23,10 +23,9 @@ export default function App() {
   const [currentPosition, setCurrentPosition] = useState<Coordinate>();
   const [selected, setSelected] = useState<ParkingPlace>();
   const [parkedPlace, setParkedPlace] = useState<ParkingPlace>();
-  const [parkingSelectionActive, setParkingSelectionActive] = useState(false);
-  const [isCarLocationOpen, setIsCarLocationOpen] = useState(false);
+  const [showParkingMarkers, setShowParkingMarkers] = useState(false);
+  const [isCarLocationOpen, setIsCarLocationOpen] = useState(view === "map");
   const [locationPending, setLocationPending] = useState(false);
-  const [locationMessage, setLocationMessage] = useState<string | null>(null);
   const [currentLocationLabel, setCurrentLocationLabel] = useState("현재 위치 확인 중…");
   const hasRequestedLocation = useRef(false);
   const requestHeadingPermission = useDeviceHeading();
@@ -53,11 +52,10 @@ export default function App() {
 
   const handleUseLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      setLocationMessage("이 브라우저는 위치 확인을 지원하지 않습니다. 주소로 검색해 주세요.");
+      setCurrentLocationLabel("현재 위치를 확인하지 못했어요");
       return;
     }
 
-    setLocationMessage(null);
     setLocationPending(true);
     setCurrentLocationLabel("현재 위치 확인 중…");
     navigator.geolocation.getCurrentPosition(
@@ -70,7 +68,6 @@ export default function App() {
         setCenter(nextCenter);
         setSelected(undefined);
         setLocationPending(false);
-        setLocationMessage("현재 위치와 가까운 주차장 순으로 정렬했습니다.");
         setCurrentLocationLabel(`${nextCenter.latitude.toFixed(5)}, ${nextCenter.longitude.toFixed(5)}`);
         void search("", nextCenter);
 
@@ -85,7 +82,6 @@ export default function App() {
       () => {
         setLocationPending(false);
         setCurrentLocationLabel("현재 위치를 확인하지 못했어요");
-        setLocationMessage("위치 권한을 확인하지 못했습니다. 주소로 검색하거나 브라우저 권한을 허용해 주세요.");
       },
       { enableHighAccuracy: false, timeout: 8_000, maximumAge: 300_000 },
     );
@@ -99,13 +95,39 @@ export default function App() {
 
   const handleOpenParkingHome = () => {
     hasRequestedLocation.current = true;
-    setIsCarLocationOpen(false);
-    setParkingSelectionActive(false);
+    setIsCarLocationOpen(true);
+    setShowParkingMarkers(false);
     setSelected(undefined);
     navigateToView("map");
     handleUseLocation();
     void requestHeadingPermission();
   };
+
+  const handleOpenSheet = useCallback(() => {
+    hasRequestedLocation.current = true;
+    setIsCarLocationOpen(true);
+    handleUseLocation();
+    void requestHeadingPermission();
+  }, [handleUseLocation, requestHeadingPermission]);
+
+  const handleSearch = useCallback((query: string) => {
+    setSelected(undefined);
+    void search(query, center);
+  }, [center, search]);
+
+  const handleSelect = useCallback((place: ParkingPlace) => {
+    setSelected(place);
+    setCenter({ latitude: place.latitude, longitude: place.longitude });
+    setIsCarLocationOpen(true);
+  }, []);
+
+  const handleSetCarLocation = useCallback(() => {
+    if (selectedPlace) setParkedPlace(selectedPlace);
+    setShowParkingMarkers(true);
+    setIsCarLocationOpen(false);
+    setSelected(undefined);
+    if (currentPosition) setCenter(currentPosition);
+  }, [currentPosition, selectedPlace]);
 
   if (view === "car") return <OnboardingCarView onNext={() => navigateToView("consent")} />;
   if (view === "consent") return <LocationConsentView onAgree={handleOpenParkingHome} />;
@@ -119,41 +141,14 @@ export default function App() {
       error={error}
       isCarLocationOpen={isCarLocationOpen}
       isLoading={isLoading || locationPending}
-      locationMessage={locationMessage}
       parkedPlace={parkedPlace}
-      parkingSelectionActive={parkingSelectionActive}
-      onBeginParkingSelection={() => {
-        setParkingSelectionActive(true);
-        setIsCarLocationOpen(false);
-        setSelected(undefined);
-        void requestHeadingPermission();
-      }}
+      showParkingMarkers={showParkingMarkers}
       onClearSelection={() => setSelected(undefined)}
       onCloseSheet={() => setIsCarLocationOpen(false)}
-      onOpenSheet={() => {
-        hasRequestedLocation.current = true;
-        setParkingSelectionActive(true);
-        setIsCarLocationOpen(true);
-        handleUseLocation();
-        void requestHeadingPermission();
-      }}
-      onSearch={(query) => {
-        setSelected(undefined);
-        void search(query, center);
-      }}
-      onSelect={(place) => {
-        setSelected(place);
-        setCenter({ latitude: place.latitude, longitude: place.longitude });
-        setIsCarLocationOpen(true);
-      }}
-      onSetCarLocation={() => {
-        if (selectedPlace) setParkedPlace(selectedPlace);
-        setParkingSelectionActive(false);
-        setIsCarLocationOpen(false);
-        setLocationMessage(selectedPlace ? `${selectedPlace.name}에 내 차 위치를 설정했습니다.` : null);
-        setSelected(undefined);
-        if (currentPosition) setCenter(currentPosition);
-      }}
+      onOpenSheet={handleOpenSheet}
+      onSearch={handleSearch}
+      onSelect={handleSelect}
+      onSetCarLocation={handleSetCarLocation}
       places={places}
       selected={selectedPlace}
       source={source}

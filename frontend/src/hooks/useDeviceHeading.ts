@@ -10,7 +10,7 @@ interface OrientationEventConstructorWithPermission {
 
 function readCompassHeading(event: CompassOrientationEvent): number | null {
   if (typeof event.webkitCompassHeading === "number") return event.webkitCompassHeading;
-  if (event.absolute && typeof event.alpha === "number") return (360 - event.alpha + 360) % 360;
+  if (typeof event.alpha === "number") return (360 - event.alpha + 360) % 360;
   return null;
 }
 
