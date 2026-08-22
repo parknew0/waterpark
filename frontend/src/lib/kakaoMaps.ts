@@ -286,7 +286,7 @@ export function createKakaoMap(
     destinationMarker.className = "evacuation-destination-marker";
     destinationMarker.textContent = "P";
     destinationMarker.setAttribute("role", "img");
-    destinationMarker.setAttribute("aria-label", `대피 주차장 후보: ${evacuationRoute.destination.name}`);
+    destinationMarker.setAttribute("aria-label", `경로 목적지: ${evacuationRoute.destination.name}`);
     overlays.push(new maps.CustomOverlay({
       map,
       position: new maps.LatLng(evacuationRoute.destination.latitude, evacuationRoute.destination.longitude),

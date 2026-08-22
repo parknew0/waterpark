@@ -11,6 +11,7 @@ import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
 import { getEnglishParkingLabel } from "./lib/parkingEnglish";
+import { buildDangerParkingRoute } from "./lib/parkingDetailRoute";
 import { resolveParkingRiskBranch } from "./lib/parkingRisk";
 import { getHistoricalScenario } from "./scenarios/hinnamnorScenario";
 import type { Coordinate, ParkingPlace } from "./types/parking";
@@ -88,6 +89,12 @@ export default function App() {
   const riskSelectionPlaces = useMemo(
     () => lowerRiskParkingPlace ? [dangerParkingPlace, lowerRiskParkingPlace] : [dangerParkingPlace],
     [dangerParkingPlace, lowerRiskParkingPlace],
+  );
+  const dangerDetailRoute = useMemo(
+    () => evacuationRoute
+      ? buildDangerParkingRoute(evacuationRoute, assessedPlace ?? dangerParkingPlace)
+      : undefined,
+    [assessedPlace, dangerParkingPlace, evacuationRoute],
   );
 
   const selectedPlace = useMemo(
@@ -261,7 +268,7 @@ export default function App() {
       <FloodLocationDetailView
         appKey={kakaoAppKey}
         variant="danger"
-        route={evacuationRoute}
+        route={dangerDetailRoute}
         place={assessedPlace ?? dangerParkingPlace}
         rainfallLabel={historicalScenario?.rainfallLabel}
         rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}

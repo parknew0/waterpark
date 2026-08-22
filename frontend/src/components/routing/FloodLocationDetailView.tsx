@@ -44,8 +44,8 @@ export function FloodLocationDetailView({
   const selectedLabel = place ? getEnglishParkingLabel(place) : undefined;
   const name = selectedLabel?.name ?? (isDanger ? currentParkingName : (parkingLabel?.name ?? "Finding parking…"));
   const address = selectedLabel?.address ?? (isDanger ? currentParkingAddress : (parkingLabel?.address ?? "Calculating a lower-risk candidate"));
-  const distance = place?.distanceMeters ?? route?.distanceMeters ?? 0;
-  const driveMinutes = Math.max(1, Math.ceil(distance / 250));
+  const distance = route?.distanceMeters ?? place?.distanceMeters ?? 0;
+  const driveMinutes = route?.estimatedDriveMinutes ?? Math.max(1, Math.ceil(distance / 250));
 
   return (
     <main className="flood-location-stage">

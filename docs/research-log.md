@@ -354,6 +354,16 @@
 - 상세: [워드마크·스플래시·상세 실지도](./frontend/09-brand-splash-and-live-detail-maps.md)
 - 출처: [Figma 워드마크 `123:2252`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2252&m=dev), [Figma 스플래시 `50:84`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=50-84&m=dev), [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 청록색 위험 영역 `244:3303`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=244-3303&m=dev)
 
+### 2026-08-23 — 위험 주차장 접근 경로와 카카오 장소 사진 확인
+
+- `FACT`: 위험 주차장 선택 상세는 선택한 장소를 경로 `destination`으로 사용하도록 분리했다. 힌남노 데모에서는 저장된 실제 OSM 도로 경로의 위험 장소 접근 구간을 역방향으로 사용한다.
+- `LIMITATION`: 현재 접근 경로는 발표용 고정 경로 구간이다. 임의 GPS와 임의 위험 주차장 사이의 재탐색은 백엔드 라우팅 API가 필요하다.
+- `FACT`: 카카오맵 키워드·카테고리 장소 검색의 공식 응답 필드는 장소 ID, 이름, 분류, 전화번호, 주소, 좌표, 장소 상세 URL, 거리이며 이미지 URL은 포함하지 않는다.
+- `FACT`: Daum 이미지 검색 API에는 `thumbnail_url`과 `image_url`이 있지만 웹 이미지 검색 결과이므로 특정 카카오맵 장소의 공식 사진을 보장하지 않는다.
+- `DECISION`: 카카오 장소 상세 페이지를 스크래핑해 사진을 저장하지 않는다. 주차장 사진은 공공데이터 또는 팀이 사용권을 확보한 별도 `imageUrl` 데이터로 연결하고, 없으면 앱 기본 이미지를 사용한다.
+- 출처: [카카오맵 REST API 장소 검색](https://developers.kakao.com/docs/ko/kakaomap/rest-api), [Daum 이미지 검색 REST API](https://developers.kakao.com/docs/ko/daum-search/dev-guide)
+- 확인일: 2026-08-23
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |
