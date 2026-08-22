@@ -22,6 +22,18 @@ const knownLabels: Record<string, EnglishParkingLabel> = {
     name: "Hyogok-dong Street Parking 8",
     address: "24 Yudong-gil, Nam-gu, Pohang-si, Gyeongsangbuk-do",
   },
+  "우방신세계타운(1차) 지하주차장": {
+    name: "Woobang New World Town 1 Underground Parking",
+    address: "7 Indeok-dong, Nam-gu, Pohang-si, Gyeongsangbuk-do",
+  },
+  "제철복지회관 임시주차장": {
+    name: "Steel Welfare Center Temporary Parking Lot",
+    address: "47-4 Indeok-dong, Nam-gu, Pohang-si, Gyeongsangbuk-do",
+  },
+  "청림동 노상1": {
+    name: "Cheongnim-dong Street Parking 1",
+    address: "1113-12 Cheongnim-dong, Nam-gu, Pohang-si, Gyeongsangbuk-do",
+  },
 };
 
 const initials = ["g", "kk", "n", "d", "tt", "r", "m", "b", "pp", "s", "ss", "", "j", "jj", "ch", "k", "t", "p", "h"];

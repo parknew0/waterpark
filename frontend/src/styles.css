@@ -993,6 +993,13 @@ h3 { margin: 0; font-size: 14px; }
 
 .parking-home-header > .brand-logo { width: 149px; }
 
+.historical-replay-label {
+  margin: 4px 0 3px;
+  color: #f97575;
+  font: 700 9px/1.4 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: .08em;
+}
+
 .current-location-button {
   max-width: 260px;
   min-height: 28px;

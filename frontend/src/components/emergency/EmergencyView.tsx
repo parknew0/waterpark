@@ -6,6 +6,7 @@ interface EmergencyViewProps {
   parkingName?: string;
   parkingAddress?: string;
   distanceMeters?: number;
+  safeTimeLabel?: string;
 }
 
 const rainDrops = [
@@ -57,6 +58,7 @@ export function EmergencyView({
   parkingName = "Finding a lower-risk parking candidate…",
   parkingAddress = "Static flood-risk routing prototype",
   distanceMeters,
+  safeTimeLabel = "30min",
 }: EmergencyViewProps) {
   return (
     <main className="emergency-stage">
@@ -80,7 +82,7 @@ export function EmergencyView({
 
         <section className="emergency-safe-time" aria-label="Estimated safe time">
           <span>Estimated safe time</span>
-          <strong>30min</strong>
+          <strong>{safeTimeLabel}</strong>
         </section>
 
         <article className="emergency-parking-card" aria-label="Assigned safe parking">

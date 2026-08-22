@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-08-22T17:25:33.381683+00:00",
+  "output": "outputs/routing/hinnamnor-waterpark-flow.geojson",
+  "frontend_output": "frontend/public/data/hinnamnor-waterpark-flow.geojson",
+  "feature_count": 5,
+  "destination": "제철복지회관 임시주차장",
+  "baseline": {
+    "distance_m": 664.2,
+    "travel_time_s": 159.4,
+    "high_exposure_m": 0.0,
+    "very_high_exposure_m": 0.0,
+    "risk_cost": 664.2
+  },
+  "lower_risk": {
+    "distance_m": 664.2,
+    "travel_time_s": 159.4,
+    "high_exposure_m": 0.0,
+    "very_high_exposure_m": 0.0,
+    "risk_cost": 664.2
+  },
+  "blocked_edge_count": 0
+}

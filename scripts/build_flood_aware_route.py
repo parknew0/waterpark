@@ -271,7 +271,7 @@ def main() -> None:
 
     generated_at = datetime.now(timezone.utc).isoformat()
     features = [
-        make_feature(origin, layer="origin", label="Demo origin near POSTECH"),
+        make_feature(origin, layer="origin", label="Route origin"),
         make_feature(
             Point(float(destination["longitude"]), float(destination["latitude"])),
             layer="destination",

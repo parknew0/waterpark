@@ -69,14 +69,14 @@ function parseRoute(payload: RouteGeoJson): FloodAwareRoute {
   };
 }
 
-export function useFloodAwareRoute(enabled: boolean) {
+export function useFloodAwareRoute(enabled: boolean, dataUrl = "/data/pohang-flood-aware-route.geojson") {
   const [route, setRoute] = useState<FloodAwareRoute>();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!enabled || route) return;
     const controller = new AbortController();
-    fetch("/data/pohang-flood-aware-route.geojson", { signal: controller.signal })
+    fetch(dataUrl, { signal: controller.signal })
       .then((response) => {
         if (!response.ok) throw new Error(`경로 데이터 응답 오류: ${response.status}`);
         return response.json() as Promise<RouteGeoJson>;
@@ -87,7 +87,7 @@ export function useFloodAwareRoute(enabled: boolean) {
         setError(caught instanceof Error ? caught.message : "대피 경로를 불러오지 못했습니다.");
       });
     return () => controller.abort();
-  }, [enabled, route]);
+  }, [dataUrl, enabled, route]);
 
   return { route, error };
 }

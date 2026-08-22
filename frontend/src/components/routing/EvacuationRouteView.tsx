@@ -6,6 +6,7 @@ interface EvacuationRouteViewProps {
   appKey?: string;
   route?: FloodAwareRoute;
   onBack: () => void;
+  currentLocationName?: string;
 }
 
 function formatDistance(distanceMeters: number) {
@@ -13,7 +14,7 @@ function formatDistance(distanceMeters: number) {
   return `${(distanceMeters / 1_000).toFixed(1)}km`;
 }
 
-export function EvacuationRouteView({ appKey, route, onBack }: EvacuationRouteViewProps) {
+export function EvacuationRouteView({ appKey, route, onBack, currentLocationName = "POSTECH Current Parking" }: EvacuationRouteViewProps) {
   const distance = route?.distanceMeters ?? 0;
   const driveMinutes = route?.estimatedDriveMinutes ?? 0;
   const forecastMinutes = route?.forecastHorizonMinutes ?? 0;
@@ -46,7 +47,7 @@ export function EvacuationRouteView({ appKey, route, onBack }: EvacuationRouteVi
           <article>
             <i className="evacuation-waypoint evacuation-waypoint--origin" />
             <span>Current Location</span>
-            <strong>POSTECH Current Parking</strong>
+            <strong>{currentLocationName}</strong>
           </article>
           <article>
             <i className="evacuation-waypoint evacuation-waypoint--destination" />

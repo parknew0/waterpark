@@ -27,6 +27,10 @@ interface ParkingHomeViewProps {
   selected?: ParkingPlace;
   source: SearchSource;
   routeError: string | null;
+  replayLabel?: string;
+  rainfallLabel?: string;
+  rainfallAriaLabel?: string;
+  historicalRiskPreview?: boolean;
 }
 
 const thumbnails = [
@@ -64,6 +68,10 @@ export function ParkingHomeView({
   selected,
   source,
   routeError,
+  replayLabel,
+  rainfallLabel = "--mm",
+  rainfallAriaLabel = "강수량 API 연결 대기 중",
+  historicalRiskPreview = false,
 }: ParkingHomeViewProps) {
   const [query, setQuery] = useState("");
   const nearbyPlaces = places.slice(0, 3);
@@ -104,6 +112,7 @@ export function ParkingHomeView({
 
         <header className="parking-home-header">
           <BrandLogo />
+          {replayLabel ? <span className="historical-replay-label">{replayLabel}</span> : null}
           <button className="current-location-button" type="button" onClick={onOpenSheet}>
             <span className="current-location-icon" aria-hidden="true">
               <img src="/assets/parking/location.svg" alt="" />
@@ -112,9 +121,9 @@ export function ParkingHomeView({
           </button>
         </header>
 
-        <div className="parking-weather-chip" aria-label="강수량 API 연결 대기 중">
+        <div className="parking-weather-chip" aria-label={rainfallAriaLabel}>
           <RainIcon className="weather-icon" />
-          <span>--mm</span>
+          <span>{rainfallLabel}</span>
         </div>
 
         {!parkedPlace ? (
@@ -146,7 +155,11 @@ export function ParkingHomeView({
             </header>
 
             {selected ? (
-              <ParkingDetail place={selected} onSetCarLocation={onSetCarLocation} />
+              <ParkingDetail
+                place={selected}
+                onSetCarLocation={onSetCarLocation}
+                historicalRiskPreview={historicalRiskPreview}
+              />
             ) : (
               <>
                 <form className="car-location-search" role="search" onSubmit={handleSubmit}>
@@ -197,23 +210,44 @@ export function ParkingHomeView({
   );
 }
 
-function ParkingDetail({ place, onSetCarLocation }: { place: ParkingPlace; onSetCarLocation: () => void }) {
+function ParkingDetail({
+  place,
+  onSetCarLocation,
+  historicalRiskPreview,
+}: {
+  place: ParkingPlace;
+  onSetCarLocation: () => void;
+  historicalRiskPreview: boolean;
+}) {
   return (
     <div className="parking-detail">
       <img className="parking-detail-image" src="/assets/parking/parking-detail.png" alt="선택한 주차장 예시 전경" />
       <div className="parking-detail-copy">
-        <span className="prototype-warning">Prototype</span>
+        <span className="prototype-warning">{historicalRiskPreview ? "Hinnamnor Replay" : "Prototype"}</span>
         <h2>{place.name}</h2>
         <p>{place.address || "주소 정보 없음"}</p>
         <span className="parking-detail-distance">{formatDistance(place.distanceMeters)}</span>
       </div>
       <div className="parking-risk-preview">
-        <h3><span>Risk assessment</span><br />is not connected yet</h3>
-        <p>Prediction API 연결 후 표시할 정보</p>
-        <ul>
-          <li>건물의 주변 대비 고도</li>
-          <li>최근 강수량과 침수 위험도</li>
-        </ul>
+        {historicalRiskPreview ? (
+          <>
+            <h3><span>High flood risk</span><br />within the next 1 hour</h3>
+            <p>Historical scenario inputs</p>
+            <ul>
+              <li>Confirmed underground parking use</li>
+              <li>Peak 1-hour rainfall: 77mm</li>
+            </ul>
+          </>
+        ) : (
+          <>
+            <h3><span>Risk assessment</span><br />is not connected yet</h3>
+            <p>Prediction API 연결 후 표시할 정보</p>
+            <ul>
+              <li>건물의 주변 대비 고도</li>
+              <li>최근 강수량과 침수 위험도</li>
+            </ul>
+          </>
+        )}
       </div>
       <footer className="parking-detail-footer">
         <button type="button" onClick={onSetCarLocation}>Set My Car’s Location</button>

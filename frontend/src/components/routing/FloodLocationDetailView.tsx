@@ -9,6 +9,12 @@ interface FloodLocationDetailViewProps {
   variant: "danger" | "safe";
   route?: FloodAwareRoute;
   onContinue: () => void;
+  rainfallLabel?: string;
+  rainfallAriaLabel?: string;
+  currentParkingName?: string;
+  currentParkingAddress?: string;
+  comparisonMetric?: string;
+  riskReasons?: [string, string];
 }
 
 function formatDistance(distanceMeters: number) {
@@ -21,11 +27,17 @@ export function FloodLocationDetailView({
   variant,
   route,
   onContinue,
+  rainfallLabel = "30mm",
+  rainfallAriaLabel = "Demo rainfall 30 millimeters",
+  currentParkingName = "Current Parking Location",
+  currentParkingAddress = "POSTECH, Nam-gu, Pohang-si, Gyeongsangbuk-do",
+  comparisonMetric,
+  riskReasons,
 }: FloodLocationDetailViewProps) {
   const isDanger = variant === "danger";
   const parkingLabel = route ? getEnglishParkingLabel(route.destination) : undefined;
-  const name = isDanger ? "Current Parking Location" : (parkingLabel?.name ?? "Finding parking…");
-  const address = isDanger ? "POSTECH, Nam-gu, Pohang-si, Gyeongsangbuk-do" : (parkingLabel?.address ?? "Calculating a lower-risk candidate");
+  const name = isDanger ? currentParkingName : (parkingLabel?.name ?? "Finding parking…");
+  const address = isDanger ? currentParkingAddress : (parkingLabel?.address ?? "Calculating a lower-risk candidate");
   const distance = route?.distanceMeters ?? 0;
   const driveMinutes = Math.max(1, Math.ceil(distance / 250));
 
@@ -50,9 +62,9 @@ export function FloodLocationDetailView({
           <span className="flood-detail-location"><img src="/assets/parking/location.svg" alt="" /> Pohang-si Nam-gu</span>
         </header>
 
-        <div className="flood-detail-rain-chip" aria-label="Demo rainfall 30 millimeters">
+        <div className="flood-detail-rain-chip" aria-label={rainfallAriaLabel}>
           <RainIcon />
-          <span>30mm</span>
+          <span>{rainfallLabel}</span>
         </div>
 
         <section className="flood-detail-sheet">
@@ -63,7 +75,7 @@ export function FloodLocationDetailView({
             <div>
               <strong>{driveMinutes} min drive</strong>
               <span>{formatDistance(distance)}</span>
-              <span>{isDanger ? "−4m" : "+12m"}</span>
+              <span>{comparisonMetric ?? (isDanger ? "−4m" : "+12m")}</span>
             </div>
           </div>
 
@@ -71,8 +83,8 @@ export function FloodLocationDetailView({
             <h2><em>{isDanger ? "High" : "Low"}</em> risk of flooding<br />in the next <em>1 hour</em></h2>
             <span>Here’s Why</span>
             <ul>
-              <li>Building is {isDanger ? "lower" : "higher"} than the surrounding</li>
-              <li>Rainfall over the past 6 hours</li>
+              <li>{riskReasons?.[0] ?? `Building is ${isDanger ? "lower" : "higher"} than the surrounding`}</li>
+              <li>{riskReasons?.[1] ?? "Rainfall over the past 6 hours"}</li>
             </ul>
           </article>
 

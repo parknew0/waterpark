@@ -11,10 +11,12 @@ import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
 import { getEnglishParkingLabel } from "./lib/parkingEnglish";
+import { getHistoricalScenario } from "./scenarios/hinnamnorScenario";
 import type { Coordinate, ParkingPlace } from "./types/parking";
 
 const DEFAULT_CENTER: Coordinate = { latitude: 36.576, longitude: 128.505 };
 const kakaoAppKey = import.meta.env.VITE_KAKAO_MAP_APP_KEY?.trim();
+const historicalScenario = getHistoricalScenario();
 
 type AppView = "splash" | "car" | "consent" | "map" | "emergency" | "risk-detail" | "safe-detail" | "route";
 
@@ -26,29 +28,46 @@ function getInitialView(): AppView {
 
 export default function App() {
   const [view, setView] = useState<AppView>(getInitialView);
-  const [center, setCenter] = useState<Coordinate>(DEFAULT_CENTER);
-  const [currentPosition, setCurrentPosition] = useState<Coordinate>();
+  const [center, setCenter] = useState<Coordinate>(historicalScenario?.origin ?? DEFAULT_CENTER);
+  const [currentPosition, setCurrentPosition] = useState<Coordinate | undefined>(historicalScenario?.origin);
   const [selected, setSelected] = useState<ParkingPlace>();
   const [parkedPlace, setParkedPlace] = useState<ParkingPlace>();
   const [showParkingMarkers, setShowParkingMarkers] = useState(false);
   const [isCarLocationOpen, setIsCarLocationOpen] = useState(view === "map");
   const [showEvacuationRoute, setShowEvacuationRoute] = useState(false);
   const [locationPending, setLocationPending] = useState(false);
-  const [currentLocationLabel, setCurrentLocationLabel] = useState("현재 위치 확인 중…");
+  const [currentLocationLabel, setCurrentLocationLabel] = useState(historicalScenario?.locationLabel ?? "현재 위치 확인 중…");
+  const [historicalQuery, setHistoricalQuery] = useState("");
   const hasRequestedLocation = useRef(false);
+  const historicalAlertTimer = useRef<number | undefined>(undefined);
   const requestHeadingPermission = useDeviceHeading();
   const { places, source, isLoading, error, search } = useParkingSearch(kakaoAppKey);
   const isFloodDemoView = view === "emergency" || view === "risk-detail" || view === "safe-detail" || view === "route";
-  const { route: evacuationRoute, error: routeError } = useFloodAwareRoute(showEvacuationRoute || isFloodDemoView);
+  const { route: evacuationRoute, error: routeError } = useFloodAwareRoute(
+    showEvacuationRoute || isFloodDemoView,
+    historicalScenario?.routeDataUrl,
+  );
+  const visiblePlaces = useMemo(() => {
+    if (!historicalScenario) return places;
+    const normalizedQuery = historicalQuery.trim().toLocaleLowerCase("ko-KR");
+    if (!normalizedQuery) return historicalScenario.parkingOptions;
+    return historicalScenario.parkingOptions.filter((place) =>
+      `${place.name} ${place.address}`.toLocaleLowerCase("ko-KR").includes(normalizedQuery),
+    );
+  }, [historicalQuery, places]);
   const evacuationParkingLabel = useMemo(
     () => evacuationRoute ? getEnglishParkingLabel(evacuationRoute.destination) : undefined,
     [evacuationRoute],
   );
 
   const selectedPlace = useMemo(
-    () => places.find((place) => place.id === selected?.id) ?? selected,
-    [places, selected],
+    () => visiblePlaces.find((place) => place.id === selected?.id) ?? selected,
+    [selected, visiblePlaces],
   );
+
+  useEffect(() => () => {
+    if (historicalAlertTimer.current) window.clearTimeout(historicalAlertTimer.current);
+  }, []);
 
   useEffect(() => {
     const handleHistoryChange = () => setView(getInitialView());
@@ -56,13 +75,13 @@ export default function App() {
     return () => window.removeEventListener("popstate", handleHistoryChange);
   }, []);
 
-  const navigateToView = (nextView: AppView) => {
+  const navigateToView = useCallback((nextView: AppView) => {
     const url = new URL(window.location.href);
     if (nextView === "car") url.searchParams.delete("view");
     else url.searchParams.set("view", nextView);
     window.history.pushState({ waterparkSplashSeen: true }, "", url);
     setView(nextView);
-  };
+  }, []);
 
   const handleSplashComplete = useCallback(() => {
     window.history.replaceState({ ...window.history.state, waterparkSplashSeen: true }, "", window.location.href);
@@ -70,6 +89,14 @@ export default function App() {
   }, []);
 
   const handleUseLocation = useCallback(() => {
+    if (historicalScenario) {
+      setCurrentPosition(historicalScenario.origin);
+      setCenter(historicalScenario.origin);
+      setSelected(undefined);
+      setLocationPending(false);
+      setCurrentLocationLabel(historicalScenario.locationLabel);
+      return;
+    }
     if (!navigator.geolocation) {
       setCurrentLocationLabel("현재 위치를 확인하지 못했어요");
       return;
@@ -131,6 +158,10 @@ export default function App() {
 
   const handleSearch = useCallback((query: string) => {
     setSelected(undefined);
+    if (historicalScenario) {
+      setHistoricalQuery(query);
+      return;
+    }
     void search(query, center);
   }, [center, search]);
 
@@ -146,7 +177,14 @@ export default function App() {
     setIsCarLocationOpen(false);
     setSelected(undefined);
     if (currentPosition) setCenter(currentPosition);
-  }, [currentPosition, selectedPlace]);
+    if (historicalScenario) {
+      if (historicalAlertTimer.current) window.clearTimeout(historicalAlertTimer.current);
+      historicalAlertTimer.current = window.setTimeout(
+        () => navigateToView("emergency"),
+        historicalScenario.alertDelayMs,
+      );
+    }
+  }, [currentPosition, navigateToView, selectedPlace]);
 
   if (view === "splash") return <SplashView onComplete={handleSplashComplete} />;
   if (view === "car") return <OnboardingCarView onNext={() => navigateToView("consent")} />;
@@ -158,10 +196,11 @@ export default function App() {
         parkingName={evacuationParkingLabel?.name}
         parkingAddress={evacuationParkingLabel?.address}
         distanceMeters={evacuationRoute?.distanceMeters}
+        safeTimeLabel={historicalScenario?.safeTimeLabel}
         onMoveNow={() => {
           setShowEvacuationRoute(true);
           setIsCarLocationOpen(false);
-          setCenter({ latitude: 36.014, longitude: 129.325 });
+          setCenter(evacuationRoute?.origin ?? historicalScenario?.origin ?? { latitude: 36.014, longitude: 129.325 });
           navigateToView("risk-detail");
         }}
       />
@@ -173,6 +212,12 @@ export default function App() {
         appKey={kakaoAppKey}
         variant="danger"
         route={evacuationRoute}
+        rainfallLabel={historicalScenario?.rainfallLabel}
+        rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}
+        currentParkingName={historicalScenario?.currentParkingName}
+        currentParkingAddress={historicalScenario?.currentParkingAddress}
+        comparisonMetric={historicalScenario ? "B1" : undefined}
+        riskReasons={historicalScenario ? ["Confirmed underground parking use", "Peak 1-hour rainfall reached 77mm"] : undefined}
         onContinue={() => navigateToView("safe-detail")}
       />
     );
@@ -183,12 +228,23 @@ export default function App() {
         appKey={kakaoAppKey}
         variant="safe"
         route={evacuationRoute}
+        rainfallLabel={historicalScenario?.rainfallLabel}
+        rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}
+        comparisonMetric={historicalScenario ? "26 spaces" : undefined}
+        riskReasons={historicalScenario ? ["Public-data parking candidate", "Route avoids static high-risk zones"] : undefined}
         onContinue={() => navigateToView("route")}
       />
     );
   }
   if (view === "route") {
-    return <EvacuationRouteView appKey={kakaoAppKey} route={evacuationRoute} onBack={() => navigateToView("safe-detail")} />;
+    return (
+      <EvacuationRouteView
+        appKey={kakaoAppKey}
+        route={evacuationRoute}
+        currentLocationName={historicalScenario?.currentParkingName}
+        onBack={() => navigateToView("safe-detail")}
+      />
+    );
   }
 
   return (
@@ -197,10 +253,10 @@ export default function App() {
       center={center}
       currentPosition={currentPosition}
       currentLocationLabel={currentLocationLabel}
-      error={error}
+      error={historicalScenario ? null : error}
       evacuationRoute={evacuationRoute}
       isCarLocationOpen={isCarLocationOpen}
-      isLoading={isLoading || locationPending}
+      isLoading={historicalScenario ? false : isLoading || locationPending}
       parkedPlace={parkedPlace}
       showParkingMarkers={showParkingMarkers}
       onClearSelection={() => setSelected(undefined)}
@@ -209,10 +265,14 @@ export default function App() {
       onSearch={handleSearch}
       onSelect={handleSelect}
       onSetCarLocation={handleSetCarLocation}
-      places={places}
+      places={visiblePlaces}
       selected={selectedPlace}
-      source={source}
+      source={historicalScenario ? "public-data" : source}
       routeError={routeError}
+      replayLabel={historicalScenario?.replayLabel}
+      rainfallLabel={historicalScenario?.rainfallLabel}
+      rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}
+      historicalRiskPreview={Boolean(historicalScenario)}
     />
   );
 }
