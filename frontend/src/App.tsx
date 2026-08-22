@@ -188,7 +188,7 @@ export default function App() {
     );
   }
   if (view === "route") {
-    return <EvacuationRouteView route={evacuationRoute} onBack={() => navigateToView("safe-detail")} />;
+    return <EvacuationRouteView appKey={kakaoAppKey} route={evacuationRoute} onBack={() => navigateToView("safe-detail")} />;
   }
 
   return (

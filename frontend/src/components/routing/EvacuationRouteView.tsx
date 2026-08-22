@@ -3,6 +3,7 @@ import type { FloodAwareRoute } from "../../types/routing";
 import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
 
 interface EvacuationRouteViewProps {
+  appKey?: string;
   route?: FloodAwareRoute;
   onBack: () => void;
 }
@@ -12,7 +13,7 @@ function formatDistance(distanceMeters: number) {
   return `${(distanceMeters / 1_000).toFixed(1)}km`;
 }
 
-export function EvacuationRouteView({ route, onBack }: EvacuationRouteViewProps) {
+export function EvacuationRouteView({ appKey, route, onBack }: EvacuationRouteViewProps) {
   const distance = route?.distanceMeters ?? 0;
   const driveMinutes = Math.max(1, Math.ceil(distance / 250));
   const parkingLabel = route ? getEnglishParkingLabel(route.destination) : undefined;
@@ -23,6 +24,7 @@ export function EvacuationRouteView({ route, onBack }: EvacuationRouteViewProps)
         <div className="evacuation-directions-map">
           {route ? (
             <ParkingMap
+              appKey={appKey}
               center={route.origin}
               currentPosition={route.origin}
               evacuationRoute={route}
@@ -59,7 +61,7 @@ export function EvacuationRouteView({ route, onBack }: EvacuationRouteViewProps)
           <span>Distance<strong>{formatDistance(distance)}</strong></span>
         </div>
 
-        <p className="evacuation-route-label">LOWER-RISK ROUTE · PROTOTYPE</p>
+        <p className="evacuation-route-label">LOWER-RISK ROUTE · © OPENSTREETMAP CONTRIBUTORS</p>
       </section>
     </main>
   );

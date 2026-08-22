@@ -712,6 +712,7 @@ h3 { margin: 0; font-size: 14px; }
 .evacuation-directions-map .map-wrap,
 .evacuation-directions-map .fallback-map,
 .evacuation-directions-map .kakao-map { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 100%; }
+.evacuation-directions-map .kakao-map { overflow: hidden; background: #071412; touch-action: none; }
 .evacuation-directions-map .fallback-route-layer { inset: 24% 7% 21%; width: 86%; height: 55%; }
 .evacuation-directions-map .route-line--baseline { display: none; }
 .evacuation-directions-map .route-line--lower-risk { stroke-width: 5; }
@@ -738,7 +739,7 @@ h3 { margin: 0; font-size: 14px; }
 .evacuation-route-metrics { right: 16px; width: 192px; height: 65px; padding: 10px; display: flex; justify-content: center; gap: 10px; }
 .evacuation-route-metrics > span { width: 64px; display: flex; flex-direction: column; }
 .evacuation-route-metrics strong { color: #fff; font-size: 18px; font-weight: 600; }
-.evacuation-route-label { position: absolute; z-index: 7; right: 19px; bottom: 116px; margin: 0; color: #00e8ec; font-size: 9px; font-weight: 700; letter-spacing: .05em; }
+.evacuation-route-label { position: absolute; z-index: 7; top: 12px; right: 16px; width: 156px; margin: 0; color: #00e8ec; font-size: 8px; font-weight: 700; line-height: 1.25; letter-spacing: .04em; text-align: right; text-shadow: 0 1px 3px #001c1c; }
 
 @media (min-width: 481px) {
   .onboarding-stage { background: radial-gradient(circle at 50% 25%, #0b3331, #001817 54%); }
@@ -824,7 +825,8 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 .parking-home-map .kakao-map div:has(> img[src*="/tile/"]),
-.flood-detail-map .kakao-map div:has(> img[src*="/tile/"]) {
+.flood-detail-map .kakao-map div:has(> img[src*="/tile/"]),
+.evacuation-directions-map .kakao-map div:has(> img[src*="/tile/"]) {
   filter: grayscale(1) invert(.88) sepia(.2) saturate(.76) hue-rotate(112deg) brightness(.82) contrast(1.24);
 }
 

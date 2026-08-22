@@ -1,6 +1,6 @@
 # 침수 위험 회피 경로 뷰
 
-> 구현·확인일: 2026-08-22
+> 구현·확인일: 2026-08-23
 >
 > 상태: `MVP IMPLEMENTED`
 
@@ -8,13 +8,14 @@
 
 `?view=emergency`의 `Move Your Car Now`를 누르면 정적 GeoJSON을 불러와 `위험 장소 상세 → 안전 장소 상세 → 우회 길찾기`로 전환한다. 최종 지도에는 다음 레이어를 표시한다.
 
-- 주황·적색: 건물 위험점에서 만든 데모 위험 영향권
+- 청록 발광 영역: 건물 위험점과 현재 침수에서 만든 데모 위험 영향권
 - 회색 점선: 거리만 최소화한 일반 최단경로
 - 청록 실선: 침수 위험 노출 비용을 포함한 저위험 경로 후보
 - 녹색 `P`: 선택된 목적 주차장 후보
-- 하단 카드: 목적지, 도로거리, `Safety not verified`, OSM 출처
+- 상단 카드: 현재 위치와 목적지
+- 하단 카드: 안전시간 시연 값, 운전시간, 도로거리, OSM 출처
 
-Kakao JavaScript 키가 있으면 `Polygon`, `Polyline`, `CustomOverlay`로 표시한다. 키가 없거나 SDK 로드가 실패하면 기존 지도 이미지 위 SVG 레이어로 같은 GeoJSON을 표시한다.
+`?view=route`의 `EvacuationRouteView`도 `VITE_KAKAO_MAP_APP_KEY`를 받아 실제 Kakao 지도를 표시한다. 경로는 직선 목업이 아니라 OSM 운전 도로 그래프에서 계산한 `lower_risk_route` 좌표열이며, `Polygon`, `Polyline`, `CustomOverlay`로 실제 좌표에 맞춰 렌더링한다. 지도는 드래그·확대·축소할 수 있다. 키가 없거나 SDK 로드가 실패할 때만 기존 지도 이미지 위 SVG 레이어로 같은 GeoJSON을 표시한다.
 
 ## 데이터 연결
 
@@ -42,7 +43,7 @@ Kakao JavaScript 키가 있으면 `Polygon`, `Polyline`, `CustomOverlay`로 표�
 - 제거된 도로 간선: 6개
 - 재선택 목적지: `효곡동 노상8`
 - 우회 도로거리: `2,121.9m`
-- UI 표시: 현재 침수 폴리곤 적색, 저위험 우회선 청록색
+- UI 표시: 현재 침수 폴리곤 청록 발광 영역, 저위험 우회선 청록색
 
 이 시나리오는 발표 화면 전환과 우회 계산 검증만을 위한 합성 데이터다. 실제 포항 침수 현황으로 설명하면 안 된다.
 
@@ -61,3 +62,4 @@ Kakao JavaScript 키가 있으면 `Polygon`, `Polyline`, `CustomOverlay`로 표�
 - React TypeScript production build 성공
 - ESLint 성공
 - OSM 경로 출처를 결과 데이터와 UI에 표시
+- `localhost:5173/?view=route`에서 실제 Kakao 타일, OSM 도로 경로, 현재 위치·목적지·위험 영역 렌더링 확인
