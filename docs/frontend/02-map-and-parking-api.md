@@ -61,6 +61,7 @@ node scripts/build_frontend_parking_catalog.mjs
 - 최초 점검에서는 `http://localhost:5173`과 `http://127.0.0.1:5173` 모두 HTTP `401 domain mismatched`였다.
 - JavaScript SDK 도메인 등록 후 재점검에서는 도메인 오류가 사라지고 HTTP `403`과 `App(Waterpark) disabled OPEN_MAP_AND_LOCAL service.` 응답을 받았다.
 - 이는 키와 호출 도메인은 인식됐지만 **카카오맵 → 사용 설정 → 상태**가 활성화되지 않았음을 뜻한다. 공식 안내상 2026-07-21부터 카카오맵 API 사용 전에 이 설정을 `ON`으로 켜야 한다.
+- 카카오맵 설정 변경 후 3차 재점검의 새 SDK 요청은 HTTP `401`과 `appKey(...) is already deactivated`를 반환했다. 같은 키를 사용한 기존 브라우저 세션에서는 캐시된 SDK로 지도와 포항 주차장 15건 검색까지 동작했지만, 캐시 없는 새 요청이 실패하므로 연결 완료로 판정하지 않는다. **앱 → 플랫폼 키 → JavaScript 키**에서 활성 상태인 키를 확인하고 `.env`를 갱신해야 한다.
 - 카카오맵 사용 설정 후 SDK 응답 HTTP `200`, 실제 지도 DOM, 주소 검색 결과의 `Kakao 실시간 검색` 배지, 브라우저 오류 로그를 다시 확인한다.
 
 ## 2026-08-22 유료 사용 구조

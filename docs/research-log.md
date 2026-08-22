@@ -104,6 +104,7 @@
 - React 앱은 주소를 좌표로 바꾼 뒤 `주차장`을 거리순 검색하는 흐름을 구현했다. 키가 없거나 호출이 실패하면 경북 공영주차장 좌표 보유 1,986건을 검색한다.
 - Vercel `agent-skills`의 React 성능 기준과 최신 Web Interface Guidelines를 적용해 접근성, focus, 폼, 비동기 상태, safe-area, 긴 텍스트와 조건부 SDK 로딩을 확인했다.
 - Kakao JavaScript 키의 SDK 도메인 등록 후 `domain mismatched` 오류는 해소됐다. 재호출은 HTTP `403`과 `App(Waterpark) disabled OPEN_MAP_AND_LOCAL service.`를 반환해 **카카오맵 → 사용 설정 → 상태 ON**이 추가로 필요하다.
+- 카카오맵 설정 변경 뒤 같은 `.env` 키로 보낸 새 SDK 요청은 HTTP `401`과 `appKey is already deactivated`였다. 기존 브라우저 세션의 캐시된 SDK에서는 지도와 포항 주차장 15건 검색이 동작했으나, 캐시 없는 요청이 실패하므로 연결 완료로 판정하지 않는다. 활성 키 확인 또는 새 키 적용이 필요하다.
 - Kakao 공식 문서상 2026-07-21부터 카카오맵 API 활성화가 필수이며, 개발자 계정에서 첫 번째로 활성화한 앱에만 무료 쿼터가 제공된다.
 - 산출물: `frontend/`, `docs/frontend/`, `frontend/public/data/gyeongbuk-parking.json`
 - 출처: [Kakao Developers 카카오맵 이해하기](https://developers.kakao.com/docs/ko/kakaomap/common), [Kakao 지도 Web API 가이드](https://apis.map.kakao.com/web/guide/), [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/), [Vercel agent-skills](https://github.com/vercel-labs/agent-skills), [Web Interface Guidelines](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md)
