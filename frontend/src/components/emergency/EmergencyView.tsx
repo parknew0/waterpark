@@ -3,6 +3,9 @@ import type { CSSProperties } from "react";
 interface EmergencyViewProps {
   onBack: () => void;
   onMoveNow: () => void;
+  parkingName?: string;
+  parkingAddress?: string;
+  distanceMeters?: number;
 }
 
 const rainDrops = [
@@ -48,7 +51,13 @@ function EmergencyCarIcon() {
   );
 }
 
-export function EmergencyView({ onBack, onMoveNow }: EmergencyViewProps) {
+export function EmergencyView({
+  onBack,
+  onMoveNow,
+  parkingName = "Finding a lower-risk parking candidate…",
+  parkingAddress = "Static flood-risk routing prototype",
+  distanceMeters,
+}: EmergencyViewProps) {
   return (
     <main className="emergency-stage">
       <section className="emergency-phone" aria-labelledby="emergency-title">
@@ -75,10 +84,10 @@ export function EmergencyView({ onBack, onMoveNow }: EmergencyViewProps) {
         </section>
 
         <article className="emergency-parking-card" aria-label="Assigned safe parking">
-          <span>Assigned Safe Parking</span>
-          <strong>Wolyeonggyo Public Parking Lot</strong>
-          <p>170 Donam-dong, Sangju-si, Gyeongsangbuk-do</p>
-          <em>156m away</em>
+          <span>Lower-Risk Parking Candidate</span>
+          <strong>{parkingName}</strong>
+          <p>{parkingAddress}</p>
+          <em>{distanceMeters == null ? "Calculating…" : `${Math.round(distanceMeters)}m by road`}</em>
         </article>
 
         <footer className="emergency-footer">

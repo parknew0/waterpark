@@ -1,4 +1,5 @@
 import type { Coordinate, ParkingPlace } from "../types/parking";
+import type { FloodAwareRoute, Position } from "../types/routing";
 
 export interface KakaoPlaceResult {
   id: string;
@@ -34,6 +35,10 @@ interface KakaoCustomOverlayInstance {
   setMap(map: KakaoMapInstance | null): void;
 }
 
+interface KakaoDrawableInstance {
+  setMap(map: KakaoMapInstance | null): void;
+}
+
 interface KakaoLatLngBounds {
   extend(position: KakaoLatLng): void;
 }
@@ -57,6 +62,25 @@ interface KakaoMapsApi {
     yAnchor: number;
     zIndex: number;
   }) => KakaoCustomOverlayInstance;
+  Polyline: new (options: {
+    map: KakaoMapInstance;
+    path: KakaoLatLng[];
+    strokeWeight: number;
+    strokeColor: string;
+    strokeOpacity: number;
+    strokeStyle?: string;
+    zIndex?: number;
+  }) => KakaoDrawableInstance;
+  Polygon: new (options: {
+    map: KakaoMapInstance;
+    path: KakaoLatLng[];
+    strokeWeight: number;
+    strokeColor: string;
+    strokeOpacity: number;
+    fillColor: string;
+    fillOpacity: number;
+    zIndex?: number;
+  }) => KakaoDrawableInstance;
   services: {
     Status: { OK: string; ZERO_RESULT: string; ERROR: string };
     SortBy: { DISTANCE: string };
@@ -196,6 +220,7 @@ export function createKakaoMap(
   center: Coordinate,
   places: ParkingPlace[],
   currentPosition?: Coordinate,
+  evacuationRoute?: FloodAwareRoute,
   parkedPlace?: ParkingPlace,
   onParkingSelect?: (place: ParkingPlace) => void,
 ): () => void {
@@ -206,7 +231,60 @@ export function createKakaoMap(
     scrollwheel: true,
   });
   const overlays: KakaoCustomOverlayInstance[] = [];
+  const routeLayers: KakaoDrawableInstance[] = [];
   const listenerCleanups: Array<() => void> = [];
+
+  const toPath = (positions: Position[]) => positions.map(
+    ([longitude, latitude]) => new maps.LatLng(latitude, longitude),
+  );
+
+  if (evacuationRoute) {
+    evacuationRoute.riskZones.forEach((zone) => {
+      zone.polygons.forEach((polygon) => {
+        routeLayers.push(new maps.Polygon({
+          map,
+          path: toPath(polygon),
+          strokeWeight: 1,
+          strokeColor: zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
+          strokeOpacity: 0.72,
+          fillColor: zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
+          fillOpacity: zone.level === "VERY_HIGH" ? 0.3 : 0.17,
+          zIndex: 2,
+        }));
+      });
+    });
+    routeLayers.push(new maps.Polyline({
+      map,
+      path: toPath(evacuationRoute.baselinePath),
+      strokeWeight: 5,
+      strokeColor: "#a7b1b0",
+      strokeOpacity: 0.62,
+      strokeStyle: "shortdash",
+      zIndex: 3,
+    }));
+    routeLayers.push(new maps.Polyline({
+      map,
+      path: toPath(evacuationRoute.lowerRiskPath),
+      strokeWeight: 7,
+      strokeColor: "#00e8ec",
+      strokeOpacity: 0.95,
+      zIndex: 4,
+    }));
+
+    const destinationMarker = document.createElement("span");
+    destinationMarker.className = "evacuation-destination-marker";
+    destinationMarker.textContent = "P";
+    destinationMarker.setAttribute("role", "img");
+    destinationMarker.setAttribute("aria-label", `대피 주차장 후보: ${evacuationRoute.destination.name}`);
+    overlays.push(new maps.CustomOverlay({
+      map,
+      position: new maps.LatLng(evacuationRoute.destination.latitude, evacuationRoute.destination.longitude),
+      content: destinationMarker,
+      xAnchor: 0.5,
+      yAnchor: 0.5,
+      zIndex: 7,
+    }));
+  }
 
   if (currentPosition) {
     const marker = document.createElement("span");
@@ -300,7 +378,7 @@ export function createKakaoMap(
     }));
   }
 
-  if (places.length > 0 || parkedPlace) {
+  if (places.length > 0 || parkedPlace || evacuationRoute) {
     const bounds = new maps.LatLngBounds();
     if (currentPosition) {
       bounds.extend(new maps.LatLng(currentPosition.latitude, currentPosition.longitude));
@@ -309,6 +387,11 @@ export function createKakaoMap(
       bounds.extend(new maps.LatLng(place.latitude, place.longitude));
     });
     if (parkedPlace) bounds.extend(new maps.LatLng(parkedPlace.latitude, parkedPlace.longitude));
+    if (evacuationRoute) {
+      evacuationRoute.lowerRiskPath.forEach(([longitude, latitude]) => {
+        bounds.extend(new maps.LatLng(latitude, longitude));
+      });
+    }
     map.setBounds(bounds);
   } else {
     map.setCenter(new maps.LatLng(center.latitude, center.longitude));
@@ -316,6 +399,7 @@ export function createKakaoMap(
 
   return () => {
     listenerCleanups.forEach((cleanup) => cleanup());
+    routeLayers.forEach((layer) => layer.setMap(null));
     overlays.forEach((overlay) => overlay.setMap(null));
   };
 }

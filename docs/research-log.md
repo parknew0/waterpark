@@ -285,6 +285,17 @@
 - 상세: [침수 위험 회피 대피 경로 설계](./09-flood-aware-evacuation-routing.md)
 - 출처: [OSMnx User Reference](https://osmnx.readthedocs.io/en/stable/user-reference.html), [NetworkX shortest_path](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html), [GeoPandas sjoin](https://geopandas.org/en/latest/docs/reference/api/geopandas.sjoin.html), [OpenStreetMap Attribution Guidelines](https://osmfoundation.org/wiki/Licence/Attribution_Guidelines)
 
+### 2026-08-22 — 포항 침수 위험 회피 경로 MVP 구현
+
+- `FACT`: POSTECH 인근 반경 2.5km의 OSM 운전 도로 그래프를 수집해 로컬 GraphML 캐시로 저장하는 생성기를 구현했다.
+- `FACT`: 건물 `HIGH`·`VERY_HIGH` 위험점의 120m 데모 영향권과 각 도로 간선의 교차 길이를 계산하고, `length + HIGH 노출×5 + VERY_HIGH 노출×12`의 비음수 비용으로 Dijkstra 경로를 계산한다.
+- `FACT`: 공영주차장 후보를 영향권 밖·도로 도달 가능 여부로 거른 결과, 기준 출발점에서는 `효곡동 노상1`, 도로거리 618.3m가 선택됐다.
+- `FACT`: 이 입력에서 일반 최단경로와 저위험 경로는 동일하며 위험 영향권 교차 길이는 모두 0m다. 차이가 없는 결과를 임의 우회로로 조작하지 않았다.
+- `FACT`: 긴급 화면의 기존 고정 주차장과 156m 값은 계산 GeoJSON의 목적지·주소·도로거리로 교체했다. CTA 뒤 Kakao 지도 또는 키 없는 SVG 폴백에 위험 구역, 일반 경로, 저위험 경로와 목적지를 표시한다.
+- `LIMITATION`: 위험 반경은 시연 파라미터이며 목적 주차장의 안전성·실시간 여석은 검증되지 않았다. 실제 운영에는 공식 현재 침수·도로 통제 입력이 필요하다.
+- 상세: [침수 위험 회피 대피 경로 설계와 구현](./09-flood-aware-evacuation-routing.md), [프론트 경로 뷰](./frontend/07-flood-aware-route-view.md)
+- 출처: [OSMnx User Reference](https://osmnx.readthedocs.io/en/stable/user-reference.html), [NetworkX shortest_path](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html), [OpenStreetMap Attribution Guidelines](https://osmfoundation.org/wiki/Licence/Attribution_Guidelines)
+
 ## 2026-08-22 전국 침수·건물 원본 확보 및 구조 검증
 
 - 상태: `FACT` — 전국 원본 다운로드와 구조·스키마 검증까지 완료. 전국 학습표 생성은 아직 하지 않았다.
@@ -311,6 +322,7 @@
 | D-006 | 2026-08-22 | 지하주차장 침수 지도학습은 양성 9건으로 불가하므로, 규칙 기반 위험점수를 주력으로 하고 지표면 침수 XGBoost를 보조로 병행한다. | `DECISION` |
 | D-007 | 2026-08-22 | 프론트엔드 로우파이는 React·TypeScript·Vite로 구현한다. | `DECISION` |
 | D-008 | 2026-08-22 | 지도·주소·주차장 검색은 Kakao 지도 JavaScript SDK를 우선 사용하고, 키가 없거나 실패하면 경북 공영주차장 좌표 데이터로 전환한다. | `DECISION` |
+| D-009 | 2026-08-22 | 경로 MVP는 현재 침수 영향권 간선을 제거하고 예측·상시 위험 노출에는 비음수 패널티를 적용하며, 사용자에게 `안전 경로`가 아닌 `저위험 경로 후보`로 표시한다. | `DECISION` |
 
 ## 조사 결과 기록 형식
 

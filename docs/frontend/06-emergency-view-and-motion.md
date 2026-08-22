@@ -17,7 +17,7 @@ Figma 모션 컨텍스트에는 두 노드 모두 키프레임이 없었다. 따
 
 - 데모 주소: `http://localhost:5173/?view=emergency`
 - 뒤로가기 버튼: 지도 화면 `?view=map`으로 전환
-- `Move Your Car Now`: 지도 화면 `?view=map`으로 전환
+- `Move Your Car Now`: 저위험 경로 GeoJSON을 활성화하고 지도 화면 `?view=map`으로 전환
 - 실제 운영에서는 위험 예측 API 또는 긴급 상태가 확정됐을 때 `emergency` 뷰를 여는 연결이 추가로 필요하다.
 
 ## 402×874 배치
@@ -46,10 +46,8 @@ Figma 모션 컨텍스트에는 두 노드 모두 키프레임이 없었다. 따
 
 ## 데이터 한계
 
-현재 다음 값은 Figma 데모 문구를 그대로 표시하는 정적 값이다.
+`Estimated safe time: 30min`은 아직 Figma 정적 값이다. 목적 주차장명·주소·도로거리는 `pohang-flood-aware-route.geojson` 계산 결과로 교체했다.
 
 - `Estimated safe time: 30min`
-- `Wolyeonggyo Public Parking Lot`
-- `156m away`
 
-이는 실제 침수 예측 결과, 실시간 주차 여석 또는 검증된 안전 대피소를 뜻하지 않는다. 백엔드 연결 전 발표에서는 반드시 프로토타입 값으로 설명한다.
+경로 목적지는 공공주차장 후보이며 `safety_verified=false`다. 이는 실시간 주차 여석 또는 검증된 안전 대피소를 뜻하지 않는다. 백엔드 연결 전 발표에서는 반드시 프로토타입 값으로 설명한다.

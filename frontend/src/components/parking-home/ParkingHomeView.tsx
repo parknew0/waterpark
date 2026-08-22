@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
 import type { Coordinate, ParkingPlace, SearchSource } from "../../types/parking";
+import type { FloodAwareRoute } from "../../types/routing";
 import { ParkingMap } from "../ParkingMap";
 
 interface ParkingHomeViewProps {
@@ -9,6 +10,7 @@ interface ParkingHomeViewProps {
   currentPosition?: Coordinate;
   currentLocationLabel: string;
   error: string | null;
+  evacuationRoute?: FloodAwareRoute;
   isCarLocationOpen: boolean;
   isLoading: boolean;
   parkedPlace?: ParkingPlace;
@@ -22,6 +24,7 @@ interface ParkingHomeViewProps {
   places: ParkingPlace[];
   selected?: ParkingPlace;
   source: SearchSource;
+  routeError: string | null;
 }
 
 const thumbnails = [
@@ -44,6 +47,7 @@ export function ParkingHomeView({
   currentPosition,
   currentLocationLabel,
   error,
+  evacuationRoute,
   isCarLocationOpen,
   isLoading,
   parkedPlace,
@@ -57,6 +61,7 @@ export function ParkingHomeView({
   places,
   selected,
   source,
+  routeError,
 }: ParkingHomeViewProps) {
   const [query, setQuery] = useState("");
   const nearbyPlaces = places.slice(0, 3);
@@ -74,7 +79,8 @@ export function ParkingHomeView({
           <ParkingMap
             appKey={appKey}
             center={center}
-            currentPosition={currentPosition}
+            currentPosition={evacuationRoute?.origin ?? currentPosition}
+            evacuationRoute={evacuationRoute}
             parkedPlace={parkedPlace}
             places={showParkingMarkers
               ? places.filter((place) => place.id !== parkedPlace?.id).slice(0, 8)
@@ -83,6 +89,16 @@ export function ParkingHomeView({
             onSelect={onSelect}
           />
         </div>
+
+        {evacuationRoute ? (
+          <article className="evacuation-route-card" aria-live="polite">
+            <span>LOWER-RISK ROUTE · PROTOTYPE</span>
+            <strong>{evacuationRoute.destination.name}</strong>
+            <p>{Math.round(evacuationRoute.distanceMeters)}m · Safety not verified</p>
+            <small>Route: © OpenStreetMap contributors</small>
+          </article>
+        ) : null}
+        {routeError ? <p className="evacuation-route-error" role="status">{routeError}</p> : null}
 
         <header className="parking-home-header">
           <strong>APP</strong>

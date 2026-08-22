@@ -67,5 +67,10 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-22 | 긴급 화면 `90:675` | 402×874에서 경고 아이콘·제목·카드·CTA 좌표와 크기 측정 | 통과 |
 | 2026-08-22 | 긴급 경고 모션 | 26개 비 레이어의 연속 낙하와 1.15초 경고 진동의 실행 중 transform 변화 확인 | 통과 |
 | 2026-08-22 | 긴급 화면 접근성 | 장식 비 숨김, 경고 아이콘 대체명, 버튼 이름, `prefers-reduced-motion` 적용 | 통과 |
+| 2026-08-22 | 경로 생성기 | OSM GraphML 캐시 로드, GeoJSON 6개 레이어, 목적지와 두 경로 생성 | 통과 |
+| 2026-08-22 | 경로 GeoJSON 유효성 | origin·destination Point와 두 LineString의 Shapely 유효성 확인 | 통과 |
+| 2026-08-22 | 긴급 CTA→경로 지도 | 목적지 `효곡동 노상1`·618m 로드, `?view=map` 전환, SVG 폴백 위험 레이어 10개·경로 2개 확인 | 통과 |
+| 2026-08-22 | 경로 화면 콘솔 | 브라우저 error·warning 0건 | 통과 |
+| 2026-08-22 | Kakao 경로 레이어 | `Polygon`·`Polyline` 구현 및 TypeScript build 통과 | 등록하지 않은 테스트 도메인 `127.0.0.1:5174`에서는 SVG 폴백 검증; 등록된 `localhost:5173` 실지도 최종 확인 필요 |
 
 초기 브라우저 검사에서 공공 원천의 중복 관리번호 때문에 React key 경고가 발생했다. 기관·관리번호·명칭·주소·좌표의 SHA-256 안정 해시로 ID를 교체했으며 이후 새 경고는 발생하지 않았다.

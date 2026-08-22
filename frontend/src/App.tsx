@@ -5,6 +5,7 @@ import { OnboardingCarView } from "./components/onboarding/OnboardingCarView";
 import { ParkingHomeView } from "./components/parking-home/ParkingHomeView";
 import { useParkingSearch } from "./hooks/useParkingSearch";
 import { useDeviceHeading } from "./hooks/useDeviceHeading";
+import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
 import type { Coordinate, ParkingPlace } from "./types/parking";
 
@@ -26,11 +27,13 @@ export default function App() {
   const [parkedPlace, setParkedPlace] = useState<ParkingPlace>();
   const [showParkingMarkers, setShowParkingMarkers] = useState(false);
   const [isCarLocationOpen, setIsCarLocationOpen] = useState(view === "map");
+  const [showEvacuationRoute, setShowEvacuationRoute] = useState(false);
   const [locationPending, setLocationPending] = useState(false);
   const [currentLocationLabel, setCurrentLocationLabel] = useState("현재 위치 확인 중…");
   const hasRequestedLocation = useRef(false);
   const requestHeadingPermission = useDeviceHeading();
   const { places, source, isLoading, error, search } = useParkingSearch(kakaoAppKey);
+  const { route: evacuationRoute, error: routeError } = useFloodAwareRoute(showEvacuationRoute || view === "emergency");
 
   const selectedPlace = useMemo(
     () => places.find((place) => place.id === selected?.id) ?? selected,
@@ -136,7 +139,15 @@ export default function App() {
     return (
       <EmergencyView
         onBack={() => navigateToView("map")}
-        onMoveNow={() => navigateToView("map")}
+        parkingName={evacuationRoute?.destination.name}
+        parkingAddress={evacuationRoute?.destination.address}
+        distanceMeters={evacuationRoute?.distanceMeters}
+        onMoveNow={() => {
+          setShowEvacuationRoute(true);
+          setIsCarLocationOpen(false);
+          setCenter({ latitude: 36.014, longitude: 129.325 });
+          navigateToView("map");
+        }}
       />
     );
   }
@@ -148,6 +159,7 @@ export default function App() {
       currentPosition={currentPosition}
       currentLocationLabel={currentLocationLabel}
       error={error}
+      evacuationRoute={evacuationRoute}
       isCarLocationOpen={isCarLocationOpen}
       isLoading={isLoading || locationPending}
       parkedPlace={parkedPlace}
@@ -161,6 +173,7 @@ export default function App() {
       places={places}
       selected={selectedPlace}
       source={source}
+      routeError={routeError}
     />
   );
 }

@@ -17,6 +17,8 @@ data/raw/building-register/
 data/raw/dem/
 data/raw/overture/
 data/raw/kma-rain/
+data/raw/osm-cache/
+data/raw/osm-routing/
 data/interim/building-register/
 data/interim/geometry-repaired/
 
