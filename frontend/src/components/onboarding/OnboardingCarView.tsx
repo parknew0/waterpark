@@ -1,8 +1,22 @@
+import type { CSSProperties } from "react";
 import { OnboardingProgress } from "./OnboardingProgress";
 
 interface OnboardingCarViewProps {
   onNext: () => void;
 }
+
+const rainImpacts = [
+  { x: 4, y: 422, duration: 1.75, delay: -0.4 },
+  { x: 38, y: 430, duration: 1.9, delay: -1.35 },
+  { x: 76, y: 448, duration: 1.65, delay: -0.75 },
+  { x: 112, y: 469, duration: 2.05, delay: -1.8 },
+  { x: 150, y: 493, duration: 1.8, delay: -0.2 },
+  { x: 187, y: 519, duration: 1.95, delay: -1.1 },
+  { x: 225, y: 543, duration: 1.7, delay: -1.5 },
+  { x: 260, y: 566, duration: 2.1, delay: -0.55 },
+  { x: 294, y: 588, duration: 1.85, delay: -1.7 },
+  { x: 326, y: 612, duration: 2, delay: -0.95 },
+] as const;
 
 export function OnboardingCarView({ onNext }: OnboardingCarViewProps) {
   return (
@@ -13,12 +27,29 @@ export function OnboardingCarView({ onNext }: OnboardingCarViewProps) {
           <h1 id="onboarding-car-title">We save your car<br />from the rain</h1>
           <p>AI + public weather data predict flood risk<br />up to 1 hour in advance.</p>
         </header>
+        <div className="onboarding-rain" aria-hidden="true">
+          {rainImpacts.map(({ x, y, duration, delay }) => (
+            <span
+              className="rain-impact"
+              key={`${x}-${y}`}
+              style={{
+                "--rain-x": `${x}px`,
+                "--impact-y": `${y}px`,
+                "--rain-duration": `${duration}s`,
+                "--rain-delay": `${delay}s`,
+              } as CSSProperties}
+            >
+              <span className="rain-drop" />
+              <span className="rain-splash" />
+            </span>
+          ))}
+        </div>
         <img
           className="onboarding-car-image"
-          src="/assets/onboarding/blue-car.png"
-          alt="Blue compact car"
-          width="422"
-          height="422"
+          src="/assets/onboarding/white-suv.png"
+          alt="White electric SUV"
+          width="1402"
+          height="1122"
           fetchPriority="high"
         />
         <footer className="onboarding-footer">

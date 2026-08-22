@@ -16,5 +16,6 @@
 - [구조와 컴포넌트](./01-architecture-and-components.md)
 - [지도·주소·주차장 API](./02-map-and-parking-api.md)
 - [품질 검증 기록](./03-quality-checklist.md)
+- [온보딩 뷰와 빗방울 충돌 효과](./04-onboarding-views.md)
 
 화면이나 API 결정이 바뀌면 코드와 이 문서를 같은 커밋에서 수정한다.

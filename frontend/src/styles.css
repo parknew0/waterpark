@@ -159,14 +159,90 @@ h3 { margin: 0; font-size: 14px; }
 .onboarding-car-image {
   position: absolute;
   z-index: 1;
-  top: 339px;
-  left: 53px;
-  width: 422px;
-  height: 422px;
+  top: 331px;
+  left: -126px;
+  width: 502px;
+  height: 402px;
   max-width: none;
-  object-fit: contain;
+  object-fit: cover;
   pointer-events: none;
   user-select: none;
+}
+
+.onboarding-rain {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.rain-impact {
+  --rain-x: 0px;
+  --impact-y: 450px;
+  --rain-duration: 1.8s;
+  --rain-delay: 0s;
+  position: absolute;
+  top: var(--impact-y);
+  left: var(--rain-x);
+  width: 20px;
+  height: 20px;
+}
+
+.rain-drop {
+  position: absolute;
+  left: 9px;
+  bottom: 10px;
+  width: 2px;
+  height: 20px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(127 252 255 / 0%), #7ffcff 68%, #fefefe);
+  transform: translate3d(32px, calc(-1 * var(--impact-y)), 0) rotate(9deg);
+  transform-origin: bottom;
+  filter: drop-shadow(0 0 2px rgb(0 232 236 / 45%));
+  animation: rain-fall var(--rain-duration) linear var(--rain-delay) infinite;
+}
+
+.rain-splash {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border: 1.5px solid #9bffff;
+  border-radius: 50%;
+  opacity: 0;
+  animation: rain-splash var(--rain-duration) linear var(--rain-delay) infinite;
+}
+
+.rain-splash::before,
+.rain-splash::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 2px;
+  height: 9px;
+  border-radius: 999px;
+  background: #b9ffff;
+  transform-origin: 50% 100%;
+}
+
+.rain-splash::before { transform: rotate(-58deg); }
+.rain-splash::after { transform: rotate(58deg); }
+
+@keyframes rain-fall {
+  0% { opacity: 0; transform: translate3d(32px, calc(-1 * var(--impact-y)), 0) rotate(9deg); }
+  8% { opacity: .85; }
+  67% { opacity: 1; transform: translate3d(0, 0, 0) rotate(9deg); }
+  68%, 100% { opacity: 0; transform: translate3d(-1px, 3px, 0) rotate(9deg); }
+}
+
+@keyframes rain-splash {
+  0%, 66% { opacity: 0; transform: translate3d(0, 0, 0) scale(.35); }
+  68% { opacity: .95; transform: translate3d(0, 0, 0) scale(.55); }
+  76% { opacity: .7; transform: translate3d(-1px, -7px, 0) scale(1.15); }
+  84%, 100% { opacity: 0; transform: translate3d(-2px, -13px, 0) scale(1.5); }
 }
 
 .onboarding-footer {
@@ -213,7 +289,8 @@ h3 { margin: 0; font-size: 14px; }
 
 @media (max-height: 760px) {
   .onboarding-phone { min-height: 100svh; }
-  .onboarding-car-image { top: 298px; width: 360px; height: 360px; }
+  .onboarding-car-image { top: 290px; width: 450px; height: 361px; }
+  .onboarding-rain { transform: translateY(-41px) scale(.9); transform-origin: top left; }
   .permission-detail { bottom: calc(80px + env(safe-area-inset-bottom)); }
 }
 
