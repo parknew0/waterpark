@@ -6,13 +6,16 @@
 
 ## 변경 내용
 
-- Figma `123:2252`의 Orbitron SemiBold `WATERPARK` 워드마크를 공통 `BrandLogo` 컴포넌트로 만들었다.
+- Figma `123:2252`의 흰색 `WATERPARK` 워드마크는 SVG로, 스플래시 `266:3497`의 청록색 그라데이션 워드마크는 원본 PNG로 내려받아 공통 `BrandLogo` 컴포넌트의 variant로 사용한다. 웹폰트 로딩 여부와 관계없이 피그마와 같은 글자 형태가 표시되며 헤더 로고는 확대해도 깨지지 않는다.
 - 지도 홈과 위험·안전 상세 화면에 남아 있던 임시 `APP` 텍스트를 모두 공통 워드마크로 교체했다.
 - Figma `50:84`의 원본 차량 공조 패널과 버튼 이미지를 로컬 에셋으로 저장해 최초 진입 스플래시를 구현했다.
 - 쿼리 없는 최초 진입은 스플래시를 1.6초 유지하고 전체 화면을 1.1초 동안 `cubic-bezier(.4, 0, .2, 1)`로 페이드아웃한 뒤 기존 첫 온보딩으로 전환한다. `?view=emergency` 같은 발표용 직접 진입 URL은 스플래시를 건너뛴다.
 - 이전에 제거하기로 한 예시 기기 UI 원칙에 따라 스플래시의 iOS 상태바는 구현하지 않았다.
 - 위험 상세 `119:1140`과 안전 상세 `123:1743` 상단의 정적 지도 미리보기 대신 `VITE_KAKAO_MAP_APP_KEY`를 전달해 실제 Kakao 지도를 렌더링한다.
 - 실지도에는 현재 위치, 저위험 경로, 목적지, 침수 위험 폴리곤이 기존 경로 GeoJSON을 기준으로 표시된다. 키가 없거나 SDK 로딩이 실패하면 기존 정적 경로 미리보기로 폴백한다.
+- 위험 폴리곤은 Figma `244:3303`의 청록색 발광 표현을 따라, 넓고 낮은 투명도의 외곽 레이어와 선명한 내부 레이어를 겹쳐 표시한다. 기존 갈색·주황색 채움은 제거했다.
+- 강수 칩은 Figma `123:2473`에서 내보낸 24×24 Cloud Rain 원본 에셋을 사용한다.
+- 위험 예측 문구는 서비스의 사전 예측 설명과 맞춰 모든 상세 화면에서 `in the next 1 hour`로 통일했다.
 
 ## 실행과 직접 확인
 
@@ -40,3 +43,4 @@ Kakao Developers의 JavaScript SDK 도메인에는 실제로 연 origin이 등�
 - [스플래시 `50:84`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=50-84&m=dev)
 - [위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev)
 - [안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev)
+- [청록색 위험 영역·우회 경로 `244:3303`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=244-3303&m=dev)

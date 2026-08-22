@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Orbitron:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap");
 
 :root {
   color-scheme: dark;
@@ -28,12 +28,20 @@ button:focus-visible, input:focus-visible, a:focus-visible {
 }
 
 .brand-logo {
-  display: inline-block;
-  color: var(--text-primary);
-  font: 600 20px/1.4 "Orbitron", sans-serif;
-  letter-spacing: -.2px;
-  white-space: nowrap;
+  width: 149px;
+  height: 28px;
+  display: flex;
+  align-items: center;
 }
+
+.brand-logo > img { width: 149px; height: 15px; display: block; }
+
+.rain-icon { position: relative; width: 24px; height: 24px; flex: 0 0 24px; display: block; }
+.rain-icon-cloud { position: absolute; top: 0; left: 0; width: 24px; height: 17.58px; }
+.rain-icon-drop { position: absolute; top: 12px; width: 2px; height: 10px; }
+.rain-icon-drop--left { left: 7px; }
+.rain-icon-drop--middle { left: 11px; }
+.rain-icon-drop--right { left: 15px; }
 
 /* Splash: Figma 50:84. The iOS example status bar is intentionally omitted. */
 .splash-stage {
@@ -83,19 +91,15 @@ button:focus-visible, input:focus-visible, a:focus-visible {
 
 .splash-logo {
   position: absolute;
-  top: 541px;
+  top: 507px;
   left: 50%;
-  color: transparent;
-  background: linear-gradient(90deg, #00e8ec, #c4feff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  font-size: 40px;
-  font-weight: 700;
-  letter-spacing: -.4px;
-  text-shadow: 2px 2px 50px #000;
+  width: 397px;
+  height: 129px;
   transform: translateX(-50%);
   animation: splash-logo-arrive 700ms 280ms ease-out both;
 }
+
+.splash-logo > img { width: 397px; height: 129px; }
 
 @keyframes splash-button-arrive {
   from { opacity: 0; transform: translateX(-50%) scale(.88); }
@@ -643,8 +647,8 @@ h3 { margin: 0; font-size: 14px; }
 .flood-detail-map .fallback-map,
 .evacuation-directions-map .fallback-map { background: #000 url("/assets/routing/flood-route-map.png") center / cover no-repeat; }
 .flood-detail-map .fallback-route-layer { inset: 35% 8% 2%; width: 84%; height: 63%; }
-.flood-detail-map .route-risk-zone,
 .flood-detail-map .route-line--baseline { display: none; }
+.flood-detail-map .route-risk-zone { fill: rgb(0 232 236 / 14%); stroke: #00e8ec; stroke-width: .8; filter: drop-shadow(0 0 4px #00e8ec); }
 .flood-detail-map .route-line--lower-risk { stroke-width: 4; }
 
 .flood-route-map-loading {
@@ -658,9 +662,9 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 .flood-detail-header { position: absolute; z-index: 6; top: 62px; left: 16px; display: flex; flex-direction: column; }
-.flood-detail-header .brand-logo { font-size: 20px; }
-.flood-detail-header span { display: flex; align-items: center; gap: 4px; color: #ededed; font-family: "Noto Sans KR", sans-serif; font-size: 14px; line-height: 20px; }
-.flood-detail-header span img { width: 24px; height: 24px; padding: 5px; border-radius: 50%; background: #474747; }
+.flood-detail-header .brand-logo { width: 149px; }
+.flood-detail-location { display: flex; align-items: center; gap: 4px; color: #ededed; font-family: "Noto Sans KR", sans-serif; font-size: 14px; line-height: 20px; }
+.flood-detail-location img { width: 24px; height: 24px; padding: 5px; border-radius: 50%; background: #474747; }
 
 .flood-detail-rain-chip {
   position: absolute;
@@ -678,7 +682,6 @@ h3 { margin: 0; font-size: 14px; }
   font-size: 16px;
   font-weight: 500;
 }
-.flood-detail-rain-chip img { width: 24px; height: 24px; }
 
 .flood-detail-sheet { position: absolute; z-index: 5; inset: 304px 0 0; border-radius: 24px 24px 0 0; background: #2a2c2c; }
 .flood-place-summary { position: absolute; top: 29px; left: 16px; right: 16px; }
@@ -836,9 +839,9 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 .route-risk-zone { stroke-width: .3; vector-effect: non-scaling-stroke; }
-.route-risk-zone--high { fill: rgb(255 139 103 / 18%); stroke: #ff8b67; }
-.route-risk-zone--very_high { fill: rgb(255 79 103 / 30%); stroke: #ff4f67; }
-.route-risk-zone--current { fill: rgb(255 36 79 / 48%); stroke: #ff244f; }
+.route-risk-zone--high,
+.route-risk-zone--very_high { fill: rgb(0 232 236 / 14%); stroke: rgb(0 232 236 / 52%); filter: drop-shadow(0 0 4px #00e8ec); }
+.route-risk-zone--current { fill: rgb(0 232 236 / 22%); stroke: rgb(0 232 236 / 64%); filter: drop-shadow(0 0 5px #00e8ec); }
 .route-line { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .route-line--baseline { stroke: #a7b1b0; stroke-width: 3; stroke-dasharray: 5 5; opacity: .7; }
 .route-line--lower-risk { stroke: #00e8ec; stroke-width: 5; }
@@ -984,7 +987,7 @@ h3 { margin: 0; font-size: 14px; }
   align-items: flex-start;
 }
 
-.parking-home-header > .brand-logo { font-size: 20px; }
+.parking-home-header > .brand-logo { width: 149px; }
 
 .current-location-button {
   max-width: 260px;
@@ -1073,12 +1076,7 @@ h3 { margin: 0; font-size: 14px; }
   font-size: 12px;
 }
 
-.weather-icon { position: relative; width: 24px; height: 24px; flex: 0 0 24px; }
-.weather-cloud { position: absolute; top: 1px; left: 0; width: 24px; height: 18px; }
-.weather-line { position: absolute; top: 13px; width: 2px; height: 10px; }
-.weather-line--one { left: 8px; }
-.weather-line--two { left: 12px; }
-.weather-line--three { left: 16px; }
+.weather-icon { flex: 0 0 24px; }
 
 .parking-home-disclaimer {
   position: absolute;

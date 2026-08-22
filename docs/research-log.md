@@ -302,7 +302,7 @@
 - `FACT`: 합성 폴리곤을 현재 침수 입력으로 사용하면 OSM 간선 6개가 제거되고 목적지는 `효곡동 노상8`, 우회 거리는 2,121.9m가 된다.
 - `FACT`: Figma `119:1140`, `123:1743`, `90:755`를 확인해 위험 상세·안전 상세·길찾기 React 뷰를 구현했다.
 - `FACT`: 긴급 경고부터 `emergency → risk-detail → safe-detail → route`로 이어지며 각 URL로 직접 진입할 수도 있다.
-- `LIMITATION`: Polygon과 `30mm`, 2시간 위험, 안전시간 30분은 시연 값이다. 실제 침수·강수·안전 보증으로 발표하지 않는다.
+- `LIMITATION`: Polygon과 `30mm`, 1시간 위험, 안전시간 30분은 시연 값이다. 실제 침수·강수·안전 보증으로 발표하지 않는다.
 - 상세: [가짜 침수 상황 데모 흐름](./frontend/08-flood-scenario-demo-flow.md)
 - 출처: [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 길찾기 `90:755`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-755&m=dev)
 
@@ -331,14 +331,15 @@
 
 ### 2026-08-23 — 워드마크·스플래시와 상세 화면 실지도 연결
 
-- `FACT`: Figma `123:2252`의 `WATERPARK` 워드마크를 공통 컴포넌트로 만들고 임시 `APP` 표시를 모두 교체했다.
+- `FACT`: Figma `123:2252`의 `WATERPARK` 워드마크를 SVG 에셋 기반 공통 컴포넌트로 만들고 임시 `APP` 표시를 모두 교체했다. 스플래시의 그라데이션 variant는 별도 Figma 원본 PNG를 사용한다.
 - `FACT`: Figma `50:84`의 원본 이미지 두 개를 저장해 쿼리 없는 최초 진입 스플래시를 구현했다. 예시 iOS 상태바는 기존 UI 결정에 따라 제외했다.
 - `FACT`: 위험 상세 `119:1140`과 안전 상세 `123:1743`이 `VITE_KAKAO_MAP_APP_KEY`를 받아 실제 Kakao 지도·계산 경로·마커를 표시하도록 변경했다.
 - `FACT`: `localhost:5173` 브라우저에서 두 상세 화면의 Kakao 지도 타일과 접근 가능한 지도 region을 확인했고 TypeScript build와 ESLint를 통과했다.
 - `LIMITATION`: Kakao 지도는 등록 origin과 활성 JavaScript 키가 필요하며, 실패 시 정적 경로 미리보기로 폴백한다.
 - `DECISION`: 스플래시는 1.6초 유지 후 1.1초 동안 전체 화면을 페이드아웃하고, 페이드가 끝난 다음 온보딩으로 전환한다. Figma 원본 노드에는 별도 모션 데이터가 없어 사용자 요청을 앱 전환 명세로 기록했다.
+- `DECISION`: 위험 폴리곤은 Figma `244:3303`을 기준으로 청록색 저투명도 외곽과 내부 레이어를 겹친 발광 표현을 사용한다. 상세 위험 예측 시간은 제품 설명과 같은 1시간으로 통일한다.
 - 상세: [워드마크·스플래시·상세 실지도](./frontend/09-brand-splash-and-live-detail-maps.md)
-- 출처: [Figma 워드마크 `123:2252`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2252&m=dev), [Figma 스플래시 `50:84`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=50-84&m=dev), [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev)
+- 출처: [Figma 워드마크 `123:2252`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2252&m=dev), [Figma 스플래시 `50:84`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=50-84&m=dev), [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 청록색 위험 영역 `244:3303`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=244-3303&m=dev)
 
 ## 결정 로그
 

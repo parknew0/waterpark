@@ -4,6 +4,7 @@ import type { Coordinate, ParkingPlace, SearchSource } from "../../types/parking
 import type { FloodAwareRoute } from "../../types/routing";
 import { ParkingMap } from "../ParkingMap";
 import { BrandLogo } from "../brand/BrandLogo";
+import { RainIcon } from "../icons/RainIcon";
 
 interface ParkingHomeViewProps {
   appKey?: string;
@@ -112,12 +113,7 @@ export function ParkingHomeView({
         </header>
 
         <div className="parking-weather-chip" aria-label="강수량 API 연결 대기 중">
-          <span className="weather-icon" aria-hidden="true">
-            <img className="weather-cloud" src="/assets/parking/rain-cloud.svg" alt="" />
-            <img className="weather-line weather-line--one" src="/assets/parking/rain-line.svg" alt="" />
-            <img className="weather-line weather-line--two" src="/assets/parking/rain-line.svg" alt="" />
-            <img className="weather-line weather-line--three" src="/assets/parking/rain-line.svg" alt="" />
-          </span>
+          <RainIcon className="weather-icon" />
           <span>--mm</span>
         </div>
 

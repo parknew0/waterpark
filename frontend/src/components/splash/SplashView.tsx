@@ -26,7 +26,7 @@ export function SplashView({ onComplete }: SplashViewProps) {
       <section className="splash-phone">
         <img className="splash-background" src="/assets/splash/control-panel.png" alt="" />
         <img className="splash-button" src="/assets/splash/waterpark-button.png" alt="" />
-        <BrandLogo className="splash-logo" />
+        <BrandLogo className="splash-logo" variant="splash" />
       </section>
     </main>
   );

@@ -2,6 +2,7 @@ import { ParkingMap } from "../ParkingMap";
 import type { FloodAwareRoute } from "../../types/routing";
 import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
 import { BrandLogo } from "../brand/BrandLogo";
+import { RainIcon } from "../icons/RainIcon";
 
 interface FloodLocationDetailViewProps {
   appKey?: string;
@@ -46,11 +47,11 @@ export function FloodLocationDetailView({
 
         <header className="flood-detail-header">
           <BrandLogo />
-          <span><img src="/assets/parking/location.svg" alt="" /> Pohang-si Nam-gu</span>
+          <span className="flood-detail-location"><img src="/assets/parking/location.svg" alt="" /> Pohang-si Nam-gu</span>
         </header>
 
         <div className="flood-detail-rain-chip" aria-label="Demo rainfall 30 millimeters">
-          <img src="/assets/parking/rain-cloud.svg" alt="" />
+          <RainIcon />
           <span>30mm</span>
         </div>
 
@@ -67,7 +68,7 @@ export function FloodLocationDetailView({
           </div>
 
           <article className={`flood-risk-reason flood-risk-reason--${variant}`}>
-            <h2><em>{isDanger ? "High" : "Low"}</em> risk of flooding<br />in the next <em>2 hours</em></h2>
+            <h2><em>{isDanger ? "High" : "Low"}</em> risk of flooding<br />in the next <em>1 hour</em></h2>
             <span>Here’s Why</span>
             <ul>
               <li>Building is {isDanger ? "lower" : "higher"} than the surrounding</li>

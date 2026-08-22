@@ -241,14 +241,25 @@ export function createKakaoMap(
   if (evacuationRoute) {
     evacuationRoute.riskZones.forEach((zone) => {
       zone.polygons.forEach((polygon) => {
+        const path = toPath(polygon);
         routeLayers.push(new maps.Polygon({
           map,
-          path: toPath(polygon),
-          strokeWeight: 1,
-          strokeColor: zone.level === "CURRENT" ? "#ff244f" : zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
-          strokeOpacity: 0.72,
-          fillColor: zone.level === "CURRENT" ? "#ff244f" : zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
-          fillOpacity: zone.level === "CURRENT" ? 0.48 : zone.level === "VERY_HIGH" ? 0.3 : 0.17,
+          path,
+          strokeWeight: 14,
+          strokeColor: "#00e8ec",
+          strokeOpacity: 0.12,
+          fillColor: "#00e8ec",
+          fillOpacity: 0.06,
+          zIndex: 2,
+        }));
+        routeLayers.push(new maps.Polygon({
+          map,
+          path,
+          strokeWeight: 2,
+          strokeColor: "#00e8ec",
+          strokeOpacity: 0.5,
+          fillColor: "#00e8ec",
+          fillOpacity: zone.level === "CURRENT" ? 0.22 : 0.14,
           zIndex: 2,
         }));
       });
