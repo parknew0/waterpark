@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap");
 
 :root {
   color-scheme: dark;
@@ -118,6 +118,143 @@ h3 { margin: 0; font-size: 14px; }
 .empty-state { min-height: 180px; display: grid; place-content: center; gap: 7px; padding: 24px; border: 1px dashed #53605f; border-radius: 14px; text-align: center; }
 .empty-state span { color: var(--text-secondary); font-size: 13px; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+.onboarding-stage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background: #001817;
+}
+
+.onboarding-phone {
+  position: relative;
+  width: min(402px, 100vw);
+  height: min(874px, 100svh);
+  min-height: 720px;
+  overflow: hidden;
+  color: #fefefe;
+  background: #001817;
+  font-family: "Plus Jakarta Sans", "Noto Sans KR", sans-serif;
+}
+
+.mobile-status-bar {
+  position: absolute;
+  z-index: 5;
+  inset: 0 0 auto;
+  height: 54px;
+  font: 600 17px/1 "Plus Jakarta Sans", sans-serif;
+}
+
+.mobile-status-time { position: absolute; top: 25px; left: 53px; }
+.mobile-dynamic-island { position: absolute; top: 14px; left: 50%; width: 125px; height: 37px; transform: translateX(-50%); border-radius: 999px; background: #000; }
+.mobile-status-icons { position: absolute; top: 25px; right: 42px; height: 14px; display: flex; align-items: center; gap: 7px; }
+.mobile-signal { height: 13px; display: flex; align-items: end; gap: 2px; }
+.mobile-signal i { display: block; width: 3px; border-radius: 2px; background: #fff; }
+.mobile-signal i:nth-child(1) { height: 4px; }
+.mobile-signal i:nth-child(2) { height: 7px; }
+.mobile-signal i:nth-child(3) { height: 10px; }
+.mobile-signal i:nth-child(4) { height: 13px; }
+.mobile-wifi { position: relative; width: 16px; height: 13px; overflow: hidden; }
+.mobile-wifi i { position: absolute; left: 50%; border: 2px solid #fff; border-bottom-color: transparent; border-left-color: transparent; border-radius: 50%; transform: translateX(-50%) rotate(-45deg); }
+.mobile-wifi i:nth-child(1) { top: 0; width: 16px; height: 16px; }
+.mobile-wifi i:nth-child(2) { top: 4px; width: 10px; height: 10px; }
+.mobile-wifi i:nth-child(3) { top: 9px; width: 4px; height: 4px; background: #fff; border: 0; }
+.mobile-battery { position: relative; width: 25px; height: 13px; padding: 2px; border: 1.5px solid rgb(255 255 255 / 80%); border-radius: 4px; }
+.mobile-battery::after { content: ""; position: absolute; top: 4px; right: -4px; width: 2px; height: 5px; border-radius: 0 2px 2px 0; background: rgb(255 255 255 / 60%); }
+.mobile-battery i { display: block; width: 100%; height: 100%; border-radius: 2px; background: #fff; }
+
+.onboarding-progress {
+  position: absolute;
+  z-index: 4;
+  top: 62px;
+  left: 16px;
+  right: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.onboarding-progress-bar { height: 4px; border-radius: 30px; background: #474747; }
+.onboarding-progress-bar--active { background: #00e8ec; }
+
+.onboarding-copy { position: absolute; z-index: 2; left: 16px; right: 16px; }
+.onboarding-copy h1 { margin: 0; font: 600 36px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.36px; text-wrap: balance; }
+.onboarding-copy p { margin: 12px 0 0; font: 500 16px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.16px; }
+.onboarding-copy--car, .onboarding-copy--consent { top: 141px; }
+
+.onboarding-car-image {
+  position: absolute;
+  z-index: 1;
+  top: 381px;
+  left: 53px;
+  width: 422px;
+  height: 422px;
+  max-width: none;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.onboarding-footer {
+  position: absolute;
+  z-index: 6;
+  inset: auto 0 0;
+  height: 108px;
+  padding: 12px 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, rgb(0 24 23 / 0%), #001817 24%);
+}
+
+.onboarding-primary-button {
+  width: 100%;
+  height: 50px;
+  flex: 0 0 50px;
+  border: 0;
+  border-radius: 30px;
+  color: #2e2e2e;
+  background: #00e8ec;
+  font: 500 16px/1.4 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -.32px;
+  cursor: pointer;
+}
+
+.onboarding-primary-button:hover { background: #68f8fa; }
+.onboarding-primary-button:active { transform: translateY(1px); }
+.onboarding-home-indicator { width: 134px; height: 5px; margin-top: 33px; border-radius: 100px; background: #626877; }
+
+.permission-section { position: absolute; top: 282px; left: 24px; right: 24px; }
+.permission-section h2 { margin: 0 0 20px; color: #ededed; font: 600 20px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.2px; }
+.permission-row { margin-left: 16px; display: flex; align-items: center; gap: 10px; }
+.permission-icon { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; border-radius: 50%; background: #474747; }
+.permission-icon img { width: 20px; height: 23px; display: block; }
+.permission-copy { min-width: 0; display: flex; flex-direction: column; color: #e0e0e0; font-family: "Noto Sans KR", sans-serif; line-height: 1.4; }
+.permission-copy strong { font-size: 18px; font-weight: 600; letter-spacing: -.18px; }
+.permission-copy span { font-size: 16px; font-weight: 500; letter-spacing: -.16px; white-space: nowrap; }
+.permission-detail { position: absolute; left: 24px; right: 20px; bottom: 114px; margin: 0; color: #7a7a7a; font: 500 12px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.12px; }
+
+@media (min-width: 481px) {
+  .onboarding-stage { background: radial-gradient(circle at 50% 25%, #0b3331, #001817 54%); }
+  .onboarding-phone { border: 1px solid rgb(255 255 255 / 7%); box-shadow: 0 30px 90px rgb(0 0 0 / 34%); }
+}
+
+@media (max-height: 760px) {
+  .onboarding-phone { min-height: 100svh; }
+  .onboarding-car-image { top: 340px; width: 360px; height: 360px; }
+  .permission-detail { bottom: 102px; }
+  .onboarding-footer { height: 96px; }
+  .onboarding-home-indicator { margin-top: 21px; }
+}
+
+@media (max-width: 360px) {
+  .onboarding-copy h1 { font-size: 32px; }
+  .permission-section { left: 16px; right: 16px; }
+  .permission-row { margin-left: 0; align-items: flex-start; }
+  .permission-copy span { font-size: 14px; white-space: normal; text-wrap: pretty; }
+  .permission-detail { left: 16px; right: 16px; }
+  .permission-detail-break { display: none; }
+}
 
 @media (max-width: 840px) {
   .app-shell { display: block; padding: 0; }

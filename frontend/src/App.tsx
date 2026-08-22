@@ -1,5 +1,7 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { AppHeader } from "./components/AppHeader";
+import { LocationConsentView } from "./components/onboarding/LocationConsentView";
+import { OnboardingCarView } from "./components/onboarding/OnboardingCarView";
 import { ParkingMap } from "./components/ParkingMap";
 import { ParkingSearchPanel } from "./components/ParkingSearchPanel";
 import { useParkingSearch } from "./hooks/useParkingSearch";
@@ -8,7 +10,15 @@ import type { Coordinate, ParkingPlace } from "./types/parking";
 const DEFAULT_CENTER: Coordinate = { latitude: 36.576, longitude: 128.505 };
 const kakaoAppKey = import.meta.env.VITE_KAKAO_MAP_APP_KEY?.trim();
 
+type AppView = "car" | "consent" | "map";
+
+function getInitialView(): AppView {
+  const view = new URLSearchParams(window.location.search).get("view");
+  return view === "consent" || view === "map" ? view : "car";
+}
+
 export default function App() {
+  const [view, setView] = useState<AppView>(getInitialView);
   const [query, setQuery] = useState("");
   const [center, setCenter] = useState<Coordinate>(DEFAULT_CENTER);
   const [selected, setSelected] = useState<ParkingPlace>();
@@ -20,6 +30,23 @@ export default function App() {
     () => places.find((place) => place.id === selected?.id) ?? selected,
     [places, selected],
   );
+
+  useEffect(() => {
+    const handleHistoryChange = () => setView(getInitialView());
+    window.addEventListener("popstate", handleHistoryChange);
+    return () => window.removeEventListener("popstate", handleHistoryChange);
+  }, []);
+
+  const navigateToView = (nextView: AppView) => {
+    const url = new URL(window.location.href);
+    if (nextView === "car") {
+      url.searchParams.delete("view");
+    } else {
+      url.searchParams.set("view", nextView);
+    }
+    window.history.pushState(null, "", url);
+    setView(nextView);
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -58,6 +85,19 @@ export default function App() {
     setSelected(place);
     setCenter({ latitude: place.latitude, longitude: place.longitude });
   };
+
+  const handleAgreeAndStart = () => {
+    navigateToView("map");
+    handleUseLocation();
+  };
+
+  if (view === "car") {
+    return <OnboardingCarView onNext={() => navigateToView("consent")} />;
+  }
+
+  if (view === "consent") {
+    return <LocationConsentView onAgree={handleAgreeAndStart} />;
+  }
 
   return (
     <>

@@ -41,5 +41,8 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-22 | Kakao SDK 실호출 2차 | 도메인 오류 해소, Kakao 응답 `403 disabled OPEN_MAP_AND_LOCAL` | 카카오맵 → 사용 설정 → 상태 `ON` 후 재검증 |
 | 2026-08-22 | Kakao SDK 실호출 3차 | 새 SDK 요청은 `401 appKey is already deactivated`; 기존 브라우저 캐시에서는 지도·포항 15건 검색 동작 | 활성 JavaScript 키 확인 후 `.env` 갱신, 캐시 없는 요청으로 재검증 |
 | 2026-08-22 | Kakao SDK 실호출 4차 | 새 계정의 키로 SDK HTTP `200`, Kakao 지도 렌더링, 포항 장소 15건 검색, 콘솔 오류 0건 | 연결 완료; 배포 도메인 확정 시 SDK 도메인 추가 |
+| 2026-08-22 | Figma 온보딩 `54:151` | 402×874에서 차량 이미지·진행률·타이포·CTA 배치 확인 | 통과 |
+| 2026-08-22 | Figma 위치 동의 `123:2151` | 402×874에서 권한 설명·아이콘·CTA·하단 안내 배치 확인 | 통과 |
+| 2026-08-22 | 온보딩 URL 상태 | `Next`로 `?view=consent`, 뒤로가기로 `/`, `?view=map` Kakao 지도 정상 | 통과 |
 
 초기 브라우저 검사에서 공공 원천의 중복 관리번호 때문에 React key 경고가 발생했다. 기관·관리번호·명칭·주소·좌표의 SHA-256 안정 해시로 ID를 교체했으며 이후 새 경고는 발생하지 않았다.

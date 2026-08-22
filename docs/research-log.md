@@ -216,6 +216,18 @@
 - 상세 목록과 판별 순서: [경상북도 침수 관련 공공데이터 소스 조사](./07-gyeongbuk-flood-data-source-catalog.md)
 - 확인일: 2026-08-22
 
+## 2026-08-22 Figma 온보딩·위치 동의 화면 구현
+
+- 상태: `FACT` — Figma 디자인 컨텍스트와 에셋을 직접 확인해 React 구현 및 브라우저 검증 완료.
+- 차량 보호 소개 노드 `54:151`은 402×874 모바일 화면, 1/2 진행률, 서비스 설명, 파란 자동차 이미지와 `Next` CTA로 구성된다.
+- 위치 동의 노드 `123:2151`은 2/2 진행률, 필수 위치 권한과 사용 목적, `Agree & Start` CTA로 구성된다.
+- Figma 원본 자동차 PNG와 위치 SVG를 프로젝트에 저장하고 임시 에셋 URL 의존성을 제거했다.
+- 흐름은 `차량 보호 소개 → 위치 동의 → 브라우저 위치 권한 요청 → Kakao 지도`로 연결했다. URL은 `view=consent`, `view=map`으로 상태를 반영하며 뒤로가기를 지원한다.
+- 402×874 시각 확인, 1280×900 중앙 프레임 확인, lint/build, Kakao 지도 진입, 브라우저 경고·오류 0건을 검증했다.
+- 상세: [온보딩 뷰 구현](./frontend/04-onboarding-views.md)
+- 출처: [Figma 차량 보호 소개 `54:151`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=54-151&m=dev), [Figma 위치 동의 `123:2151`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2151&m=dev), [Vercel Web Interface Guidelines](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md)
+- 확인일: 2026-08-22
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |
