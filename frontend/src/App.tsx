@@ -21,14 +21,15 @@ const historicalScenario = getHistoricalScenario();
 
 type AppView = "splash" | "car" | "consent" | "map" | "emergency" | "risk-detail" | "safe-detail" | "route";
 
-function getInitialView(): AppView {
+function getInitialView(forceHistoricalSplash = false): AppView {
+  if (forceHistoricalSplash && historicalScenario) return "splash";
   const view = new URLSearchParams(window.location.search).get("view");
   if (view === "car" || view === "consent" || view === "map" || view === "emergency" || view === "risk-detail" || view === "safe-detail" || view === "route") return view;
   return window.history.state?.waterparkSplashSeen ? "car" : "splash";
 }
 
 export default function App() {
-  const [view, setView] = useState<AppView>(getInitialView);
+  const [view, setView] = useState<AppView>(() => getInitialView(Boolean(historicalScenario)));
   const [center, setCenter] = useState<Coordinate>(historicalScenario?.origin ?? DEFAULT_CENTER);
   const [currentPosition, setCurrentPosition] = useState<Coordinate | undefined>(historicalScenario?.origin);
   const [selected, setSelected] = useState<ParkingPlace>();
@@ -113,7 +114,9 @@ export default function App() {
   }, []);
 
   const handleSplashComplete = useCallback(() => {
-    window.history.replaceState({ ...window.history.state, waterparkSplashSeen: true }, "", window.location.href);
+    const url = new URL(window.location.href);
+    if (historicalScenario) url.searchParams.delete("view");
+    window.history.replaceState({ ...window.history.state, waterparkSplashSeen: true }, "", url);
     setView("car");
   }, []);
 

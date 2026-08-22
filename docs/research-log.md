@@ -347,6 +347,8 @@
 - `LIMITATION`: 현재 확보한 행정안전부 침수흔적도 경북 부분집합 1,402건의 실제 연도 최댓값은 2021이라 힌남노 실제 침수 Polygon을 포함하지 않는다. 과거 재현 화면의 붉은 범위는 관측 침수면이 아닌 시연용 영향 반경으로 고정 표기한다.
 - `DECISION`: 별도 힌남노 아카이브 화면은 제거한다. 기본 앱은 GPS·현재 데이터 흐름을 유지하고, `?scenario=hinnamnor`일 때만 기존 Waterpark 전체 플로우에 인덕동 위치·역사 강우·별도 OSM 경로를 주입한다.
 - `LIMITATION`: 이 모드는 힌남노 당시 Waterpark가 실제 실행됐다는 기록이 아니라 제품 흐름 재연이다. 확보하지 못한 2022년 실제 침수 경계와 시각별 모델 출력은 만들지 않으며, 지도 위험 영역은 정적 위험 데이터임을 문서에 고정한다.
+- `DECISION`: 힌남노 재연은 중간 `view` 쿼리가 포함된 URL로 직접 접속해도 첫 페이지 로드에서 Figma `50:84` Splash부터 시작한다. Splash 종료 뒤 `view`를 제거하고 온보딩부터 전체 앱 흐름을 재생한다.
+- `FACT`: 길찾기 `90:755`의 출발지·목적지 카드에서 긴 영문명이 카드 밖으로 넘치던 문제는 grid·flex 자식의 `min-width: 0`, 카드 overflow, 한 줄 ellipsis로 교정했다.
 - 상세: [힌남노 상황으로 실행하는 Waterpark 전체 플로우](./frontend/10-hinnamnor-waterpark-scenario.md)
 - 출처: [기상청 2022 태풍 보고서](https://www.kma.go.kr/download_01/typhoon/typreport_2022.pdf), [기상청 2022년 9월 기후 뉴스레터](https://www.weather.go.kr/download_02/ellinonewsletter_2022_09.pdf), [냉천 유역 힌남노 수문 연구](https://journal.dssms.org/articles/xml/5aEx/), [ADRC 대한민국 국가보고서 FY2024](https://web.adrc.asia/countryreport/KOR/2024/Korea_CountryReport_FY2024.pdf)
 - 상세: [워드마크·스플래시·상세 실지도](./frontend/09-brand-splash-and-live-detail-maps.md)

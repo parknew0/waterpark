@@ -28,9 +28,11 @@ npm run dev
 
 - 평상시 앱: `http://localhost:5173/`
 - 힌남노 재연: `http://localhost:5173/?scenario=hinnamnor`
-- 특정 화면 바로 확인: `http://localhost:5173/?scenario=hinnamnor&view=emergency`
+- 재연용 긴급 파라미터: `http://localhost:5173/?scenario=hinnamnor&view=emergency` — URL에 `view=emergency`가 있어도 첫 로드는 항상 Splash부터 시작한다.
 
 재연 모드에서도 Splash·온보딩·지도·바텀시트·긴급 경고·상세·길찾기는 기존 Waterpark 컴포넌트를 그대로 사용한다. 차량 위치 확정 CTA를 누르면 홈 화면을 1.8초 보여준 뒤 긴급 경고가 자동으로 열린다. 긴급 CTA를 누르면 상세 화면으로 바로 가지 않고 실제 Kakao 지도에 클릭 가능한 두 주차장 마커가 나타난다.
+
+힌남노 재연 URL은 발표자가 중간 화면 쿼리를 복사해 열더라도 시나리오 맥락을 건너뛰지 않도록 첫 페이지 로드에서 `view`를 무시한다. Splash 페이드아웃이 끝나면 `view`를 제거하고 정상 온보딩 흐름을 시작한다. 앱 내부 history 이동에서는 현재 화면을 유지한다.
 
 - 우방신세계타운 1차 지하주차장 선택 → `Warning` 상세
 - 제철복지회관 임시주차장 선택 → `Safe` 상세
