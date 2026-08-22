@@ -29,7 +29,6 @@
 | `OnboardingCarView` | 차량 보호 가치 제안과 다음 단계 이동 |
 | `LocationConsentView` | 위치 권한 사용 목적 안내와 지도 진입 |
 | `OnboardingProgress` | 2단계 온보딩 진행 상태 |
-| `MobileStatusBar` | Figma 모바일 프레임의 상태 표시 영역 |
 
 ## 현재 포함하지 않는 것
 

@@ -13,6 +13,8 @@
 
 Figma에서 제공한 파란 자동차 PNG와 위치 아이콘 SVG를 `frontend/public/assets/onboarding/`에 저장했다. 임시 Figma 에셋 URL은 코드에서 사용하지 않는다.
 
+Figma에 표시된 iPhone 상태바·다이내믹 아일랜드·홈 인디케이터는 화면 예시용 기기 크롬으로 판단해 실제 웹 컴포넌트에서는 제외한다. 브라우저가 제공하는 시스템 UI와 중복 렌더링하지 않는다.
+
 ## 사용자 흐름
 
 ```text
@@ -41,13 +43,13 @@ Figma에서 제공한 파란 자동차 PNG와 위치 아이콘 SVG를 `frontend/
 - 402×874 이하에서는 화면 전체를 사용한다.
 - 넓은 화면에서는 402×874 프레임을 중앙에 배치한다.
 - 낮은 화면에서는 자동차 크기와 하단 영역을 축소한다.
-- `viewport-fit=cover`, 기존 safe-area CSS, 48px 이상의 주요 터치 영역을 유지한다.
+- `viewport-fit=cover`, 실제 브라우저 safe-area CSS, 48px 이상의 주요 터치 영역을 유지한다.
 
 ## 검증
 
 - `npm run lint` 통과
 - `npm run build` 통과
-- 402×874에서 두 Figma 화면의 제목·진행률·에셋·버튼·하단 인디케이터 위치 확인
+- 402×874에서 두 Figma 화면의 제목·진행률·에셋·버튼 위치 확인
 - `Next` 후 `?view=consent`, 브라우저 뒤로가기 후 `/` 복귀 확인
 - `?view=map`에서 Kakao 지도 렌더링과 폴백 미표시 확인
 - 브라우저 경고·오류 0건

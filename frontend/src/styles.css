@@ -137,36 +137,10 @@ h3 { margin: 0; font-size: 14px; }
   font-family: "Plus Jakarta Sans", "Noto Sans KR", sans-serif;
 }
 
-.mobile-status-bar {
-  position: absolute;
-  z-index: 5;
-  inset: 0 0 auto;
-  height: 54px;
-  font: 600 17px/1 "Plus Jakarta Sans", sans-serif;
-}
-
-.mobile-status-time { position: absolute; top: 25px; left: 53px; }
-.mobile-dynamic-island { position: absolute; top: 14px; left: 50%; width: 125px; height: 37px; transform: translateX(-50%); border-radius: 999px; background: #000; }
-.mobile-status-icons { position: absolute; top: 25px; right: 42px; height: 14px; display: flex; align-items: center; gap: 7px; }
-.mobile-signal { height: 13px; display: flex; align-items: end; gap: 2px; }
-.mobile-signal i { display: block; width: 3px; border-radius: 2px; background: #fff; }
-.mobile-signal i:nth-child(1) { height: 4px; }
-.mobile-signal i:nth-child(2) { height: 7px; }
-.mobile-signal i:nth-child(3) { height: 10px; }
-.mobile-signal i:nth-child(4) { height: 13px; }
-.mobile-wifi { position: relative; width: 16px; height: 13px; overflow: hidden; }
-.mobile-wifi i { position: absolute; left: 50%; border: 2px solid #fff; border-bottom-color: transparent; border-left-color: transparent; border-radius: 50%; transform: translateX(-50%) rotate(-45deg); }
-.mobile-wifi i:nth-child(1) { top: 0; width: 16px; height: 16px; }
-.mobile-wifi i:nth-child(2) { top: 4px; width: 10px; height: 10px; }
-.mobile-wifi i:nth-child(3) { top: 9px; width: 4px; height: 4px; background: #fff; border: 0; }
-.mobile-battery { position: relative; width: 25px; height: 13px; padding: 2px; border: 1.5px solid rgb(255 255 255 / 80%); border-radius: 4px; }
-.mobile-battery::after { content: ""; position: absolute; top: 4px; right: -4px; width: 2px; height: 5px; border-radius: 0 2px 2px 0; background: rgb(255 255 255 / 60%); }
-.mobile-battery i { display: block; width: 100%; height: 100%; border-radius: 2px; background: #fff; }
-
 .onboarding-progress {
   position: absolute;
   z-index: 4;
-  top: 62px;
+  top: max(20px, env(safe-area-inset-top));
   left: 16px;
   right: 16px;
   display: grid;
@@ -180,12 +154,12 @@ h3 { margin: 0; font-size: 14px; }
 .onboarding-copy { position: absolute; z-index: 2; left: 16px; right: 16px; }
 .onboarding-copy h1 { margin: 0; font: 600 36px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.36px; text-wrap: balance; }
 .onboarding-copy p { margin: 12px 0 0; font: 500 16px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.16px; }
-.onboarding-copy--car, .onboarding-copy--consent { top: 141px; }
+.onboarding-copy--car, .onboarding-copy--consent { top: 99px; }
 
 .onboarding-car-image {
   position: absolute;
   z-index: 1;
-  top: 381px;
+  top: 339px;
   left: 53px;
   width: 422px;
   height: 422px;
@@ -199,8 +173,8 @@ h3 { margin: 0; font-size: 14px; }
   position: absolute;
   z-index: 6;
   inset: auto 0 0;
-  height: 108px;
-  padding: 12px 16px 0;
+  height: calc(74px + env(safe-area-inset-bottom));
+  padding: 12px 16px max(12px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -222,9 +196,7 @@ h3 { margin: 0; font-size: 14px; }
 
 .onboarding-primary-button:hover { background: #68f8fa; }
 .onboarding-primary-button:active { transform: translateY(1px); }
-.onboarding-home-indicator { width: 134px; height: 5px; margin-top: 33px; border-radius: 100px; background: #626877; }
-
-.permission-section { position: absolute; top: 282px; left: 24px; right: 24px; }
+.permission-section { position: absolute; top: 240px; left: 24px; right: 24px; }
 .permission-section h2 { margin: 0 0 20px; color: #ededed; font: 600 20px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.2px; }
 .permission-row { margin-left: 16px; display: flex; align-items: center; gap: 10px; }
 .permission-icon { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; border-radius: 50%; background: #474747; }
@@ -232,7 +204,7 @@ h3 { margin: 0; font-size: 14px; }
 .permission-copy { min-width: 0; display: flex; flex-direction: column; color: #e0e0e0; font-family: "Noto Sans KR", sans-serif; line-height: 1.4; }
 .permission-copy strong { font-size: 18px; font-weight: 600; letter-spacing: -.18px; }
 .permission-copy span { font-size: 16px; font-weight: 500; letter-spacing: -.16px; white-space: nowrap; }
-.permission-detail { position: absolute; left: 24px; right: 20px; bottom: 114px; margin: 0; color: #7a7a7a; font: 500 12px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.12px; }
+.permission-detail { position: absolute; left: 24px; right: 20px; bottom: calc(80px + env(safe-area-inset-bottom)); margin: 0; color: #7a7a7a; font: 500 12px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.12px; }
 
 @media (min-width: 481px) {
   .onboarding-stage { background: radial-gradient(circle at 50% 25%, #0b3331, #001817 54%); }
@@ -241,10 +213,8 @@ h3 { margin: 0; font-size: 14px; }
 
 @media (max-height: 760px) {
   .onboarding-phone { min-height: 100svh; }
-  .onboarding-car-image { top: 340px; width: 360px; height: 360px; }
-  .permission-detail { bottom: 102px; }
-  .onboarding-footer { height: 96px; }
-  .onboarding-home-indicator { margin-top: 21px; }
+  .onboarding-car-image { top: 298px; width: 360px; height: 360px; }
+  .permission-detail { bottom: calc(80px + env(safe-area-inset-bottom)); }
 }
 
 @media (max-width: 360px) {

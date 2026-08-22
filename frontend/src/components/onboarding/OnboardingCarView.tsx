@@ -1,4 +1,3 @@
-import { MobileStatusBar } from "./MobileStatusBar";
 import { OnboardingProgress } from "./OnboardingProgress";
 
 interface OnboardingCarViewProps {
@@ -9,7 +8,6 @@ export function OnboardingCarView({ onNext }: OnboardingCarViewProps) {
   return (
     <main className="onboarding-stage">
       <section className="onboarding-phone onboarding-phone--car" aria-labelledby="onboarding-car-title">
-        <MobileStatusBar />
         <OnboardingProgress step={1} />
         <header className="onboarding-copy onboarding-copy--car">
           <h1 id="onboarding-car-title">We save your car<br />from the rain</h1>
@@ -25,7 +23,6 @@ export function OnboardingCarView({ onNext }: OnboardingCarViewProps) {
         />
         <footer className="onboarding-footer">
           <button className="onboarding-primary-button" type="button" onClick={onNext}>Next</button>
-          <span className="onboarding-home-indicator" aria-hidden="true" />
         </footer>
       </section>
     </main>
