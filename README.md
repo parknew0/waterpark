@@ -15,6 +15,7 @@ Waterpark는 경상북도 지하주차장 이용자를 위한 **공공데이터�
 - [경상북도 건축물대장 수집 결과](./outputs/gyeongbuk-building-register/README.md): API 수집 파일, 판정값과 재실행 방법
 - [프론트엔드 작업 기록](./docs/frontend/README.md): Figma 구현 기준, React 컴포넌트, 지도·주소·주차장 API와 품질 검증
 - [침수 위험 산출 결과](./docs/06-flood-risk-modeling.md): 침수 라벨 타당성 검증, 지형 규칙 기반 위험점수와 XGBoost 평가
+- [경상북도 침수 관련 공공데이터 소스 조사](./docs/07-gyeongbuk-flood-data-source-catalog.md): 실제 침수, 모의 위험지도, 강수·수위, 지형·배수 자료의 전체 후보와 우선순위
 - [리서치 로그](./docs/research-log.md): 확인된 사실, 미확정 사항, 조사 결과와 결정 기록
 - [AGENTS.md](./AGENTS.md): 후속 AI 에이전트가 따라야 할 작업 범위
 

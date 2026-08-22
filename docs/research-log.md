@@ -202,6 +202,20 @@
 - 출처: [기상청 예보업무 기상특보 기준](https://www.kma.go.kr/kma/biz/forecast03.jsp), [기상청 관측지점정보](https://data.kma.go.kr/tmeta/stn/selectStnList.do?pgmNo=123), [Esri Korea 침수흔적도 미러](https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer)
 - 확인일: 2026-08-22
 
+## 2026-08-22 경상북도 침수 관련 공공데이터 소스 추가 조사
+
+- 상태: `FACT` — 공식·공공기관 페이지에서 제공 범위와 형식을 확인했다. 후보를 채택하거나 모두 수집하기로 결정한 것은 아니다.
+- 실제 침수 기록, 모의 침수지도, 강수·수위 시계열과 지형·배수 인프라는 서로 다른 의미이므로 별도 역할로 분류했다.
+- [홍수위험지도 SHP](https://www.data.go.kr/tcs/dss/selectFileDataDetailView.do?publicDataPk=15077744)는 전국 국가·지방하천 범람지도와 도시침수지도를 5단계 침수심·빈도별로 제공한다. 실제 과거 침수 라벨이 아니라 극한 상황을 가정한 모의 범위다.
+- 홍수위험지도 페이지의 라이선스는 공공누리 제4유형이다. 파생 특징 학습·변형·재배포 허용 범위는 제공기관 확인 전 확정하지 않는다.
+- [낙동강홍수통제소 수문 정보](https://www.data.go.kr/data/3039640/fileData.do)는 낙동강·태화강·형산강의 수위·강수량을 CSV로 제공하며 포항 형산교·문덕3교를 포함해 경북 다수 지점을 명시한다.
+- [기상청 레이더 HSR](https://apihub.kma.go.kr/apiList.do?seqApi=5)는 2016년 이후 500m 격자·5분 주기 자료를 제공한다. 관측소 하나보다 국지 강우 차이를 표현할 후보지만 격자 전처리와 API 활용신청이 필요하다.
+- [재해위험지구 WMS/WFS](https://www.data.go.kr/data/15057419/openapi.do)는 상습침수 등 지자체 지정 위험구역의 공간정보를 제공한다. [전국배수펌프장 표준데이터](https://www.data.go.kr/data/15129436/standard.do)와 [경북 재난대응용 배수펌프장](https://www.data.go.kr/dataset/3083901/fileData.do)은 배수시설 위치·일부 성능을 보강한다.
+- 경북 전역의 하수관로 선형·관경·시간당 처리용량·막힘 상태를 동일한 형식으로 제공하는 공개 원천은 확인하지 못했다. 시군별 제공신청이 필요한 영역으로 남긴다.
+- 국립해양조사원의 기존 조위·파고 등 35개 OpenAPI는 [2026년 제공중단 공지](https://www.data.go.kr/bbs/ntc/selectNotice.do?originId=NOTICE_0000000004473)가 있으므로 새 개발의 현재 API로 간주하지 않는다.
+- 상세 목록과 판별 순서: [경상북도 침수 관련 공공데이터 소스 조사](./07-gyeongbuk-flood-data-source-catalog.md)
+- 확인일: 2026-08-22
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |
