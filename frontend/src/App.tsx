@@ -11,6 +11,7 @@ import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
 import { getEnglishParkingLabel } from "./lib/parkingEnglish";
+import { resolveParkingRiskBranch } from "./lib/parkingRisk";
 import { getHistoricalScenario } from "./scenarios/hinnamnorScenario";
 import type { Coordinate, ParkingPlace } from "./types/parking";
 
@@ -38,6 +39,9 @@ export default function App() {
   const [locationPending, setLocationPending] = useState(false);
   const [currentLocationLabel, setCurrentLocationLabel] = useState(historicalScenario?.locationLabel ?? "현재 위치 확인 중…");
   const [historicalQuery, setHistoricalQuery] = useState("");
+  const [isRiskSelectionMode, setIsRiskSelectionMode] = useState(false);
+  const [riskAssessmentPending, setRiskAssessmentPending] = useState(false);
+  const [assessedPlace, setAssessedPlace] = useState<ParkingPlace>();
   const hasRequestedLocation = useRef(false);
   const historicalAlertTimer = useRef<number | undefined>(undefined);
   const requestHeadingPermission = useDeviceHeading();
@@ -58,6 +62,31 @@ export default function App() {
   const evacuationParkingLabel = useMemo(
     () => evacuationRoute ? getEnglishParkingLabel(evacuationRoute.destination) : undefined,
     [evacuationRoute],
+  );
+  const dangerParkingPlace = useMemo<ParkingPlace>(() => {
+    if (parkedPlace) return parkedPlace;
+    if (historicalScenario) return historicalScenario.parkingOptions[0];
+    const origin = evacuationRoute?.origin ?? currentPosition ?? center;
+    return {
+      ...origin,
+      id: "current-parking-location",
+      name: "Current Parking Location",
+      address: currentLocationLabel,
+      distanceMeters: 0,
+      source: "public-data",
+    };
+  }, [center, currentLocationLabel, currentPosition, evacuationRoute?.origin, parkedPlace]);
+  const lowerRiskParkingPlace = useMemo<ParkingPlace | undefined>(() => {
+    if (!evacuationRoute) return undefined;
+    return {
+      ...evacuationRoute.destination,
+      distanceMeters: evacuationRoute.distanceMeters,
+      source: "public-data",
+    };
+  }, [evacuationRoute]);
+  const riskSelectionPlaces = useMemo(
+    () => lowerRiskParkingPlace ? [dangerParkingPlace, lowerRiskParkingPlace] : [dangerParkingPlace],
+    [dangerParkingPlace, lowerRiskParkingPlace],
   );
 
   const selectedPlace = useMemo(
@@ -165,11 +194,28 @@ export default function App() {
     void search(query, center);
   }, [center, search]);
 
-  const handleSelect = useCallback((place: ParkingPlace) => {
+  const handleSelect = useCallback(async (place: ParkingPlace) => {
+    if (isRiskSelectionMode) {
+      if (!lowerRiskParkingPlace) {
+        return;
+      }
+      setRiskAssessmentPending(true);
+      setAssessedPlace(place);
+      try {
+        const branch = await resolveParkingRiskBranch(place, {
+          dangerParkingId: dangerParkingPlace.id,
+          lowerRiskParkingId: lowerRiskParkingPlace.id,
+        });
+        navigateToView(branch === "danger" ? "risk-detail" : "safe-detail");
+      } finally {
+        setRiskAssessmentPending(false);
+      }
+      return;
+    }
     setSelected(place);
     setCenter({ latitude: place.latitude, longitude: place.longitude });
     setIsCarLocationOpen(true);
-  }, []);
+  }, [dangerParkingPlace.id, isRiskSelectionMode, lowerRiskParkingPlace, navigateToView]);
 
   const handleSetCarLocation = useCallback(() => {
     if (selectedPlace) setParkedPlace(selectedPlace);
@@ -198,10 +244,11 @@ export default function App() {
         distanceMeters={evacuationRoute?.distanceMeters}
         safeTimeLabel={historicalScenario?.safeTimeLabel}
         onMoveNow={() => {
-          setShowEvacuationRoute(true);
+          setIsRiskSelectionMode(true);
+          setShowParkingMarkers(true);
           setIsCarLocationOpen(false);
           setCenter(evacuationRoute?.origin ?? historicalScenario?.origin ?? { latitude: 36.014, longitude: 129.325 });
-          navigateToView("risk-detail");
+          navigateToView("map");
         }}
       />
     );
@@ -212,13 +259,20 @@ export default function App() {
         appKey={kakaoAppKey}
         variant="danger"
         route={evacuationRoute}
+        place={assessedPlace ?? dangerParkingPlace}
         rainfallLabel={historicalScenario?.rainfallLabel}
         rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}
         currentParkingName={historicalScenario?.currentParkingName}
         currentParkingAddress={historicalScenario?.currentParkingAddress}
         comparisonMetric={historicalScenario ? "B1" : undefined}
         riskReasons={historicalScenario ? ["Confirmed underground parking use", "Peak 1-hour rainfall reached 77mm"] : undefined}
-        onContinue={() => navigateToView("safe-detail")}
+        ctaLabel="Move Your Car Now"
+        onContinue={() => {
+          setIsRiskSelectionMode(true);
+          setShowParkingMarkers(true);
+          setIsCarLocationOpen(false);
+          navigateToView("map");
+        }}
       />
     );
   }
@@ -228,11 +282,17 @@ export default function App() {
         appKey={kakaoAppKey}
         variant="safe"
         route={evacuationRoute}
+        place={assessedPlace ?? lowerRiskParkingPlace}
         rainfallLabel={historicalScenario?.rainfallLabel}
         rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}
         comparisonMetric={historicalScenario ? "26 spaces" : undefined}
         riskReasons={historicalScenario ? ["Public-data parking candidate", "Route avoids static high-risk zones"] : undefined}
-        onContinue={() => navigateToView("route")}
+        ctaLabel="Move Your Car Now"
+        onContinue={() => {
+          setIsRiskSelectionMode(false);
+          setShowEvacuationRoute(true);
+          navigateToView("route");
+        }}
       />
     );
   }
@@ -254,18 +314,18 @@ export default function App() {
       currentPosition={currentPosition}
       currentLocationLabel={currentLocationLabel}
       error={historicalScenario ? null : error}
-      evacuationRoute={evacuationRoute}
+      evacuationRoute={isRiskSelectionMode ? undefined : evacuationRoute}
       isCarLocationOpen={isCarLocationOpen}
       isLoading={historicalScenario ? false : isLoading || locationPending}
       parkedPlace={parkedPlace}
       showParkingMarkers={showParkingMarkers}
       onClearSelection={() => setSelected(undefined)}
       onCloseSheet={() => setIsCarLocationOpen(false)}
-      onOpenSheet={handleOpenSheet}
+      onOpenSheet={isRiskSelectionMode ? () => undefined : handleOpenSheet}
       onSearch={handleSearch}
       onSelect={handleSelect}
       onSetCarLocation={handleSetCarLocation}
-      places={visiblePlaces}
+      places={isRiskSelectionMode ? riskSelectionPlaces : visiblePlaces}
       selected={selectedPlace}
       source={historicalScenario ? "public-data" : source}
       routeError={routeError}
@@ -273,6 +333,8 @@ export default function App() {
       rainfallLabel={historicalScenario?.rainfallLabel}
       rainfallAriaLabel={historicalScenario?.rainfallAriaLabel}
       historicalRiskPreview={Boolean(historicalScenario)}
+      assessmentMode={isRiskSelectionMode}
+      assessmentPending={riskAssessmentPending || !lowerRiskParkingPlace}
     />
   );
 }

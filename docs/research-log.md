@@ -302,7 +302,8 @@
 - `FACT`: 기본 경로의 도로 일부를 가로지르는 합성 Polygon을 `data/demo/pohang-current-flood-scenario.geojson`으로 추가했다.
 - `FACT`: 합성 폴리곤을 현재 침수 입력으로 사용하면 OSM 간선 6개가 제거되고 목적지는 `효곡동 노상8`, 우회 거리는 2,121.9m가 된다.
 - `FACT`: Figma `119:1140`, `123:1743`, `90:755`를 확인해 위험 상세·안전 상세·길찾기 React 뷰를 구현했다.
-- `FACT`: 긴급 경고부터 `emergency → risk-detail → safe-detail → route`로 이어지며 각 URL로 직접 진입할 수도 있다.
+- `FACT`: 2026-08-23 흐름을 교정했다. 긴급 경고 뒤 실제 지도에서 주차장을 선택하며, 판정이 고위험이면 `risk-detail`, 저위험이면 `safe-detail`로 분기한다. 위험 상세 CTA는 지도 선택으로 돌아가고 안전 상세 CTA만 `route`로 이동한다.
+- `DECISION`: 위험·안전 상세는 순차 화면이 아니라 주차장별 API 판정의 상호 배타적 결과다. 백엔드 계약 확정 전에는 `frontend/src/lib/parkingRisk.ts`의 어댑터 경계와 두 데모 후보만 사용하고 HTTP 계약은 만들지 않는다.
 - `LIMITATION`: Polygon과 `30mm`, 1시간 위험, 안전시간 30분은 시연 값이다. 실제 침수·강수·안전 보증으로 발표하지 않는다.
 - 상세: [가짜 침수 상황 데모 흐름](./frontend/08-flood-scenario-demo-flow.md)
 - 출처: [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 길찾기 `90:755`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-755&m=dev)

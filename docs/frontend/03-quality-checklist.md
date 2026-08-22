@@ -73,7 +73,7 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-22 | 경로 화면 콘솔 | 브라우저 error·warning 0건 | 통과 |
 | 2026-08-22 | Kakao 경로 레이어 | `Polygon`·`Polyline` 구현 및 TypeScript build 통과 | 등록하지 않은 테스트 도메인 `127.0.0.1:5174`에서는 SVG 폴백 검증; 등록된 `localhost:5173` 실지도 최종 확인 필요 |
 | 2026-08-22 | 가짜 현재 침수 시나리오 | 합성 폴리곤과 교차한 OSM 간선 6개 제거, 목적지 `효곡동 노상8`, 우회 2,121.9m 생성 | 통과; 실제 관측 데이터로 사용 금지 |
-| 2026-08-22 | 위험→안전→길찾기 CTA | `emergency → risk-detail → safe-detail → route` URL 전환 | 통과 |
+| 2026-08-23 | 긴급→지도 선택→위험/안전 분기 | `emergency → map → risk-detail 또는 safe-detail`, 위험 CTA는 지도 복귀, 안전 CTA는 route 전환 | 통과 |
 | 2026-08-22 | Figma 신규 3개 뷰 | 402×874에서 Warning·Safe 상세와 길찾기 카드·경로 확인 | 통과 |
 | 2026-08-22 | 긴급 화면 짧은 viewport | 402×720에서도 경고 원 `x=126.5, y=131`, 차 `x=167, y=171`, 뒤로가기 `x=12, y=62` 유지 | 통과 |
 | 2026-08-22 | 긴급 목적지 영문 표기 | `Hyogok-dong Street Parking 8`, `24 Yudong-gil, Nam-gu, Pohang-si, Gyeongsangbuk-do` 확인 | 통과 |
@@ -92,5 +92,6 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-23 | 힌남노 Waterpark 시나리오 | 기존 앱의 스플래시→온보딩→차량 위치→경고→상세→길찾기 흐름에 과거 위치·강우·경로를 주입 | 통과 |
 | 2026-08-23 | 실시간·과거 모드 격리 | 기본 URL은 GPS·현재 데이터 흐름을 유지하고 `?scenario=hinnamnor`에서만 과거 입력을 사용 | 통과 |
 | 2026-08-23 | 힌남노 시나리오 경로 | 인덕동 사고 지점에서 실제 공공 주차장까지 OSM 도로망 경로와 정적 위험 영역을 별도 GeoJSON으로 로드 | 통과; 2022년 실제 침수 경계·도로 통제가 아닌 재연임을 명시 |
+| 2026-08-23 | 일반·힌남노 주차장 판정 분기 | 두 모드 모두 실제 Kakao 지도 마커 2개를 클릭해 Warning·Safe 상세로 각각 전환, 콘솔 오류·경고 0건 | 통과; 실제 API 계약 확정 후 `parkingRisk.ts` 어댑터 교체 |
 
 초기 브라우저 검사에서 공공 원천의 중복 관리번호 때문에 React key 경고가 발생했다. 기관·관리번호·명칭·주소·좌표의 SHA-256 안정 해시로 ID를 교체했으며 이후 새 경고는 발생하지 않았다.

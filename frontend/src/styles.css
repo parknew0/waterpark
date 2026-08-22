@@ -1051,6 +1051,24 @@ h3 { margin: 0; font-size: 14px; }
   font: 500 16px/1.4 "Plus Jakarta Sans", sans-serif;
 }
 
+.parking-assessment-prompt {
+  position: absolute;
+  z-index: 7;
+  right: 16px;
+  bottom: max(28px, env(safe-area-inset-bottom));
+  left: 16px;
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid rgb(0 232 236 / 30%);
+  border-radius: 14px;
+  color: #fefefe;
+  background: rgb(42 44 44 / 94%);
+  box-shadow: 0 12px 30px rgb(0 0 0 / 34%);
+  font: 500 14px/1.4 "Plus Jakarta Sans", sans-serif;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+
 .evacuation-route-card {
   position: absolute;
   z-index: 7;

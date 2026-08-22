@@ -356,7 +356,7 @@ export function createKakaoMap(
       content: marker,
       xAnchor: 0.5,
       yAnchor: 0.5,
-      zIndex: 4,
+      zIndex: 6,
     }));
   });
 

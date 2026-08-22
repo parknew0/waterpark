@@ -3,6 +3,7 @@ import type { FloodAwareRoute } from "../../types/routing";
 import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
 import { BrandLogo } from "../brand/BrandLogo";
 import { RainIcon } from "../icons/RainIcon";
+import type { ParkingPlace } from "../../types/parking";
 
 interface FloodLocationDetailViewProps {
   appKey?: string;
@@ -15,6 +16,8 @@ interface FloodLocationDetailViewProps {
   currentParkingAddress?: string;
   comparisonMetric?: string;
   riskReasons?: [string, string];
+  place?: ParkingPlace;
+  ctaLabel?: string;
 }
 
 function formatDistance(distanceMeters: number) {
@@ -33,12 +36,15 @@ export function FloodLocationDetailView({
   currentParkingAddress = "POSTECH, Nam-gu, Pohang-si, Gyeongsangbuk-do",
   comparisonMetric,
   riskReasons,
+  place,
+  ctaLabel,
 }: FloodLocationDetailViewProps) {
   const isDanger = variant === "danger";
   const parkingLabel = route ? getEnglishParkingLabel(route.destination) : undefined;
-  const name = isDanger ? currentParkingName : (parkingLabel?.name ?? "Finding parking…");
-  const address = isDanger ? currentParkingAddress : (parkingLabel?.address ?? "Calculating a lower-risk candidate");
-  const distance = route?.distanceMeters ?? 0;
+  const selectedLabel = place ? getEnglishParkingLabel(place) : undefined;
+  const name = selectedLabel?.name ?? (isDanger ? currentParkingName : (parkingLabel?.name ?? "Finding parking…"));
+  const address = selectedLabel?.address ?? (isDanger ? currentParkingAddress : (parkingLabel?.address ?? "Calculating a lower-risk candidate"));
+  const distance = place?.distanceMeters ?? route?.distanceMeters ?? 0;
   const driveMinutes = Math.max(1, Math.ceil(distance / 250));
 
   return (
@@ -90,7 +96,7 @@ export function FloodLocationDetailView({
 
           <footer className="flood-detail-footer">
             <button type="button" onClick={onContinue} disabled={!route}>
-              {isDanger ? "Find a Lower-Risk Parking Lot" : "Move Your Car Now"}
+              {ctaLabel ?? "Move Your Car Now"}
             </button>
           </footer>
         </section>

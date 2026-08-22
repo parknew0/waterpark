@@ -31,6 +31,8 @@ interface ParkingHomeViewProps {
   rainfallLabel?: string;
   rainfallAriaLabel?: string;
   historicalRiskPreview?: boolean;
+  assessmentMode?: boolean;
+  assessmentPending?: boolean;
 }
 
 const thumbnails = [
@@ -72,6 +74,8 @@ export function ParkingHomeView({
   rainfallLabel = "--mm",
   rainfallAriaLabel = "강수량 API 연결 대기 중",
   historicalRiskPreview = false,
+  assessmentMode = false,
+  assessmentPending = false,
 }: ParkingHomeViewProps) {
   const [query, setQuery] = useState("");
   const nearbyPlaces = places.slice(0, 3);
@@ -91,9 +95,9 @@ export function ParkingHomeView({
             center={center}
             currentPosition={evacuationRoute?.origin ?? currentPosition}
             evacuationRoute={evacuationRoute}
-            parkedPlace={parkedPlace}
+            parkedPlace={assessmentMode ? undefined : parkedPlace}
             places={showParkingMarkers
-              ? places.filter((place) => place.id !== parkedPlace?.id).slice(0, 8)
+              ? (assessmentMode ? places : places.filter((place) => place.id !== parkedPlace?.id)).slice(0, 8)
               : []}
             selected={selected}
             onSelect={onSelect}
@@ -126,12 +130,16 @@ export function ParkingHomeView({
           <span>{rainfallLabel}</span>
         </div>
 
-        {!parkedPlace ? (
+        {assessmentMode ? (
+          <p className="parking-assessment-prompt" aria-live="polite">
+            {assessmentPending ? "Checking flood risk…" : "Select a parking lot to check its flood risk."}
+          </p>
+        ) : !parkedPlace ? (
           <p className="parking-home-disclaimer">
             Please also refer to emergency alerts and notices from the property management office.
           </p>
         ) : null}
-        {parkedPlace && !isCarLocationOpen ? (
+        {parkedPlace && !isCarLocationOpen && !assessmentMode ? (
           <article className="parked-car-card" aria-label="저장된 내 차 위치">
             <span>My Location</span>
             <strong>{parkedLabel?.name}</strong>
