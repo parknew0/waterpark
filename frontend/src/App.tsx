@@ -99,7 +99,7 @@ export default function App() {
     handleUseLocation();
   };
 
-  if (view === "car") return <OnboardingCarView onNext={handleOpenParkingHome} />;
+  if (view === "car") return <OnboardingCarView onNext={() => navigateToView("consent")} />;
   if (view === "consent") return <LocationConsentView onAgree={handleOpenParkingHome} />;
 
   return (

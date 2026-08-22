@@ -353,6 +353,14 @@ h3 { margin: 0; font-size: 14px; }
   background: #000 url("/assets/parking/map-blueprint.png") center / cover no-repeat;
 }
 
+.parking-home-map .kakao-map {
+  background: #071412;
+}
+
+.parking-home-map .kakao-map > div:first-child {
+  filter: grayscale(1) invert(.88) sepia(.2) saturate(.76) hue-rotate(112deg) brightness(.82) contrast(1.24);
+}
+
 .parking-home-map .map-grid { display: none; }
 .parking-home-map .map-pulse {
   width: 24px;
@@ -468,6 +476,7 @@ h3 { margin: 0; font-size: 14px; }
   z-index: 8;
   inset: 0;
   background: rgb(0 0 0 / 76%);
+  animation: parking-scrim-in 360ms ease-out both;
 }
 
 .car-location-sheet {
@@ -481,9 +490,20 @@ h3 { margin: 0; font-size: 14px; }
   color: #fefefe;
   background: #2a2c2c;
   scrollbar-width: none;
+  animation: parking-sheet-rise 460ms cubic-bezier(.22, 1, .36, 1) both;
 }
 
 .car-location-sheet::-webkit-scrollbar { display: none; }
+
+@keyframes parking-sheet-rise {
+  from { opacity: .72; transform: translate3d(0, 100%, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes parking-scrim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 .car-location-sheet-header {
   position: relative;
