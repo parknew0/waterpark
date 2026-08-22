@@ -905,6 +905,30 @@ def fixed_assets() -> list[Asset]:
             "parking_standard_raw",
             "대피 가능한 안전 주차장으로 검증된 목록은 아니다.",
         ),
+        # Added on the frontend branch for the routing demo. Registered here
+        # so regenerating the catalog does not silently drop it.
+        Asset(
+            "pohang_current_flood_demo",
+            "포항 현재 침수 가짜 시나리오",
+            "demo",
+            "routing",
+            "POSTECH 인근 발표 데모",
+            "2026-08-22",
+            "data/demo/pohang-current-flood-scenario.geojson",
+            "GeoJSON",
+            "file",
+            "EPSG:4326",
+            "DEMO_ONLY",
+            "SYNTHETIC_GEOMETRY_VERIFIED",
+            "GIT_TRACKED",
+            "프로젝트 자체 합성 데이터",
+            "N/A",
+            "",
+            "실제 관측 침수가 아니며 기본 경로 위 도로를 차단해 우회 계산과 "
+            "UI를 검증하기 위한 합성 Polygon이다.",
+            row_count_override=1,
+            column_count_override=2,
+        ),
     ]
 
 
