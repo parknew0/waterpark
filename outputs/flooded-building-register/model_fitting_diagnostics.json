@@ -1,0 +1,415 @@
+{
+  "early_stopping": {
+    "11": {
+      "rule": 0.0527,
+      "stopped_at_trees": 16,
+      "test": 0.0779,
+      "validation_province": "41"
+    },
+    "26": {
+      "rule": 0.1931,
+      "stopped_at_trees": 156,
+      "test": 0.1637,
+      "validation_province": "11"
+    },
+    "41": {
+      "rule": 0.0768,
+      "stopped_at_trees": 16,
+      "test": 0.118,
+      "validation_province": "11"
+    },
+    "43": {
+      "rule": 0.0636,
+      "stopped_at_trees": 34,
+      "test": 0.1017,
+      "validation_province": "11"
+    },
+    "44": {
+      "rule": 0.163,
+      "stopped_at_trees": 25,
+      "test": 0.1294,
+      "validation_province": "11"
+    },
+    "47": {
+      "rule": 0.2141,
+      "stopped_at_trees": 17,
+      "test": 0.1247,
+      "validation_province": "11"
+    },
+    "48": {
+      "rule": 0.1219,
+      "stopped_at_trees": 216,
+      "test": 0.1831,
+      "validation_province": "11"
+    },
+    "52": {
+      "rule": 0.2385,
+      "stopped_at_trees": 32,
+      "test": 0.246,
+      "validation_province": "11"
+    }
+  },
+  "learning_curves": {
+    "11": {
+      "at_400": 0.1126,
+      "best_test": 0.1126,
+      "best_trees": 400,
+      "curve": [
+        {
+          "test": 0.0906,
+          "train": 0.269,
+          "trees": 25
+        },
+        {
+          "test": 0.0852,
+          "train": 0.315,
+          "trees": 50
+        },
+        {
+          "test": 0.0985,
+          "train": 0.3988,
+          "trees": 100
+        },
+        {
+          "test": 0.1039,
+          "train": 0.5353,
+          "trees": 200
+        },
+        {
+          "test": 0.1126,
+          "train": 0.6721,
+          "trees": 400
+        },
+        {
+          "test": 0.1041,
+          "train": 0.8187,
+          "trees": 800
+        },
+        {
+          "test": 0.0962,
+          "train": 0.9482,
+          "trees": 1600
+        }
+      ],
+      "rule": 0.0527
+    },
+    "26": {
+      "at_400": 0.1739,
+      "best_test": 0.1919,
+      "best_trees": 200,
+      "curve": [
+        {
+          "test": 0.1515,
+          "train": 0.2029,
+          "trees": 25
+        },
+        {
+          "test": 0.18,
+          "train": 0.2435,
+          "trees": 50
+        },
+        {
+          "test": 0.1901,
+          "train": 0.2984,
+          "trees": 100
+        },
+        {
+          "test": 0.1919,
+          "train": 0.3709,
+          "trees": 200
+        },
+        {
+          "test": 0.1739,
+          "train": 0.4447,
+          "trees": 400
+        },
+        {
+          "test": 0.1649,
+          "train": 0.5395,
+          "trees": 800
+        },
+        {
+          "test": 0.1511,
+          "train": 0.6805,
+          "trees": 1600
+        }
+      ],
+      "rule": 0.1931
+    },
+    "41": {
+      "at_400": 0.1434,
+      "best_test": 0.1485,
+      "best_trees": 200,
+      "curve": [
+        {
+          "test": 0.1483,
+          "train": 0.19,
+          "trees": 25
+        },
+        {
+          "test": 0.1411,
+          "train": 0.2207,
+          "trees": 50
+        },
+        {
+          "test": 0.1452,
+          "train": 0.2827,
+          "trees": 100
+        },
+        {
+          "test": 0.1485,
+          "train": 0.3477,
+          "trees": 200
+        },
+        {
+          "test": 0.1434,
+          "train": 0.4305,
+          "trees": 400
+        },
+        {
+          "test": 0.1332,
+          "train": 0.5279,
+          "trees": 800
+        },
+        {
+          "test": 0.1167,
+          "train": 0.6774,
+          "trees": 1600
+        }
+      ],
+      "rule": 0.0768
+    },
+    "43": {
+      "at_400": 0.0718,
+      "best_test": 0.1143,
+      "best_trees": 25,
+      "curve": [
+        {
+          "test": 0.1143,
+          "train": 0.1882,
+          "trees": 25
+        },
+        {
+          "test": 0.1135,
+          "train": 0.2286,
+          "trees": 50
+        },
+        {
+          "test": 0.0951,
+          "train": 0.2815,
+          "trees": 100
+        },
+        {
+          "test": 0.0859,
+          "train": 0.352,
+          "trees": 200
+        },
+        {
+          "test": 0.0718,
+          "train": 0.4344,
+          "trees": 400
+        },
+        {
+          "test": 0.0627,
+          "train": 0.5419,
+          "trees": 800
+        },
+        {
+          "test": 0.0601,
+          "train": 0.6794,
+          "trees": 1600
+        }
+      ],
+      "rule": 0.0636
+    },
+    "44": {
+      "at_400": 0.1427,
+      "best_test": 0.1495,
+      "best_trees": 100,
+      "curve": [
+        {
+          "test": 0.1416,
+          "train": 0.1936,
+          "trees": 25
+        },
+        {
+          "test": 0.1467,
+          "train": 0.2234,
+          "trees": 50
+        },
+        {
+          "test": 0.1495,
+          "train": 0.276,
+          "trees": 100
+        },
+        {
+          "test": 0.1452,
+          "train": 0.3441,
+          "trees": 200
+        },
+        {
+          "test": 0.1427,
+          "train": 0.4198,
+          "trees": 400
+        },
+        {
+          "test": 0.1318,
+          "train": 0.5173,
+          "trees": 800
+        },
+        {
+          "test": 0.1272,
+          "train": 0.6622,
+          "trees": 1600
+        }
+      ],
+      "rule": 0.163
+    },
+    "47": {
+      "at_400": 0.1975,
+      "best_test": 0.2204,
+      "best_trees": 800,
+      "curve": [
+        {
+          "test": 0.0923,
+          "train": 0.1921,
+          "trees": 25
+        },
+        {
+          "test": 0.0953,
+          "train": 0.2199,
+          "trees": 50
+        },
+        {
+          "test": 0.1311,
+          "train": 0.2791,
+          "trees": 100
+        },
+        {
+          "test": 0.1501,
+          "train": 0.348,
+          "trees": 200
+        },
+        {
+          "test": 0.1975,
+          "train": 0.4305,
+          "trees": 400
+        },
+        {
+          "test": 0.2204,
+          "train": 0.5296,
+          "trees": 800
+        },
+        {
+          "test": 0.2113,
+          "train": 0.6692,
+          "trees": 1600
+        }
+      ],
+      "rule": 0.2141
+    },
+    "48": {
+      "at_400": 0.1772,
+      "best_test": 0.1866,
+      "best_trees": 100,
+      "curve": [
+        {
+          "test": 0.1694,
+          "train": 0.1925,
+          "trees": 25
+        },
+        {
+          "test": 0.1862,
+          "train": 0.2318,
+          "trees": 50
+        },
+        {
+          "test": 0.1866,
+          "train": 0.29,
+          "trees": 100
+        },
+        {
+          "test": 0.1835,
+          "train": 0.3531,
+          "trees": 200
+        },
+        {
+          "test": 0.1772,
+          "train": 0.4237,
+          "trees": 400
+        },
+        {
+          "test": 0.1709,
+          "train": 0.5157,
+          "trees": 800
+        },
+        {
+          "test": 0.1665,
+          "train": 0.6565,
+          "trees": 1600
+        }
+      ],
+      "rule": 0.1219
+    },
+    "52": {
+      "at_400": 0.196,
+      "best_test": 0.2241,
+      "best_trees": 800,
+      "curve": [
+        {
+          "test": 0.1838,
+          "train": 0.1977,
+          "trees": 25
+        },
+        {
+          "test": 0.1772,
+          "train": 0.2326,
+          "trees": 50
+        },
+        {
+          "test": 0.2011,
+          "train": 0.2832,
+          "trees": 100
+        },
+        {
+          "test": 0.2117,
+          "train": 0.356,
+          "trees": 200
+        },
+        {
+          "test": 0.196,
+          "train": 0.4346,
+          "trees": 400
+        },
+        {
+          "test": 0.2241,
+          "train": 0.5304,
+          "trees": 800
+        },
+        {
+          "test": 0.2028,
+          "train": 0.6688,
+          "trees": 1600
+        }
+      ],
+      "rule": 0.2385
+    }
+  },
+  "notes": [
+    "학습셋 점수는 같은 시도로 계산하므로 성능 주장에 쓰지 않는다.",
+    "조기 종료 검증셋은 다른 시도다. 무작위 분할은 같은 동네가 양쪽에 들어간다.",
+    "공간 블록 교차검증은 시군구 단위로 나눈다."
+  ],
+  "spatial_block_cv": {
+    "blocks": 146,
+    "inflation": 2.97,
+    "random_split_mean": 0.333,
+    "spatial_block_mean": 0.1122
+  },
+  "weighted_summary": {
+    "at_400": 0.133,
+    "best_trees": 0.1391,
+    "early_stop": 0.1096,
+    "rule": 0.0894
+  }
+}
