@@ -96,6 +96,17 @@
 - 출처: [Overture 공개 데이터](https://registry.opendata.aws/overture/), [Overture Python Client](https://docs.overturemaps.org/getting-data/overturemaps-py/), [Copernicus DEM 공개 데이터](https://registry.opendata.aws/copernicus-dem/), [VWorld 건물 데이터](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?dsId=30162), [건축HUB API](https://www.data.go.kr/data/15134735/openapi.do)
 - 확인일: 2026-08-22
 
+## 2026-08-22 프론트엔드 지도·주차장 검색 확인 결과
+
+- 상태: `FACT` — Figma 노드 확인과 React 로우파이 구현 완료. Kakao 외부 API 실호출은 JavaScript 키 등록 전이라 `OPEN_KEY`.
+- Figma 전체 `Lo-Fi` Canvas `20:7`에서 지도 홈 `117:510`과 내 차 위치 설정 `123:1610`을 구현 기준으로 선택했다.
+- Kakao 지도 JavaScript SDK는 JavaScript 키와 등록 도메인이 필요하며, `services` 라이브러리에서 주소 검색과 장소 키워드 검색을 제공한다.
+- React 앱은 주소를 좌표로 바꾼 뒤 `주차장`을 거리순 검색하는 흐름을 구현했다. 키가 없거나 호출이 실패하면 경북 공영주차장 좌표 보유 1,986건을 검색한다.
+- Vercel `agent-skills`의 React 성능 기준과 최신 Web Interface Guidelines를 적용해 접근성, focus, 폼, 비동기 상태, safe-area, 긴 텍스트와 조건부 SDK 로딩을 확인했다.
+- 산출물: `frontend/`, `docs/frontend/`, `frontend/public/data/gyeongbuk-parking.json`
+- 출처: [Kakao 지도 Web API 가이드](https://apis.map.kakao.com/web/guide/), [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/), [Vercel agent-skills](https://github.com/vercel-labs/agent-skills), [Web Interface Guidelines](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md)
+- 확인일: 2026-08-22
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |
@@ -105,6 +116,8 @@
 | D-003 | 2026-08-22 | 지하주차장 침수 위험 예측 및 차량 사전 대피 안내 서비스를 개발한다. | `DECISION` |
 | D-004 | 2026-08-22 | 현재 개발 순서를 데이터 판별·전처리, 머신러닝, 백엔드, 프론트엔드 전달로 둔다. | `DECISION` |
 | D-005 | 2026-08-22 | 데이터 수집·통합 기본 범위를 포항이 아닌 경상북도 22개 시군 전체로 둔다. | `DECISION` |
+| D-006 | 2026-08-22 | 프론트엔드 로우파이는 React·TypeScript·Vite로 구현한다. | `DECISION` |
+| D-007 | 2026-08-22 | 지도·주소·주차장 검색은 Kakao 지도 JavaScript SDK를 우선 사용하고, 키가 없거나 실패하면 경북 공영주차장 좌표 데이터로 전환한다. | `DECISION` |
 
 ## 조사 결과 기록 형식
 

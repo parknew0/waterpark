@@ -7,3 +7,10 @@ data/interim/
 
 # Generated inspection sidecar.
 outputs/**/*.inspect.ndjson
+
+# React frontend local artifacts and secrets.
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
