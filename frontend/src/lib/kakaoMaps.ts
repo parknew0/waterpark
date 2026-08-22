@@ -191,19 +191,22 @@ export function createKakaoMap(
   center: Coordinate,
   places: ParkingPlace[],
   currentPosition?: Coordinate,
+  parkedPlace?: ParkingPlace,
+  onCurrentLocationClick?: () => void,
+  onParkingSelect?: (place: ParkingPlace) => void,
 ): () => void {
   const map = new maps.Map(container, {
     center: new maps.LatLng(center.latitude, center.longitude),
     level: 7,
   });
-  const markers: KakaoMarkerInstance[] = [];
-  let currentLocationOverlay: KakaoCustomOverlayInstance | undefined;
+  const overlays: KakaoCustomOverlayInstance[] = [];
+  const listenerCleanups: Array<() => void> = [];
 
   if (currentPosition) {
-    const marker = document.createElement("div");
+    const marker = document.createElement("button");
+    marker.type = "button";
     marker.className = "current-map-marker";
-    marker.setAttribute("role", "img");
-    marker.setAttribute("aria-label", "현재 위치");
+    marker.setAttribute("aria-label", "현재 위치에서 주차장 찾기");
 
     const direction = document.createElement("img");
     direction.className = "current-map-marker-direction";
@@ -216,33 +219,87 @@ export function createKakaoMap(
     dot.alt = "";
 
     marker.append(direction, dot);
-    currentLocationOverlay = new maps.CustomOverlay({
+    if (onCurrentLocationClick) {
+      marker.addEventListener("click", onCurrentLocationClick);
+      listenerCleanups.push(() => marker.removeEventListener("click", onCurrentLocationClick));
+    }
+    overlays.push(new maps.CustomOverlay({
       map,
       position: new maps.LatLng(currentPosition.latitude, currentPosition.longitude),
       content: marker,
       xAnchor: 0.2,
       yAnchor: 0.72,
       zIndex: 5,
-    });
+    }));
   }
 
-  if (places.length > 0) {
+  places.forEach((place) => {
+    const marker = document.createElement("button");
+    marker.type = "button";
+    marker.className = "parking-dot-marker";
+    marker.setAttribute("aria-label", `${place.name} 선택`);
+    const icon = document.createElement("img");
+    icon.src = "/assets/parking/parking-dot.svg";
+    icon.alt = "";
+    marker.append(icon);
+    const selectPlace = () => onParkingSelect?.(place);
+    marker.addEventListener("click", selectPlace);
+    listenerCleanups.push(() => marker.removeEventListener("click", selectPlace));
+    overlays.push(new maps.CustomOverlay({
+      map,
+      position: new maps.LatLng(place.latitude, place.longitude),
+      content: marker,
+      xAnchor: 0.5,
+      yAnchor: 0.5,
+      zIndex: 4,
+    }));
+  });
+
+  if (parkedPlace) {
+    const marker = document.createElement("div");
+    marker.className = "parked-car-marker";
+    marker.setAttribute("role", "img");
+    marker.setAttribute("aria-label", `주차된 내 차 위치: ${parkedPlace.name}`);
+    const carParts = [
+      ["parked-car-body", "/assets/parking/car-body.svg"],
+      ["parked-car-wheel parked-car-wheel--back-left", "/assets/parking/car-wheel-back-left.svg"],
+      ["parked-car-wheel parked-car-wheel--front-left", "/assets/parking/car-wheel-front-left.svg"],
+      ["parked-car-wheel parked-car-wheel--front-right", "/assets/parking/car-wheel-front-right.svg"],
+      ["parked-car-wheel parked-car-wheel--back-right", "/assets/parking/car-wheel-back-right.svg"],
+    ];
+    carParts.forEach(([className, src]) => {
+      const part = document.createElement("img");
+      part.className = className;
+      part.src = src;
+      part.alt = "";
+      marker.append(part);
+    });
+    overlays.push(new maps.CustomOverlay({
+      map,
+      position: new maps.LatLng(parkedPlace.latitude, parkedPlace.longitude),
+      content: marker,
+      xAnchor: 0.5,
+      yAnchor: 0.5,
+      zIndex: 5,
+    }));
+  }
+
+  if (places.length > 0 || parkedPlace) {
     const bounds = new maps.LatLngBounds();
     if (currentPosition) {
       bounds.extend(new maps.LatLng(currentPosition.latitude, currentPosition.longitude));
     }
     places.forEach((place) => {
-      const position = new maps.LatLng(place.latitude, place.longitude);
-      bounds.extend(position);
-      markers.push(new maps.Marker({ map, position, title: place.name }));
+      bounds.extend(new maps.LatLng(place.latitude, place.longitude));
     });
+    if (parkedPlace) bounds.extend(new maps.LatLng(parkedPlace.latitude, parkedPlace.longitude));
     map.setBounds(bounds);
   } else {
     map.setCenter(new maps.LatLng(center.latitude, center.longitude));
   }
 
   return () => {
-    markers.forEach((marker) => marker.setMap(null));
-    currentLocationOverlay?.setMap(null);
+    listenerCleanups.forEach((cleanup) => cleanup());
+    overlays.forEach((overlay) => overlay.setMap(null));
   };
 }

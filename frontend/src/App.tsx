@@ -3,6 +3,7 @@ import { LocationConsentView } from "./components/onboarding/LocationConsentView
 import { OnboardingCarView } from "./components/onboarding/OnboardingCarView";
 import { ParkingHomeView } from "./components/parking-home/ParkingHomeView";
 import { useParkingSearch } from "./hooks/useParkingSearch";
+import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
 import type { Coordinate, ParkingPlace } from "./types/parking";
 
@@ -21,11 +22,14 @@ export default function App() {
   const [center, setCenter] = useState<Coordinate>(DEFAULT_CENTER);
   const [currentPosition, setCurrentPosition] = useState<Coordinate>();
   const [selected, setSelected] = useState<ParkingPlace>();
-  const [isCarLocationOpen, setIsCarLocationOpen] = useState(view === "map");
+  const [parkedPlace, setParkedPlace] = useState<ParkingPlace>();
+  const [parkingSelectionActive, setParkingSelectionActive] = useState(false);
+  const [isCarLocationOpen, setIsCarLocationOpen] = useState(false);
   const [locationPending, setLocationPending] = useState(false);
   const [locationMessage, setLocationMessage] = useState<string | null>(null);
   const [currentLocationLabel, setCurrentLocationLabel] = useState("현재 위치 확인 중…");
   const hasRequestedLocation = useRef(false);
+  const requestHeadingPermission = useDeviceHeading();
   const { places, source, isLoading, error, search } = useParkingSearch(kakaoAppKey);
 
   const selectedPlace = useMemo(
@@ -95,10 +99,12 @@ export default function App() {
 
   const handleOpenParkingHome = () => {
     hasRequestedLocation.current = true;
-    setIsCarLocationOpen(true);
+    setIsCarLocationOpen(false);
+    setParkingSelectionActive(false);
     setSelected(undefined);
     navigateToView("map");
     handleUseLocation();
+    void requestHeadingPermission();
   };
 
   if (view === "car") return <OnboardingCarView onNext={() => navigateToView("consent")} />;
@@ -114,12 +120,22 @@ export default function App() {
       isCarLocationOpen={isCarLocationOpen}
       isLoading={isLoading || locationPending}
       locationMessage={locationMessage}
+      parkedPlace={parkedPlace}
+      parkingSelectionActive={parkingSelectionActive}
+      onBeginParkingSelection={() => {
+        setParkingSelectionActive(true);
+        setIsCarLocationOpen(false);
+        setSelected(undefined);
+        void requestHeadingPermission();
+      }}
       onClearSelection={() => setSelected(undefined)}
       onCloseSheet={() => setIsCarLocationOpen(false)}
       onOpenSheet={() => {
         hasRequestedLocation.current = true;
+        setParkingSelectionActive(true);
         setIsCarLocationOpen(true);
         handleUseLocation();
+        void requestHeadingPermission();
       }}
       onSearch={(query) => {
         setSelected(undefined);
@@ -128,10 +144,15 @@ export default function App() {
       onSelect={(place) => {
         setSelected(place);
         setCenter({ latitude: place.latitude, longitude: place.longitude });
+        setIsCarLocationOpen(true);
       }}
       onSetCarLocation={() => {
+        if (selectedPlace) setParkedPlace(selectedPlace);
+        setParkingSelectionActive(false);
         setIsCarLocationOpen(false);
         setLocationMessage(selectedPlace ? `${selectedPlace.name}에 내 차 위치를 설정했습니다.` : null);
+        setSelected(undefined);
+        if (currentPosition) setCenter(currentPosition);
       }}
       places={places}
       selected={selectedPlace}

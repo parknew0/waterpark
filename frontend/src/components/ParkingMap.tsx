@@ -6,21 +6,35 @@ interface ParkingMapProps {
   appKey?: string;
   center: Coordinate;
   currentPosition?: Coordinate;
+  parkedPlace?: ParkingPlace;
   places: ParkingPlace[];
   selected?: ParkingPlace;
+  onCurrentLocationClick: () => void;
   onSelect: (place: ParkingPlace) => void;
 }
 
-function CurrentLocationMarker() {
+function CurrentLocationMarker({ onClick }: { onClick: () => void }) {
   return (
-    <span className="current-map-marker" aria-label="현재 위치">
+    <button className="current-map-marker" type="button" aria-label="현재 위치에서 주차장 찾기" onClick={onClick}>
       <img className="current-map-marker-direction" src="/assets/parking/current-location-direction.svg" alt="" />
       <img className="current-map-marker-dot" src="/assets/parking/current-location-dot.svg" alt="" />
+    </button>
+  );
+}
+
+function ParkedCarMarker() {
+  return (
+    <span className="parked-car-marker" aria-label="주차된 내 차 위치">
+      <img className="parked-car-body" src="/assets/parking/car-body.svg" alt="" />
+      <img className="parked-car-wheel parked-car-wheel--back-left" src="/assets/parking/car-wheel-back-left.svg" alt="" />
+      <img className="parked-car-wheel parked-car-wheel--front-left" src="/assets/parking/car-wheel-front-left.svg" alt="" />
+      <img className="parked-car-wheel parked-car-wheel--front-right" src="/assets/parking/car-wheel-front-right.svg" alt="" />
+      <img className="parked-car-wheel parked-car-wheel--back-right" src="/assets/parking/car-wheel-back-right.svg" alt="" />
     </span>
   );
 }
 
-function FallbackMap({ places, selected, onSelect, currentPosition }: Omit<ParkingMapProps, "appKey" | "center">) {
+function FallbackMap({ places, selected, onSelect, currentPosition, parkedPlace, onCurrentLocationClick }: Omit<ParkingMapProps, "appKey" | "center">) {
   const visiblePlaces = places.slice(0, 8);
   return (
     <div className="fallback-map" role="region" aria-label="주차장 위치 미리보기">
@@ -30,24 +44,27 @@ function FallbackMap({ places, selected, onSelect, currentPosition }: Omit<Parki
         const row = Math.floor(index / 4);
         return (
           <button
-            className="map-marker"
+            className="parking-dot-marker fallback-parking-dot"
             style={{ left: `${14 + column * 23}%`, top: `${38 + row * 28}%` }}
             key={place.id}
             type="button"
             aria-label={`${place.name} 선택`}
             aria-pressed={selected?.id === place.id}
             onClick={() => onSelect(place)}
-          />
+          >
+            <img src="/assets/parking/parking-dot.svg" alt="" />
+          </button>
         );
       })}
       <div className="map-center-copy">
-        {currentPosition ? <CurrentLocationMarker /> : <span className="map-pulse" aria-hidden="true" />}
+        {currentPosition ? <CurrentLocationMarker onClick={onCurrentLocationClick} /> : <span className="map-pulse" aria-hidden="true" />}
       </div>
+      {parkedPlace ? <span className="fallback-parked-car"><ParkedCarMarker /></span> : null}
     </div>
   );
 }
 
-export function ParkingMap({ appKey, center, currentPosition, places, selected, onSelect }: ParkingMapProps) {
+export function ParkingMap({ appKey, center, currentPosition, parkedPlace, places, selected, onCurrentLocationClick, onSelect }: ParkingMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapError, setMapError] = useState<string | null>(null);
 
@@ -61,7 +78,16 @@ export function ParkingMap({ appKey, center, currentPosition, places, selected, 
     loadKakaoMaps(appKey)
       .then((maps) => {
         if (disposed || !mapRef.current) return;
-        clearMarkers = createKakaoMap(maps, mapRef.current, selected ?? center, places, currentPosition);
+        clearMarkers = createKakaoMap(
+          maps,
+          mapRef.current,
+          selected ?? center,
+          places,
+          currentPosition,
+          parkedPlace,
+          onCurrentLocationClick,
+          onSelect,
+        );
       })
       .catch((caught: unknown) => {
         if (!disposed) {
@@ -74,12 +100,19 @@ export function ParkingMap({ appKey, center, currentPosition, places, selected, 
       clearMarkers();
       mapContainer.replaceChildren();
     };
-  }, [appKey, center, currentPosition, places, selected]);
+  }, [appKey, center, currentPosition, onCurrentLocationClick, onSelect, parkedPlace, places, selected]);
 
   if (!appKey || mapError) {
     return (
       <div className="map-wrap">
-        <FallbackMap places={places} selected={selected} onSelect={onSelect} currentPosition={currentPosition} />
+        <FallbackMap
+          places={places}
+          selected={selected}
+          onSelect={onSelect}
+          currentPosition={currentPosition}
+          parkedPlace={parkedPlace}
+          onCurrentLocationClick={onCurrentLocationClick}
+        />
         {mapError ? <p className="map-error" role="status">{mapError}</p> : null}
       </div>
     );

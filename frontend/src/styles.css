@@ -374,9 +374,14 @@ h3 { margin: 0; font-size: 14px; }
   position: relative;
   width: 64px;
   height: 64px;
+  padding: 0;
+  border: 0;
   display: block;
   overflow: visible;
-  pointer-events: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .current-map-marker-direction {
@@ -386,7 +391,10 @@ h3 { margin: 0; font-size: 14px; }
   width: 52.29px;
   height: 54.27px;
   max-width: none;
-  transform: rotate(-135deg);
+  transform: rotate(calc(-135deg + var(--device-heading, 0deg)));
+  transform-origin: 20px 41px;
+  transition: transform 120ms linear;
+  will-change: transform;
 }
 
 .current-map-marker-dot {
@@ -396,6 +404,56 @@ h3 { margin: 0; font-size: 14px; }
   width: 24px;
   height: 24px;
   max-width: none;
+}
+
+.parking-dot-marker {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  filter: drop-shadow(2px 2px 5px rgb(0 0 0 / 45%));
+}
+
+.parking-dot-marker img {
+  width: 24px;
+  height: 24px;
+  display: block;
+  max-width: none;
+}
+
+.fallback-parking-dot {
+  position: absolute;
+  z-index: 4;
+  transform: translate(-50%, -50%);
+}
+
+.parked-car-marker {
+  position: relative;
+  width: 37px;
+  height: 37px;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(2px 3px 5px rgb(0 0 0 / 45%));
+}
+
+.parked-car-marker img { position: absolute; display: block; max-width: none; }
+.parked-car-body { top: 1.6px; left: 8px; width: 21px; height: 33.9px; }
+.parked-car-wheel { width: 1.7px; height: 5px; }
+.parked-car-wheel--back-left { top: 26.6px; left: 8.4px; }
+.parked-car-wheel--front-left { top: 6.9px; left: 8.4px; }
+.parked-car-wheel--front-right { top: 6.9px; left: 26.9px; }
+.parked-car-wheel--back-right { top: 26.6px; left: 26.9px; }
+
+.fallback-parked-car {
+  position: absolute;
+  z-index: 5;
+  top: 55%;
+  left: 42%;
+  transform: translate(-50%, -50%);
 }
 
 .parking-home-header {
@@ -498,6 +556,41 @@ h3 { margin: 0; font-size: 14px; }
   background: rgb(42 44 44 / 94%);
   font-size: 12px;
 }
+
+.parking-selection-hint {
+  position: absolute;
+  z-index: 6;
+  top: 158px;
+  left: 50%;
+  margin: 0;
+  padding: 9px 14px;
+  border-radius: 18px;
+  color: #fefefe;
+  background: rgb(42 44 44 / 92%);
+  font: 500 12px/1.4 "Noto Sans KR", sans-serif;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.parked-car-card {
+  position: absolute;
+  z-index: 6;
+  right: 16px;
+  bottom: max(38px, env(safe-area-inset-bottom));
+  left: 16px;
+  min-height: 119px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  color: #fefefe;
+  background: rgb(46 46 46 / 96%);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 28%);
+}
+
+.parked-car-card span { margin-bottom: 2px; color: #00e8ec; font-size: 14px; }
+.parked-car-card strong { font: 600 18px/1.4 "Plus Jakarta Sans", "Noto Sans KR", sans-serif; }
+.parked-car-card p { margin: 5px 0 0; color: #adadad; font-size: 12px; }
 
 .parking-sheet-scrim {
   position: absolute;
