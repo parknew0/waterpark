@@ -2,7 +2,7 @@
 
 JunctionX Korea 2026의 `Solve local challenges in Gyeongsangbuk-do using public data.` 트랙 프로젝트입니다.
 
-Waterpark는 경상북도 지하주차장 이용자를 위한 **공공데이터·머신러닝 기반 침수 위험 예측 및 차량 사전 대피 안내 서비스**입니다. 프로젝트 주제와 서비스명은 확정되었습니다.
+Waterpark는 경상북도 지하주차장 이용자를 위한 **공공데이터·머신러닝 기반 침수 위험 예측 및 차량 사전 대피 안내 서비스**입니다. 프로젝트 주제와 서비스명은 확정되었습니다!
 
 ## 문서
 
