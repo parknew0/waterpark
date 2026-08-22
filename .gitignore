@@ -4,6 +4,7 @@
 !.env.example
 
 # Large reproducible source downloads kept locally.
+GIS건물통합정보_경북/
 data/raw/building-register/
 data/raw/dem/
 data/raw/overture/

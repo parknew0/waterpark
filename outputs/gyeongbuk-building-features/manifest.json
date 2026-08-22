@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-08-22T16:41:56+09:00",
+  "row_unit": "one GIS building whose own GIS attribute A27 (지하층수) is >= 1",
+  "row_count": 25336,
+  "crs": "WGS84 (EPSG:4326), converted from source EPSG:5186",
+  "sources": {
+    "geometry": "GIS건물통합정보_경북/AL_D010_47_20251204 (VWorld, EPSG:5186)",
+    "register": "data/processed/gyeongbuk-building-register/gyeongbuk_underground_parking_candidates.csv"
+  },
+  "register_input": {
+    "register_rows": 43681,
+    "register_parcels": 20788,
+    "status_counts": {
+      "CONFIRMED_BASEMENT_PARKING_USE": 1449,
+      "GIS_BASEMENT_CANDIDATE_NOT_CONFIRMED_BY_TITLE": 18109,
+      "PROBABLE_NOT_CONFIRMED_IN_FLOOR_ROWS": 1714,
+      "UNDERGROUND_FLOOR_ONLY": 22409
+    }
+  },
+  "underground_parking_status_counts": {
+    "UNDERGROUND_FLOOR_ONLY": 21077,
+    "GIS_BASEMENT_CANDIDATE_NOT_CONFIRMED_BY_TITLE": 206,
+    "PROBABLE_NOT_CONFIRMED_IN_FLOOR_ROWS": 1727,
+    "CONFIRMED_BASEMENT_PARKING_USE": 1787,
+    "GIS_ONLY_NO_REGISTER_ROW": 539
+  },
+  "buildings_located": 25336,
+  "buildings_requested": 25340,
+  "outputs": {
+    "data/processed/gyeongbuk_building_underground_parking_features.csv": {
+      "sha256": "75173b2b7cd6d773f4198082cc36a004d7ee88033f8668397a4404893a2cb79c"
+    }
+  },
+  "critical_limitations": [
+    "underground_parking_status is derived at PARCEL (PNU) level, not per building. A parcel with several buildings gives them all the same status.",
+    "Only buildings whose own GIS 지하층수 >= 1 are included, so this is not every Gyeongbuk building and cannot supply negative examples on its own.",
+    "A status other than CONFIRMED does not mean there is no underground parking; it means the floor-detail rows did not state a parking use.",
+    "Coordinates are polygon centroids of the building footprint, not surveyed points.",
+    "No flood label and no rainfall are attached here; join separately by location."
+  ]
+}
