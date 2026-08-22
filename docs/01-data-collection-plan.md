@@ -32,10 +32,10 @@
 
 | ID | 필요한 원본 데이터 | 제공기관·공식 경로 | 원본 형태 | 가져올 정보 | 최종 역할 | 현재 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
-| `D1` | 행정안전부 침수흔적도 | [재난안전데이터 공유플랫폼](https://www.safetydata.go.kr/disaster-data/view?dataSn=108) | REST JSON/XML, 샘플 CSV의 WKT Polygon | 침수 위치, 시작·종료 시각, 수심, 재해명 | `flood`, `event_id`를 만드는 정답 후보 | 신청형 API 확인, 전체 원본 미확보 |
+| `D1` | 행정안전부 침수흔적도 | [기존 Polygon 자료](https://www.safetydata.go.kr/disaster-data/view?dataSn=108), [새 심선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3845)·[위선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846) | REST JSON/XML, 기존 자료의 WKT Polygon, 새 자료의 X·Y | 침수 위치, 시작·종료 시각, 수심, 재해명 | `surface_flood_observed`, `event_id`를 만드는 정답 후보 | 기존·신규 형식 차이 확인, 전체 원본 미확보 |
 | `D2` | 기상청 ASOS/AWS 시간 강수 | [ASOS](https://data.kma.go.kr/data/grnd/selectAsosList.do?pgmNo=34), [AWS](https://data.kma.go.kr/data/grnd/selectAwsList.do?pgmNo=35), [API허브](https://apihub.kma.go.kr/apiList.do) | ZIP/CSV, 조회 CSV/Excel, API | 관측소, 관측시각, 시간강수량 | `rain_1h`, `rain_6h`, `rain_24h` 생성 | 수집 가능, 지점 선택 미확정 |
-| `D3` | 건축물대장 표제부·관련 속성 | [공공데이터포털 파일](https://www.data.go.kr/data/15044720/fileData.do), [OpenAPI](https://www.data.go.kr/dataset/15004825/openapi.do?lang=ko) | XLSX 또는 REST | 관리번호, 주소, 용도, 지상·지하층, 주차 관련 속성 | 건물의 설명·구조 특징 | 수집 경로 확인, 실제 연결 키 미확정 |
-| `D4` | GIS건물통합정보 | [VWorld](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18) | SHP Polygon | 건물 위치와 경계, 공간 식별자 후보 | 모든 공간정보를 붙일 기준 건물 | 로그인 필요, 포항 원본 미확보 |
+| `D3` | 건축물대장 표제부·층별개요 | [공공데이터포털 파일](https://www.data.go.kr/data/15044720/fileData.do), [현재 건축HUB OpenAPI](https://www.data.go.kr/data/15134735/openapi.do) | XLSX 또는 REST JSON/XML | 관리 PK, 주소, 용도, 지상·지하층, 층별 용도, 옥내·옥외 주차 속성 | 지하주차장 근거와 건물 특징 | 수집 경로·필드 확인, 실제 연결 키 미확정 |
+| `D4` | GIS건물통합정보 | [VWorld](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18) | SHP Polygon | 건물 위치·경계, PNU, 용도, 지상·지하층 수 | 모든 공간정보를 붙일 기준 건물 | 경북 전체데이터 목록·정의서 확인, 원본 미확보 |
 | `D5` | 실제 DEM 래스터 | [국토정보플랫폼](https://map.ngii.go.kr), [성과 메타데이터](https://www.data.go.kr/data/15067637/fileData.do) | 실제 원본은 격자형 래스터, 메타데이터는 CSV/API | 각 격자의 지표면 높이 | 건물 고도, 주변 대비 고도, 경사 생성 | 실제 포항 DEM 파일·해상도 미확정 |
 | `D6` | 국가기본도 하천중심선 | [VWorld](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=MK&dsId=20250122DS00008) | SHP LineString + 정의서 XLSX | 하천 위치와 속성 | 건물에서 가장 가까운 하천까지 거리 생성 | 다운로드 경로 확인, 라이선스 확인 필요 |
 
@@ -44,15 +44,16 @@
 | 최종 컬럼 | 원본 | 만드는 방법 |
 | --- | --- | --- |
 | `building_id` | `D3`·`D4` | 실제 공통 키를 확인해 연결하고, 분석용 표준 건물 ID를 부여 |
-| `building_geometry` | `D4` | SHP의 건물 Polygon 사용 |
-| `main_purpose` | `D3` | 건축물 용도 코드·명칭 정리 |
-| `underground_floor_count` | `D3` | 지하층수 정리 |
+| `building_geometry`, `latitude`, `longitude` | `D4` | SHP Polygon을 보존하고 WGS84 대표점 생성 |
+| `main_purpose` | `D3`·`D4` | 건축물 용도 코드·명칭을 연결하고 교차검증 |
+| `underground_floor_count` | `D3`·`D4` | 두 자료의 지하층 수를 연결하고 불일치 확인 |
+| `underground_parking_status` | `D3` | 지하층 층별 용도와 옥내 주차 속성을 근거 강도와 함께 판별 |
 | `parking_capacity` | `D3` | 실제 제공되는 주차 속성을 확인해 정리 |
 | `elevation_m` | `D5` | 건물 중심점 또는 건물 면적에 겹치는 DEM 높이 추출 |
 | `relative_elevation_m` | `D5` | 건물 고도와 주변 평균 고도의 차이 계산 |
 | `river_distance_m` | `D4`·`D6` | 건물 Polygon과 가장 가까운 하천 선의 거리 계산 |
 | `rain_1h`, `rain_6h`, `rain_24h` | `D2` | 호우 사건 또는 기준시각 이전의 시간별 강수량 합산 |
-| `flood`, `overlap_ratio` | `D1`·`D4` | 건물 Polygon과 침수 Polygon의 중첩 여부·비율 계산 |
+| `surface_flood_observed`, `overlap_ratio` | `D1`·`D4` | 기존 자료의 건물·침수 Polygon 중첩 여부·비율 계산 |
 
 ## 3. 따로 있는 데이터를 한 건물에 붙이는 방법
 
@@ -144,7 +145,7 @@ ASOS 한 지점만 사용하면 이 표를 `event_id`로 붙일 수 있다. 여�
 | 갱신 | 공식 페이지 표기상 1일 |
 | 행 수 | `TBD` — 전체 API 호출 후 포항/경북 필터 기준으로 산정 |
 
-공개 샘플 다운로드를 직접 확인했다. 첫 두 행은 영문 컬럼명과 한글 설명이며 이후 최대 100개 레코드가 들어 있다. `GEOM`은 WKT `POLYGON(...)` 문자열로 제공된다.
+공개 샘플과 미리보기를 직접 확인했다. 첫 두 행은 영문 컬럼명과 한글 설명이며 이후 최대 100개 레코드가 들어 있다. `GEOM`은 WKT `POLYGON(...)` 문자열로 제공된다.
 
 ### 확인된 원본 컬럼
 
@@ -169,8 +170,10 @@ ASOS 한 지점만 사용하면 이 표를 `event_id`로 붙일 수 있다. 여�
 
 - 공식 API 문서에 공개된 요청 변수는 `serviceKey`, `numOfRows`, `pageNo`, `returnType`뿐이다.
 - 지역·연도 필터 파라미터가 보이지 않으므로 전체 페이지를 받은 뒤 `STDG_CTPV_CD`, `STDG_SGG_CD`, 날짜로 로컬 필터링해야 할 가능성이 높다.
-- 공개 샘플의 좌표값은 투영좌표이지만 응답에 CRS 필드가 없다. 값의 범위는 Web Mercator와 유사해 보이지만 이는 추정이며, 공간 교차 전에 제공기관 확인 또는 기준점 대조가 필요하다.
+- 기존 자료의 공개 응답에는 CRS 필드가 없다. 새 위선의 X·Y 좌표계는 플랫폼 공식 문의 답변에서 `EPSG:3857`로 확인됐지만, 기존 `GEOM`도 같다고 자동 가정하지 않고 기준점 대조를 거친다.
 - 플랫폼은 공공기관 데이터의 이용허락을 공공누리 제3유형으로 안내한다. 학습용 변환과 가공 결과 재배포가 가능한 범위는 별도 확인이 필요하다.
+
+2025년에 별도 등록된 심선·위선 자료는 구조가 다르다. 위선은 시작·종료일자와 시분, 평균침수위, X·Y를 제공하지만 `GEOM` Polygon은 제공하지 않는다. 따라서 건물 내부 침수 여부를 직접 판정하려면 기존 Polygon 자료의 경북 기간·커버리지를 먼저 확인해야 한다.
 
 ### 수집 판단
 
@@ -225,15 +228,15 @@ API허브의 ASOS 기간 조회는 한 번에 최대 31일이다. 장기간 학�
 
 | 항목 | 확인 내용 |
 | --- | --- |
-| 제공처 | [공공데이터포털 건축물대장 표제부](https://www.data.go.kr/data/15044720/fileData.do), [건축물대장 OpenAPI 묶음](https://www.data.go.kr/dataset/15004825/openapi.do?lang=ko) |
+| 제공처 | [공공데이터포털 건축물대장 표제부](https://www.data.go.kr/data/15044720/fileData.do), [건축HUB 건축물대장정보 OpenAPI](https://www.data.go.kr/data/15134735/openapi.do) |
 | 형식 | 전체 파일 XLSX, 활용 신청형 REST API |
-| 주요 확인 속성 | 관리건축물대장PK, 주소·법정동 코드, 건물명, 주용도, 지상층수, 지하층수, 주차 관련 수·면적 |
+| 주요 확인 속성 | 관리건축물대장PK, 주소·법정동 코드, 건물명, 주용도, 지상층수, 지하층수, 층별 용도, 옥내·옥외 주차 관련 수·면적 |
 | 좌표/도형 | 표제부 설명에는 위도·경도 또는 건물 Polygon이 없음 |
 | 행 수 | `TBD` — 포항 필터 및 중복 정리 후 산정 |
 
 사용자가 제안한 `LAT`, `LON`은 건축물대장 표제부에서 직접 확인되지 않는다. 주소/법정동/지번을 공간 건물 데이터와 연결해야 한다.
 
-또한 `지하층수 > 0`은 지하 공간의 존재를 뜻할 뿐, 지하주차장을 직접 보장하지 않는다. 주차 관련 속성이나 층별 용도를 함께 확인해야 대상 건물을 더 정확히 좁힐 수 있다.
+또한 `지하층수 > 0`은 지하 공간의 존재를 뜻할 뿐, 지하주차장을 직접 보장하지 않는다. `옥내 주차`도 지상 주차동일 수 있다. [건축HUB 층별개요](https://www.hub.go.kr/portal/opn/tyb/idx-bdrg-flr.do)의 `층구분코드=10(지하)` 행에서 주차장 용도를 확인하는 방법을 함께 사용하고, 근거 부족은 `false`가 아니라 `unknown`으로 남긴다.
 
 ### B. GIS건물통합정보
 
@@ -244,9 +247,10 @@ API허브의 ASOS 기간 조회는 한 번에 최대 31일이다. 장기간 학�
 | 좌표계 | 최근 배포본 `EPSG:5186`, 과거 배포본 `EPSG:5174`로 페이지에 표기 |
 | 갱신 | 월간·일간 변동 데이터 |
 | 접근 | VWorld 로그인 필요, 대용량 다운로드 솔루션 안내 |
-| 행 수 | `TBD` — VWorld의 전국 규모 표시는 참고만 하고 포항 파일 확보 후 산정 |
+| 경북 전체 목록 | `경상북도 + 전체데이터(AL) + SHP`로 조회 가능. 2026-08-22 확인한 최신 기준일 2026-08-09, 약 290MB |
+| 행 수 | `TBD` — 경북 전체 파일 확보 후 산정 |
 
-VWorld 페이지는 SHP 속성이 `A0 ... An`으로 표시되며 별도 컬럼 정의서를 참고하라고 안내한다. 정확한 건물 ID와 건축물대장 연결 키는 해당 정의서와 실제 포항 파일을 받은 뒤 확정할 수 있다.
+VWorld 페이지는 SHP 속성이 `A0 ... An`으로 표시되며 별도 컬럼 정의서를 참고하라고 안내한다. 정의서에서 GIS건물통합식별번호, PNU, 법정동·지번, 용도, 건물명·동명, 지상·지하층 수를 확인했다. 사용자가 확인한 `CH_D010`은 일간 변동분이므로 최초 경북 전체 목록에는 사용할 수 없고 `AL_D010` 전체데이터가 필요하다. 정확한 건물 ID와 건축물대장 연결 키는 실제 경북 파일을 받은 뒤 매칭률로 확정한다.
 
 ### 수집 판단
 
@@ -312,3 +316,5 @@ VWorld 페이지는 SHP 속성이 `A0 ... An`으로 표시되며 별도 컬럼 �
 - 정확한 시작 시각이 있는 사건 비율
 - 데이터셋 간 건물 매칭률
 - 컬럼별 결측률과 공간·시간 커버리지
+
+건물 위치·지하주차장·시간 강수·침수 기록만 따로 확인한 결과와 직접 확인 순서는 [건물·강수·침수 데이터 소스 확인서](./04-building-rain-flood-source-verification.md)에 정리했다.

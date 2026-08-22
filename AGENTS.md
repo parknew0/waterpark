@@ -7,7 +7,9 @@
 1. `docs/hackathon-development-guide.md`
 2. `docs/01-data-collection-plan.md`
 3. `docs/02-preprocessing-and-xgboost-feasibility.md`
-4. `docs/research-log.md`
+4. `docs/03-gyeongbuk-data-integration-runbook.md`
+5. `docs/04-building-rain-flood-source-verification.md`
+6. `docs/research-log.md`
 
 ## 확정 사항
 

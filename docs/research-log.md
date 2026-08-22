@@ -37,8 +37,8 @@
 
 | ID | 내용 | 상태 |
 | --- | --- | --- |
-| DATA-001 | 침수흔적도·기상·건물·DEM·하천 후보의 공식 제공 경로 | `NOTE` — 제공 경로 확인, 전체 원본 미확보 |
-| DATA-002 | 각 데이터의 필드, 형식, 단위와 공간·시간 해상도 | `NOTE` — 공개 명세 확인, 실제 파일 기준 재확인 필요 |
+| DATA-001 | 침수흔적도·기상·건물·DEM·하천 후보의 공식 제공 경로 | `FACT` — 공식 제공 경로 확인, 전체 원본 미확보 |
+| DATA-002 | 각 데이터의 필드, 형식, 단위와 공간·시간 해상도 | `NOTE` — 건물·강수·침수 공개 명세와 샘플 확인, 실제 전체 파일 기준 재확인 필요 |
 | DATA-003 | 경상북도 22개 시군 필터 후 행 수, 과거 이력과 결측률 | `OPEN` — 주차장만 2,010행 확인 |
 | DATA-004 | 데이터 간 위치·시간 기준 결합 방법 | `NOTE` — 구조 분석 완료, CRS·연결 키 미확정 |
 | DATA-005 | XGBoost 입력과 정답 데이터로 사용할 수 있는 항목 | `NOTE` — 구조상 가능, 라벨 품질·독립 사건 수 미확인 |
@@ -54,6 +54,18 @@
 - 공공데이터포털의 수치표고성과내역은 DEM 셀 원본이 아니라 도엽 메타데이터다. 실제 DEM 래스터는 아직 확보하지 않았다.
 - VWorld 국가기본도 하천중심선은 `EPSG:5179` SHP와 테이블 정의서로 제공되며 로그인이 필요하다.
 
+## 2026-08-22 건물·강수·침수 소스 추가 확인 결과
+
+- 상태: `FACT`와 `OPEN`을 항목별로 구분한다.
+- VWorld GIS건물통합정보의 경북 `전체데이터(AL)` SHP 목록을 확인했다. 2026-08-22 표시 기준 최신 파일은 기준일 2026-08-09, 약 290MB다. `CH_D010`은 일간 변동분이므로 경북 전체 건물 기준표로 사용할 수 없다.
+- VWorld 공식 컬럼 정의서의 `AL_D010`에는 GIS건물통합식별번호, PNU, 법정동·지번, 용도, 건물명·동명, 지상·지하층 수가 있다. SHP 대표점을 WGS84로 변환해 위도·경도를 만들 수 있다.
+- 현재 건축물대장 OpenAPI는 [건축HUB 건축물대장정보 서비스](https://www.data.go.kr/data/15134735/openapi.do)다. 표제부에는 지하층 수와 옥내·옥외 주차 속성이 있고 층별개요는 `층구분코드=10`을 지하로 정의한다.
+- `옥내 주차`와 `지하주차`는 동일하지 않다. 지하층 행의 주차장 용도를 확인할 수 있을 때 `confirmed`, 간접 근거만 있으면 `probable`, 근거 부족은 `unknown`으로 기록하는 규칙이 후보이다. 실제 파일 검증 전 확정 규칙은 아니다.
+- 기상청 AWS 시간통계는 `TM`, `STN`, `RN_HR1`, `RN_DAY`를 제공하고 관측지점정보는 WGS84 위도·경도를 제공한다. 건물에는 해당 시각에 운영 중인 가까운 관측소 값을 연결하고 관측소 거리도 남겨야 한다.
+- 기존 [행정안전부 침수흔적도](https://www.safetydata.go.kr/disaster-data/view?dataSn=108)는 WKT Polygon과 시작·종료시각을 제공한다. 새 심선·위선은 Polygon을 제공하지 않으며, 위선의 X·Y는 공식 답변상 `EPSG:3857`이다.
+- 침수흔적도 중첩은 지표면 침수 양성의 대리 라벨이지 지하주차장 직접 침수 기록이 아니다. 자료 밖의 건물을 자동으로 비침수 `0`으로 만들 수 없다.
+- 상세: [건물·강수·침수 데이터 소스 확인서](./04-building-rain-flood-source-verification.md)
+
 ## 2026-08-22 경상북도 전체 데이터 통합 실행 결과
 
 - 상태: `FACT`
@@ -64,7 +76,7 @@
 - 침수흔적도 전체 API는 회원가입·활용 신청이 필요하고 샘플 다운로드는 첫 100건으로 제한된다.
 - 국토지리정보원 DEM은 무료이나 국토정보플랫폼 로그인과 영역 지정 다운로드가 필요하다.
 - 산출물: `data/processed/gyeongbuk_parking_seed.csv`, `data/processed/waterpark_gyeongbuk_integration.xlsx`
-- 출처: [전국주차장정보표준데이터](https://www.data.go.kr/data/15012896/standard.do), [침수흔적도](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846), [국토지리정보원 DEM](https://www.data.go.kr/data/15059920/fileData.do)
+- 출처: [전국주차장정보표준데이터](https://www.data.go.kr/data/15012896/standard.do), [기존 침수흔적도](https://www.safetydata.go.kr/disaster-data/view?dataSn=108), [새 침수흔적도 위선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846), [국토지리정보원 DEM](https://www.data.go.kr/data/15059920/fileData.do)
 - 확인일: 2026-08-22
 
 ## 결정 로그

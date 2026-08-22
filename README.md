@@ -10,6 +10,7 @@ Waterpark는 경상북도 지하주차장 이용자를 위한 **공공데이터�
 - [데이터 수집 계획](./docs/01-data-collection-plan.md): 공식 제공처별 형식, 컬럼, 접근 방식과 수집 가능성
 - [전처리 및 XGBoost 적용 가능성](./docs/02-preprocessing-and-xgboost-feasibility.md): 공간·시간 결합 방식과 학습 데이터 성립 조건
 - [경상북도 데이터 통합 실행서](./docs/03-gyeongbuk-data-integration-runbook.md): 실제 확보 데이터, 조인 상태, 재현 절차와 다음 수집 순서
+- [건물·강수·침수 데이터 소스 확인서](./docs/04-building-rain-flood-source-verification.md): 건물 위치·지하주차장·시간 강수·침수 기록의 공식 소스와 결합 방법
 - [리서치 로그](./docs/research-log.md): 확인된 사실, 미확정 사항, 조사 결과와 결정 기록
 - [AGENTS.md](./AGENTS.md): 후속 AI 에이전트가 따라야 할 작업 범위
 

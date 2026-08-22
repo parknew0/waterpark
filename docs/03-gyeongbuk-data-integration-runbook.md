@@ -49,10 +49,10 @@
 
 | ID | 데이터 | 역할 | 접근 상태 | 판정 |
 | --- | --- | --- | --- | --- |
-| `D1` | 침수흔적도 | 건물×사건 라벨 | 회원가입·활용신청 필요 | `BLOCKED_AUTH` |
-| `D2` | ASOS/AWS 강수 | 시간별 강수 feature | 지점·기간 선택 필요 | `OPEN_SELECTION` |
-| `D3` | 건축물대장 | 지하층·용도·주차 속성 | 파일/API와 연결 키 확인 필요 | `OPEN_KEY` |
-| `D4` | GIS건물통합정보 | 기준 건물 Polygon | VWorld 로그인 필요 | `BLOCKED_LOGIN` |
+| `D1` | 침수흔적도 | 건물×사건 라벨 | 기존 Polygon과 새 심선·위선의 형식 차이 확인, 전체 API는 활용신청 필요 | `BLOCKED_AUTH` |
+| `D2` | ASOS/AWS 강수 | 시간별 강수 feature | 시간 강수·지점 좌표 형식 확인, 경북 지점·기간 선택 필요 | `OPEN_SELECTION` |
+| `D3` | 건축물대장 | 지하층·층별용도·주차 속성 | 현재 건축HUB API와 필드 확인, D4 연결 키·매칭률 미확인 | `OPEN_KEY` |
+| `D4` | GIS건물통합정보 | 기준 건물 Polygon | 경북 `AL` 전체데이터 목록·컬럼 확인, 다운로드 필요 | `BLOCKED_LOGIN` |
 | `D5` | DEM | 표고·상대고도·경사 | 국토정보플랫폼 로그인 필요 | `BLOCKED_LOGIN` |
 | `D6` | 하천중심선 | 최근접 하천 거리 | VWorld 로그인 필요 | `BLOCKED_LOGIN` |
 | `S1` | 전국주차장 표준데이터 | 대피 후보 | 공개 다운로드 완료 | `SOURCE_ONLY` |
@@ -73,26 +73,26 @@ main_purpose, underground_floor_count, parking_capacity,
 elevation_m, relative_elevation_m, slope,
 nearest_river_distance_m,
 rain_1h, rain_6h, rain_24h,
-historical_flood_overlap, overlap_ratio, flooded_within_60m,
+surface_flood_observed, overlap_ratio, label_quality,
 source_version, quality_flag
 ```
 
 ### 5.1 기준 건물과 공간 조인
 
-`D4 GIS건물통합정보`의 Polygon을 기준으로 `building_id`를 정한다. `D3 건축물대장`은 관리PK를 우선 검사하고, 불가능하면 법정동 코드·본번·부번 조합을 사용한다.
+`D4 GIS건물통합정보`의 Polygon을 기준으로 `building_id`를 정한다. `CH_D010` 변동분이 아니라 경북 `AL_D010` 전체데이터를 사용한다. `D3 건축물대장`은 관리PK와 D4 식별자의 실제 관계를 먼저 검사하고, 직접 연결되지 않으면 PNU·법정동 코드·본번·부번·건물명·동명을 조합한다.
 
 - 건물 Polygon 또는 대표점에서 `D5 DEM` 표고를 추출한다.
 - 주변 창으로 상대고도와 경사를 만든다.
 - `D6 하천중심선`과 건물 Polygon 사이 최소 거리를 계산한다.
 - `D1 침수 Polygon`과 건물 Polygon의 교차 면적 비율을 계산한다.
 
-거리·면적 계산은 미터 단위 투영좌표계에서 수행한다. 실제 입력 파일의 CRS 확인 전 특정 EPSG를 확정하지 않는다.
+거리·면적 계산은 미터 단위 투영좌표계에서 수행한다. 최신 D4의 공식 배포 좌표계는 `EPSG:5186`이지만 D1·D5·D6는 서로 다를 수 있으므로 각 원본의 CRS를 확인한 뒤 하나의 계산용 좌표계로 변환한다.
 
 ### 5.2 시간 조인과 라벨
 
 침수 사건의 기준시각 이전 1·6·24시간 강수량을 경북 관측소에서 계산한다. 관측소 한 곳의 값을 경북 전체 건물에 복제하지 않는다. 최근접 관측소, 거리 제한과 결측 대체 규칙은 실제 지점 분포 확인 후 결정한다.
 
-침수 Polygon과 겹치지 않는다는 이유만으로 `flood=0`을 만들지 않는다. 같은 사건의 조사 범위 안에서 비침수로 확인된 건물만 음성 후보로 쓴다. 건물별 침수 시작시각이 없으면 `flooded_within_60m` 확률 모델을 바로 학습하지 않는다.
+침수 Polygon과 겹치지 않는다는 이유만으로 `surface_flood_observed=0`을 만들지 않는다. 같은 사건의 조사 범위 안에서 비침수로 확인된 건물만 음성 후보로 쓰고, 양성·음성 근거를 `label_quality`에 남긴다.
 
 ## 6. 주차장 데이터 사용법
 
@@ -119,8 +119,8 @@ node scripts/build_gyeongbuk_integration_workbook.mjs
 
 ## 8. 다음 수집 순서
 
-1. `D4 GIS건물통합정보` 경북 22개 시군 파일과 정의서를 확보한다.
-2. `D3 건축물대장` 경북 파일을 확보해 연결 키와 매칭률을 계산한다.
+1. `D4 GIS건물통합정보`에서 `경상북도 + 전체데이터(AL) + SHP` 파일을 확보한다.
+2. `D3 건축HUB 건축물대장` 표제부·층별개요의 경북 자료를 확보해 연결 키, 매칭률과 지하주차장 근거 확인률을 계산한다.
 3. `D1 침수흔적도` 활용 신청 후 경북 전체 페이지를 받아 사건 수·시각 결측률을 계산한다.
 4. `D5 DEM`과 `D6 하천중심선`을 경북 경계로 클리핑한다.
 5. `D2`는 경북 관측소 목록·기간·결측을 본 뒤 ASOS/AWS 조합을 결정한다.
@@ -141,9 +141,12 @@ node scripts/build_gyeongbuk_integration_workbook.mjs
 | 출처 | 확인 내용 | 확인일 |
 | --- | --- | --- |
 | [전국주차장정보표준데이터](https://www.data.go.kr/data/15012896/standard.do) | 전국 원본 공개 다운로드, 표준 컬럼 | 2026-08-22 |
-| [침수흔적도](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846) | API 활용신청, 샘플 100건 제한 | 2026-08-22 |
+| [기존 침수흔적도](https://www.safetydata.go.kr/disaster-data/view?dataSn=108) | Polygon·시작/종료시각, API 활용신청, 샘플 100건 제한 | 2026-08-22 |
+| [새 침수흔적도 위선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846) | 시작/종료시각·X/Y는 있으나 Polygon 없음 | 2026-08-22 |
 | [국토지리정보원 DEM](https://www.data.go.kr/data/15059920/fileData.do) | IMG, 무료, 로그인·영역 지정 다운로드 | 2026-08-22 |
 | [GIS건물통합정보](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18) | 건물 Polygon 후보, 로그인 필요 | 2026-08-22 |
+| [건축HUB 건축물대장정보 API](https://www.data.go.kr/data/15134735/openapi.do) | 표제부·층별개요 JSON/XML, 활용신청 | 2026-08-22 |
+| [기상청 AWS API](https://apihub.kma.go.kr/apiList.do?seqApi=2&seqApiSub=239) | 지점별 1시간 강수량과 지점정보 | 2026-08-22 |
 | [국가기본도 하천중심선](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=MK&dsId=20250122DS00008) | 하천 선형과 정의서 후보 | 2026-08-22 |
 
 ## 11. 한계
@@ -152,3 +155,5 @@ node scripts/build_gyeongbuk_integration_workbook.mjs
 - 주차장 표준데이터는 제공기관별 갱신 시점과 품질 편차가 있을 수 있다.
 - VWorld·침수흔적도의 가공·재배포 조건은 각각 다시 확인해야 한다.
 - 경북 전역 단일 모델이 적합한지는 독립 침수 사건 수와 시군별 데이터 편차를 본 뒤 판단한다.
+
+건물·강수·침수 세 축의 확인 결과와 사람이 직접 확인할 순서는 [건물·강수·침수 데이터 소스 확인서](./04-building-rain-flood-source-verification.md)를 따른다.
