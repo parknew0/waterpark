@@ -109,6 +109,18 @@
 - 출처: [Kakao Developers 카카오맵 이해하기](https://developers.kakao.com/docs/ko/kakaomap/common), [Kakao 지도 Web API 가이드](https://apis.map.kakao.com/web/guide/), [Kakao 지도 Web API 문서](https://apis.map.kakao.com/web/documentation/), [Vercel agent-skills](https://github.com/vercel-labs/agent-skills), [Web Interface Guidelines](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md)
 - 확인일: 2026-08-22
 
+## 2026-08-22 Kakao 지도 유료 사용 구조 확인
+
+- 상태: `FACT` — 2026-08-22 공식 문서 기준. 단가는 추후 변경 가능.
+- 2026-07-21부터 개발자 계정에서 첫 번째로 카카오맵 API를 활성화한 앱에만 무료 쿼터가 제공된다. Waterpark가 두 번째 이후 활성화 앱이면 비즈월렛 연결과 유료 API 사용 설정 후 사용량 기반으로 이용해야 한다.
+- 공식 단가는 부가세 별도로 지도 Web(JavaScript) SDK 0.1원/건, 주소로 좌표 변환 0.5원/건, 키워드로 장소 검색 2원/건이다.
+- 현재 프론트엔드의 `페이지 지도 로드 1회 + 주소 검색 1회`는 단순 합계 2.6원, 부가세 포함 약 2.86원으로 추정한다. 실제 청구는 각 API의 실제 호출 횟수에 따라 달라진다.
+- 월별 합계에 부가세 10%가 더해지고 다음 달 1일 오전 1시경 비즈월렛으로 자동 결제된다.
+- Waterpark는 공공데이터 로컬 검색을 기본으로 유지하고 Kakao 검색은 사용자 제출 시에만 호출해 불필요한 과금을 제한한다.
+- 상세: [지도·주소·주차장 API 연결](./frontend/02-map-and-parking-api.md)
+- 출처: [Kakao Developers 카카오맵 이해하기](https://developers.kakao.com/docs/ko/kakaomap/common), [Kakao Developers 쿼터](https://developers.kakao.com/docs/ko/getting-started/quota), [Kakao Developers 유료 API](https://developers.kakao.com/docs/ko/app-setting/paid-api)
+- 확인일: 2026-08-22
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |
