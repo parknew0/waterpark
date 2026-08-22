@@ -524,6 +524,122 @@ h3 { margin: 0; font-size: 14px; }
   8% { opacity: 1; transform: scale(1.07); }
 }
 
+/* Flood-scenario detail and directions views: Figma 119:1140, 123:1743, 90:755 */
+.flood-location-stage,
+.evacuation-directions-stage { min-height: 100svh; display: grid; place-items: center; background: #001817; }
+
+.flood-location-phone,
+.evacuation-directions-phone {
+  position: relative;
+  width: min(402px, 100vw);
+  height: min(874px, 100svh);
+  min-height: 720px;
+  overflow: hidden;
+  color: #fefefe;
+  background: #001817;
+  font-family: "Plus Jakarta Sans", "Noto Sans KR", sans-serif;
+}
+
+.flood-detail-map,
+.flood-detail-map .map-wrap,
+.flood-detail-map .fallback-map,
+.flood-detail-map .kakao-map { position: absolute; inset: 0 0 auto; width: 100%; height: 304px; min-height: 304px; }
+
+.flood-detail-map .fallback-map,
+.evacuation-directions-map .fallback-map { background: #000 url("/assets/routing/flood-route-map.png") center / cover no-repeat; }
+.flood-detail-map .fallback-route-layer { inset: 35% 8% 2%; width: 84%; height: 63%; }
+.flood-detail-map .route-risk-zone,
+.flood-detail-map .route-line--baseline { display: none; }
+.flood-detail-map .route-line--lower-risk { stroke-width: 4; }
+
+.flood-route-map-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #8fa3a2;
+  background: #000 url("/assets/routing/flood-route-map.png") center / cover no-repeat;
+  font-size: 12px;
+}
+
+.flood-detail-header { position: absolute; z-index: 6; top: 62px; left: 16px; display: flex; flex-direction: column; }
+.flood-detail-header strong { font-size: 24px; font-weight: 600; line-height: 1.4; letter-spacing: -.24px; }
+.flood-detail-header span { display: flex; align-items: center; gap: 4px; color: #ededed; font-family: "Noto Sans KR", sans-serif; font-size: 14px; line-height: 20px; }
+.flood-detail-header span img { width: 24px; height: 24px; padding: 5px; border-radius: 50%; background: #474747; }
+
+.flood-detail-rain-chip {
+  position: absolute;
+  z-index: 6;
+  top: 140px;
+  right: 12px;
+  height: 44px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 24px;
+  color: #00e8ec;
+  background: #021b17;
+  font-size: 16px;
+  font-weight: 500;
+}
+.flood-detail-rain-chip img { width: 24px; height: 24px; }
+
+.flood-detail-sheet { position: absolute; z-index: 5; inset: 304px 0 0; border-radius: 24px 24px 0 0; background: #2a2c2c; }
+.flood-place-summary { position: absolute; top: 29px; left: 16px; right: 16px; }
+.flood-location-phone--safe .flood-place-summary { top: 43px; }
+.flood-risk-chip { width: fit-content; min-width: 61px; height: 38px; padding: 0 16px; display: grid; place-items: center; border-radius: 24px; font-size: 14px; font-weight: 600; }
+.flood-risk-chip--danger { color: #f97575; background: #362020; }
+.flood-risk-chip--safe { color: #22c55e; background: #021b0b; }
+.flood-place-summary h1 { margin: 8px 0 0; overflow: hidden; color: #fefefe; font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -.18px; text-overflow: ellipsis; white-space: nowrap; }
+.flood-place-summary > p { margin: 8px 0 0; overflow: hidden; color: #c7c7c7; font-size: 14px; font-weight: 500; line-height: 1.4; letter-spacing: -.14px; text-overflow: ellipsis; white-space: nowrap; }
+.flood-place-summary > div { margin-top: 8px; display: flex; gap: 12px; align-items: center; font-size: 14px; font-weight: 500; }
+.flood-place-summary > div strong { color: #00e8ec; font-weight: 500; }
+
+.flood-risk-reason { position: absolute; top: 180px; right: 16px; left: 16px; min-height: 190px; padding: 19px 18px 16px; border-radius: 12px; background: #343939; }
+.flood-location-phone--safe .flood-risk-reason { top: 194px; }
+.flood-risk-reason h2 { margin: 0; color: #fefefe; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -.2px; }
+.flood-risk-reason h2 em { color: #f97575; font-style: normal; }
+.flood-risk-reason--safe h2 em { color: #22c55e; }
+.flood-risk-reason > span { display: block; margin-top: 21px; color: #adadad; font-size: 14px; }
+.flood-risk-reason ul { margin: 12px 0 0; padding-left: 24px; color: #e0e0e0; font-size: 16px; font-weight: 500; line-height: 1.4; }
+
+.flood-detail-footer { position: absolute; right: 0; bottom: 64px; left: 0; padding: 12px 16px; }
+.flood-detail-footer button { width: 100%; height: 50px; border: 0; border-radius: 30px; color: #2e2e2e; background: #00e8ec; font-size: 16px; font-weight: 500; cursor: pointer; }
+.flood-detail-footer button:disabled { cursor: wait; opacity: .55; }
+
+.evacuation-directions-map,
+.evacuation-directions-map .map-wrap,
+.evacuation-directions-map .fallback-map,
+.evacuation-directions-map .kakao-map { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 100%; }
+.evacuation-directions-map .fallback-route-layer { inset: 24% 7% 21%; width: 86%; height: 55%; }
+.evacuation-directions-map .route-line--baseline { display: none; }
+.evacuation-directions-map .route-line--lower-risk { stroke-width: 5; }
+.evacuation-directions-map .route-risk-zone { opacity: .68; }
+
+.evacuation-directions-back { position: absolute; z-index: 8; top: 62px; left: 16px; width: 48px; height: 48px; padding: 0; border: 0; display: grid; place-items: center; background: transparent; cursor: pointer; }
+.evacuation-directions-back img { width: 16px; height: 16px; transform: rotate(90deg); }
+
+.evacuation-waypoints { position: absolute; z-index: 7; top: 115px; right: 16px; left: 16px; display: grid; gap: 9px; }
+.evacuation-waypoints::before { content: ""; position: absolute; z-index: 2; top: 34px; left: 20px; height: 52px; border-left: 1px dashed #fbfbfb; }
+.evacuation-waypoints article { position: relative; min-height: 66px; padding: 12px 18px 12px 38px; display: flex; flex-direction: column; border-radius: 12px; color: #fefefe; background: #2e2e2e; }
+.evacuation-waypoints article span { font-size: 12px; font-weight: 500; line-height: 1.4; }
+.evacuation-waypoints article strong { overflow: hidden; font-size: 18px; font-weight: 600; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+.evacuation-waypoint { position: absolute; z-index: 3; top: 29px; left: 16px; width: 9px; height: 9px; border-radius: 50%; }
+.evacuation-waypoint--origin { background: #00e8ec; }
+.evacuation-waypoint--destination { background: #41ff87; }
+
+.evacuation-safe-time,
+.evacuation-route-metrics { position: absolute; z-index: 7; bottom: 39px; border-radius: 24px; background: #2a2c2c; }
+.evacuation-safe-time { left: 21px; width: 156px; height: 110px; padding: 20px; display: flex; flex-direction: column; }
+.evacuation-safe-time span,
+.evacuation-route-metrics > span { color: #e0e0e0; font-size: 14px; font-weight: 500; }
+.evacuation-safe-time strong { color: #00e8ec; font-size: 36px; font-weight: 600; letter-spacing: -.36px; }
+.evacuation-route-metrics { right: 16px; width: 192px; height: 65px; padding: 10px; display: flex; justify-content: center; gap: 10px; }
+.evacuation-route-metrics > span { width: 64px; display: flex; flex-direction: column; }
+.evacuation-route-metrics strong { color: #fff; font-size: 18px; font-weight: 600; }
+.evacuation-route-label { position: absolute; z-index: 7; right: 19px; bottom: 116px; margin: 0; color: #00e8ec; font-size: 9px; font-weight: 700; letter-spacing: .05em; }
+
 @media (min-width: 481px) {
   .onboarding-stage { background: radial-gradient(circle at 50% 25%, #0b3331, #001817 54%); }
   .onboarding-phone { border: 1px solid rgb(255 255 255 / 7%); box-shadow: 0 30px 90px rgb(0 0 0 / 34%); }
@@ -632,6 +748,7 @@ h3 { margin: 0; font-size: 14px; }
 .route-risk-zone { stroke-width: .3; vector-effect: non-scaling-stroke; }
 .route-risk-zone--high { fill: rgb(255 139 103 / 18%); stroke: #ff8b67; }
 .route-risk-zone--very_high { fill: rgb(255 79 103 / 30%); stroke: #ff4f67; }
+.route-risk-zone--current { fill: rgb(255 36 79 / 48%); stroke: #ff244f; }
 .route-line { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .route-line--baseline { stroke: #a7b1b0; stroke-width: 3; stroke-dasharray: 5 5; opacity: .7; }
 .route-line--lower-risk { stroke: #00e8ec; stroke-width: 5; }
@@ -1101,7 +1218,9 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 @media (max-width: 480px) {
-  .parking-home-phone {
+  .parking-home-phone,
+  .flood-location-phone,
+  .evacuation-directions-phone {
     width: 100vw;
     height: 100svh;
     min-height: 100svh;

@@ -126,7 +126,7 @@ def add_risk_costs(
     high_penalty: float,
     very_high_penalty: float,
     current_flood_geojson: Path | None,
-) -> tuple[nx.MultiDiGraph, Any, Any, str, int]:
+) -> tuple[nx.MultiDiGraph, Any, Any, Any, str, int]:
     nodes, edges = ox.graph_to_gdfs(graph)
     metric_crs = edges.estimate_utm_crs()
     edges_metric = edges.to_crs(metric_crs)
@@ -166,7 +166,7 @@ def add_risk_costs(
         if blocked_union is not None and geometry.intersects(blocked_union):
             blocked_edges.append((u, v, key))
     routed_graph.remove_edges_from(blocked_edges)
-    return routed_graph, high_only, very_high, str(metric_crs), len(blocked_edges)
+    return routed_graph, high_only, very_high, blocked_union, str(metric_crs), len(blocked_edges)
 
 
 def choose_destination(
@@ -232,7 +232,7 @@ def main() -> None:
     graph = load_or_download_graph(args)
     origin = Point(args.origin_lon, args.origin_lat)
     origin_node = ox.distance.nearest_nodes(graph, X=args.origin_lon, Y=args.origin_lat)
-    graph, high_risk, very_high_risk, metric_crs, blocked_count = add_risk_costs(
+    graph, high_risk, very_high_risk, current_flood, metric_crs, blocked_count = add_risk_costs(
         graph,
         args.risk_csv,
         args.risk_buffer_m,
@@ -276,6 +276,8 @@ def main() -> None:
         features.append(make_feature(to_wgs84(high_risk), layer="risk_zone", risk_level="HIGH"))
     if not very_high_risk.is_empty:
         features.append(make_feature(to_wgs84(very_high_risk), layer="risk_zone", risk_level="VERY_HIGH"))
+    if current_flood is not None and not current_flood.is_empty:
+        features.append(make_feature(to_wgs84(current_flood), layer="risk_zone", risk_level="CURRENT"))
 
     result = {
         "type": "FeatureCollection",
@@ -302,6 +304,7 @@ def main() -> None:
             "inputs": {
                 "risk_csv_sha256": sha256(args.risk_csv),
                 "parking_csv_sha256": sha256(args.parking_csv),
+                "current_flood_geojson_sha256": sha256(args.current_flood_geojson) if args.current_flood_geojson else None,
             },
         },
         "features": features,

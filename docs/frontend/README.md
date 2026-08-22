@@ -20,5 +20,6 @@
 - [지도 홈·현재 위치·가까운 주차장 흐름](./05-parking-home-and-location-flow.md)
 - [긴급 상황 뷰와 경고 모션](./06-emergency-view-and-motion.md)
 - [침수 위험 회피 경로 뷰](./07-flood-aware-route-view.md)
+- [가짜 침수 상황 데모 흐름](./08-flood-scenario-demo-flow.md)
 
 화면이나 API 결정이 바뀌면 코드와 이 문서를 같은 커밋에서 수정한다.

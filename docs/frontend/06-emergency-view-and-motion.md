@@ -17,7 +17,7 @@ Figma 모션 컨텍스트에는 두 노드 모두 키프레임이 없었다. 따
 
 - 데모 주소: `http://localhost:5173/?view=emergency`
 - 뒤로가기 버튼: 지도 화면 `?view=map`으로 전환
-- `Move Your Car Now`: 저위험 경로 GeoJSON을 활성화하고 지도 화면 `?view=map`으로 전환
+- `Move Your Car Now`: 가짜 침수 데모를 활성화하고 위험 장소 상세 `?view=risk-detail`로 전환
 - 실제 운영에서는 위험 예측 API 또는 긴급 상태가 확정됐을 때 `emergency` 뷰를 여는 연결이 추가로 필요하다.
 
 ## 402×874 배치

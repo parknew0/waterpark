@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "name": "DEMO_ONLY_pohang_current_flood_scenario",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "status": "DEMO_ONLY",
+        "description": "Synthetic current-flood polygon crossing the default route for UI demonstration. Not an observed event."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [129.32738, 36.01054],
+          [129.32786, 36.01054],
+          [129.32786, 36.01012],
+          [129.32738, 36.01012],
+          [129.32738, 36.01054]
+        ]]
+      }
+    }
+  ]
+}

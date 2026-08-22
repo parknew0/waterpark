@@ -13,10 +13,21 @@
 - 위험 영향 반경: 건물 위험점 기준 `120m` (`DEMO` 파라미터)
 - 목적지 후보: 가까운 공영주차장 최대 25곳 중 위험 영향권 밖이며 도로로 도달 가능한 후보
 - 결과: `효곡동 노상1`, 도로거리 `618.3m`
-- 현재 결과의 일반 최단경로와 저위험 경로: 동일. 두 경로 모두 생성된 위험 영향권 교차 길이 `0m`
+- 기본 데이터만 사용한 결과의 일반 최단경로와 저위험 경로: 동일. 두 경로 모두 생성된 위험 영향권 교차 길이 `0m`
 - 출력: `outputs/routing/pohang-postech-flood-aware-route.geojson`, manifest, 프론트용 GeoJSON
 
 경로가 동일한 것은 실패가 아니다. 현재 출발점과 선택 목적지 사이의 최단 도로가 데모 위험 영향권을 지나지 않았기 때문이다. 차이가 없는데도 임의 우회선을 만들지 않는다. 공식 현재 침수 폴리곤을 `--current-flood-geojson`으로 넣으면 교차 간선을 제거하고, 위험점을 지나야 하는 다른 위치·목적지에서는 패널티가 실제 경로 선택에 반영된다.
+
+### 번들 가짜 침수 시나리오
+
+위험 상황 UI를 재현하기 위해 `data/demo/pohang-current-flood-scenario.geojson`을 별도 제공한다. 이 폴리곤은 기본 경로의 도로를 가로지르도록 만든 **합성 데이터이며 실제 관측 침수가 아니다.**
+
+```bash
+./.venv/bin/python scripts/build_flood_aware_route.py \
+  --current-flood-geojson data/demo/pohang-current-flood-scenario.geojson
+```
+
+이 시나리오에서는 도로 간선 6개가 제거되고, 목적지가 `효곡동 노상8`로 바뀌며 우회 도로거리는 `2,121.9m`다. 저장소에 포함된 프론트 GeoJSON은 발표 데모를 위해 이 명령의 결과로 생성한다.
 
 ## 1. 결론
 

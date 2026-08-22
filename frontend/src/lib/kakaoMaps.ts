@@ -245,10 +245,10 @@ export function createKakaoMap(
           map,
           path: toPath(polygon),
           strokeWeight: 1,
-          strokeColor: zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
+          strokeColor: zone.level === "CURRENT" ? "#ff244f" : zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
           strokeOpacity: 0.72,
-          fillColor: zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
-          fillOpacity: zone.level === "VERY_HIGH" ? 0.3 : 0.17,
+          fillColor: zone.level === "CURRENT" ? "#ff244f" : zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
+          fillOpacity: zone.level === "CURRENT" ? 0.48 : zone.level === "VERY_HIGH" ? 0.3 : 0.17,
           zIndex: 2,
         }));
       });

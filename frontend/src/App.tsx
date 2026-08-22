@@ -3,6 +3,8 @@ import { EmergencyView } from "./components/emergency/EmergencyView";
 import { LocationConsentView } from "./components/onboarding/LocationConsentView";
 import { OnboardingCarView } from "./components/onboarding/OnboardingCarView";
 import { ParkingHomeView } from "./components/parking-home/ParkingHomeView";
+import { EvacuationRouteView } from "./components/routing/EvacuationRouteView";
+import { FloodLocationDetailView } from "./components/routing/FloodLocationDetailView";
 import { useParkingSearch } from "./hooks/useParkingSearch";
 import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
@@ -12,11 +14,11 @@ import type { Coordinate, ParkingPlace } from "./types/parking";
 const DEFAULT_CENTER: Coordinate = { latitude: 36.576, longitude: 128.505 };
 const kakaoAppKey = import.meta.env.VITE_KAKAO_MAP_APP_KEY?.trim();
 
-type AppView = "car" | "consent" | "map" | "emergency";
+type AppView = "car" | "consent" | "map" | "emergency" | "risk-detail" | "safe-detail" | "route";
 
 function getInitialView(): AppView {
   const view = new URLSearchParams(window.location.search).get("view");
-  return view === "consent" || view === "map" || view === "emergency" ? view : "car";
+  return view === "consent" || view === "map" || view === "emergency" || view === "risk-detail" || view === "safe-detail" || view === "route" ? view : "car";
 }
 
 export default function App() {
@@ -33,7 +35,8 @@ export default function App() {
   const hasRequestedLocation = useRef(false);
   const requestHeadingPermission = useDeviceHeading();
   const { places, source, isLoading, error, search } = useParkingSearch(kakaoAppKey);
-  const { route: evacuationRoute, error: routeError } = useFloodAwareRoute(showEvacuationRoute || view === "emergency");
+  const isFloodDemoView = view === "emergency" || view === "risk-detail" || view === "safe-detail" || view === "route";
+  const { route: evacuationRoute, error: routeError } = useFloodAwareRoute(showEvacuationRoute || isFloodDemoView);
 
   const selectedPlace = useMemo(
     () => places.find((place) => place.id === selected?.id) ?? selected,
@@ -146,10 +149,31 @@ export default function App() {
           setShowEvacuationRoute(true);
           setIsCarLocationOpen(false);
           setCenter({ latitude: 36.014, longitude: 129.325 });
-          navigateToView("map");
+          navigateToView("risk-detail");
         }}
       />
     );
+  }
+  if (view === "risk-detail") {
+    return (
+      <FloodLocationDetailView
+        variant="danger"
+        route={evacuationRoute}
+        onContinue={() => navigateToView("safe-detail")}
+      />
+    );
+  }
+  if (view === "safe-detail") {
+    return (
+      <FloodLocationDetailView
+        variant="safe"
+        route={evacuationRoute}
+        onContinue={() => navigateToView("route")}
+      />
+    );
+  }
+  if (view === "route") {
+    return <EvacuationRouteView route={evacuationRoute} onBack={() => navigateToView("safe-detail")} />;
   }
 
   return (

@@ -3,7 +3,7 @@ import type { Coordinate } from "./parking";
 export type Position = [longitude: number, latitude: number];
 
 export interface RiskZone {
-  level: "HIGH" | "VERY_HIGH";
+  level: "HIGH" | "VERY_HIGH" | "CURRENT";
   polygons: Position[][];
 }
 

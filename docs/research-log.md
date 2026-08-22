@@ -296,6 +296,16 @@
 - 상세: [침수 위험 회피 대피 경로 설계와 구현](./09-flood-aware-evacuation-routing.md), [프론트 경로 뷰](./frontend/07-flood-aware-route-view.md)
 - 출처: [OSMnx User Reference](https://osmnx.readthedocs.io/en/stable/user-reference.html), [NetworkX shortest_path](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html), [OpenStreetMap Attribution Guidelines](https://osmfoundation.org/wiki/Licence/Attribution_Guidelines)
 
+### 2026-08-22 — 가짜 현재 침수 상황과 4단계 데모 구현
+
+- `FACT`: 기본 경로의 도로 일부를 가로지르는 합성 Polygon을 `data/demo/pohang-current-flood-scenario.geojson`으로 추가했다.
+- `FACT`: 합성 폴리곤을 현재 침수 입력으로 사용하면 OSM 간선 6개가 제거되고 목적지는 `효곡동 노상8`, 우회 거리는 2,121.9m가 된다.
+- `FACT`: Figma `119:1140`, `123:1743`, `90:755`를 확인해 위험 상세·안전 상세·길찾기 React 뷰를 구현했다.
+- `FACT`: 긴급 경고부터 `emergency → risk-detail → safe-detail → route`로 이어지며 각 URL로 직접 진입할 수도 있다.
+- `LIMITATION`: Polygon과 `30mm`, 2시간 위험, 안전시간 30분은 시연 값이다. 실제 침수·강수·안전 보증으로 발표하지 않는다.
+- 상세: [가짜 침수 상황 데모 흐름](./frontend/08-flood-scenario-demo-flow.md)
+- 출처: [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 길찾기 `90:755`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-755&m=dev)
+
 ## 2026-08-22 전국 침수·건물 원본 확보 및 구조 검증
 
 - 상태: `FACT` — 전국 원본 다운로드와 구조·스키마 검증까지 완료. 전국 학습표 생성은 아직 하지 않았다.

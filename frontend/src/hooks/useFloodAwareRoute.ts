@@ -17,7 +17,7 @@ function featureByLayer(features: GeoJsonFeature[], layer: string) {
 
 function toRiskZone(feature: GeoJsonFeature): RiskZone | null {
   const level = feature.properties.risk_level;
-  if (level !== "HIGH" && level !== "VERY_HIGH") return null;
+  if (level !== "HIGH" && level !== "VERY_HIGH" && level !== "CURRENT") return null;
   if (feature.geometry.type === "Polygon") {
     return { level, polygons: feature.geometry.coordinates as Position[][] };
   }
