@@ -1,0 +1,100 @@
+{
+  "generated_at": "2026-08-22T01:58:27.287Z",
+  "scope": "경상북도 22개 시군",
+  "source_row_count": 18879,
+  "output_row_count": 2010,
+  "city_county_count": 22,
+  "rows_with_coordinates": 1986,
+  "rows_missing_coordinates": 24,
+  "safety_note": "후보 목록일 뿐 안전 주차장으로 검증되지 않았다. DEM·침수흔적·하천·현장 확인 전 대피 목적지로 사용하지 않는다.",
+  "by_city_county": [
+    {
+      "city_county": "경산시",
+      "row_count": 201
+    },
+    {
+      "city_county": "경주시",
+      "row_count": 178
+    },
+    {
+      "city_county": "고령군",
+      "row_count": 40
+    },
+    {
+      "city_county": "구미시",
+      "row_count": 245
+    },
+    {
+      "city_county": "김천시",
+      "row_count": 29
+    },
+    {
+      "city_county": "문경시",
+      "row_count": 59
+    },
+    {
+      "city_county": "봉화군",
+      "row_count": 52
+    },
+    {
+      "city_county": "상주시",
+      "row_count": 26
+    },
+    {
+      "city_county": "성주군",
+      "row_count": 20
+    },
+    {
+      "city_county": "안동시",
+      "row_count": 132
+    },
+    {
+      "city_county": "영덕군",
+      "row_count": 6
+    },
+    {
+      "city_county": "영양군",
+      "row_count": 25
+    },
+    {
+      "city_county": "영주시",
+      "row_count": 94
+    },
+    {
+      "city_county": "영천시",
+      "row_count": 119
+    },
+    {
+      "city_county": "예천군",
+      "row_count": 20
+    },
+    {
+      "city_county": "울릉군",
+      "row_count": 4
+    },
+    {
+      "city_county": "울진군",
+      "row_count": 62
+    },
+    {
+      "city_county": "의성군",
+      "row_count": 59
+    },
+    {
+      "city_county": "청도군",
+      "row_count": 38
+    },
+    {
+      "city_county": "청송군",
+      "row_count": 28
+    },
+    {
+      "city_county": "칠곡군",
+      "row_count": 138
+    },
+    {
+      "city_county": "포항시",
+      "row_count": 435
+    }
+  ]
+}
