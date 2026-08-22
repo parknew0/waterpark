@@ -274,6 +274,17 @@
 - `LIMITATION`: `30min`, 배정 주차장과 `156m away`는 실제 예측·주차 여석 API 값이 아닌 Figma 프로토타입 고정값이다.
 - 출처: [Figma 긴급 화면 `90:675`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-675&m=dev), [Figma 경고 원 `136:2576`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2576&m=dev)
 
+### 2026-08-22 — 침수 위험 회피 대피 경로 구현 가능성
+
+- `FACT`: OSMnx는 지정 Polygon의 운전 도로를 NetworkX `MultiDiGraph`로 만들고 GraphML 저장·로드, Dijkstra 기반 가중 최단 경로와 경로 GeoDataFrame 변환을 지원한다.
+- `FACT`: NetworkX 최단 경로는 간선 속성 또는 함수형 가중치를 지원하므로 거리·시간에 비음수 침수 위험 패널티를 더할 수 있다.
+- `FACT`: 현재 Waterpark 위험표는 25,336개 건물 점의 상시 위험도이며 도로를 막는 현재 침수 폴리곤이나 연속 예측 격자가 아니다.
+- `FACT`: 현재 공영주차장 2,010곳은 안전성·지상 여부·실시간 여석이 검증되지 않은 목적지 후보다.
+- `DECISION PROPOSAL`: 현재 침수·공식 통제와 겹친 간선은 제거하고, 가까운 미래 위험과 겹친 간선은 통과 가능하되 위험 비용을 높이는 구조가 구현 가능하다.
+- `LIMITATION`: 현 데이터 단계의 결과는 `안전 경로`가 아니라 `저위험 우회 경로 후보`로 표현해야 한다.
+- 상세: [침수 위험 회피 대피 경로 설계](./09-flood-aware-evacuation-routing.md)
+- 출처: [OSMnx User Reference](https://osmnx.readthedocs.io/en/stable/user-reference.html), [NetworkX shortest_path](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html), [GeoPandas sjoin](https://geopandas.org/en/latest/docs/reference/api/geopandas.sjoin.html), [OpenStreetMap Attribution Guidelines](https://osmfoundation.org/wiki/Licence/Attribution_Guidelines)
+
 ## 2026-08-22 전국 침수·건물 원본 확보 및 구조 검증
 
 - 상태: `FACT` — 전국 원본 다운로드와 구조·스키마 검증까지 완료. 전국 학습표 생성은 아직 하지 않았다.
