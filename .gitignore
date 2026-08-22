@@ -18,6 +18,11 @@ data/raw/dem/
 # 국토지리정보원 하천중심선 1.8 GB. VWorld 배포 페이지에 이용허락범위가
 # 표기되어 있지 않아, 재배포 조건이 확인되기 전까지 원본은 로컬 전용이다.
 data/raw/river-centerline/
+# 사전계산 격자와 서빙 묶음은 스크립트로 재생성한다. 원본에서 파생된
+# 14 MB 바이너리라 저장소에 두지 않고 manifest만 추적한다.
+data/processed/risk-grid/
+data/processed/serving-bundle/
+serverless/bundle/
 data/raw/overture/
 data/raw/kma-rain/
 data/raw/osm-cache/

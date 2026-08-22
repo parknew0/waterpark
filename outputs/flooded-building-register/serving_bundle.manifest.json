@@ -1,0 +1,48 @@
+{
+  "bands": [
+    {
+      "level": "VERY_HIGH",
+      "min_score": 0.818808,
+      "percentile": 95.0,
+      "rain_trigger": "호우주의보"
+    },
+    {
+      "level": "HIGH",
+      "min_score": 0.694751,
+      "percentile": 85.0,
+      "rain_trigger": "호우주의보"
+    },
+    {
+      "level": "MODERATE",
+      "min_score": 0.281222,
+      "percentile": 60.0,
+      "rain_trigger": "호우경보"
+    },
+    {
+      "level": "LOW",
+      "min_score": 0.095816,
+      "percentile": 30.0,
+      "rain_trigger": "극한호우"
+    },
+    {
+      "level": "VERY_LOW",
+      "min_score": 0.0,
+      "percentile": 0.0,
+      "rain_trigger": "극한호우"
+    }
+  ],
+  "bundle_dir": "data/processed/serving-bundle",
+  "files": {
+    "grid_meta.json": 738,
+    "parking.json": 150516,
+    "risk_bands.json": 851,
+    "risk_grid.npz": 14098804
+  },
+  "notes": [
+    "이 묶음만 Lambda에 올린다. DEM·하천·건물 원본은 올리지 않는다.",
+    "격자 밖 좌표는 UNKNOWN을 반환한다. 안전이 아니라 미조사다.",
+    "risk_score는 순위 점수다. 확률로 표기하면 안 된다."
+  ],
+  "parking_count": 1233,
+  "total_bytes": 14250909
+}

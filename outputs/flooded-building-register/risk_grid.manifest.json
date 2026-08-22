@@ -1,0 +1,29 @@
+{
+  "bands": {
+    "dist_flood_m": "uint16, 과거 침수 Polygon까지 거리(m). 65535는 미조사",
+    "elev_above_national_river": "float32, 최근접 국가하천 수면 대비 높이(m)",
+    "rel_elev_500m": "float32, 반경 500m 최저점 대비 높이(m)",
+    "risk_score": "float32, XGBoost 출력. 순위 점수이며 확률이 아니다."
+  },
+  "coverage": {
+    "cells_filled": 1132170,
+    "cells_total": 17324019,
+    "fill_ratio": 0.0654,
+    "rule": "침수 Polygon 합집합 + 1000m 버퍼"
+  },
+  "elapsed_minutes": 3.0,
+  "grid": {
+    "cell_m": 100.0,
+    "cols": 3057,
+    "epsg": 5179,
+    "origin_x": 874300.0,
+    "origin_y_top": 2033700.0,
+    "rows": 5667
+  },
+  "notes": [
+    "셀 100m는 침수 Polygon 짧은 폭 중앙값 106m에 맞춘 값이다.",
+    "버퍼 밖은 전 밴드 nodata이며 서비스는 UNKNOWN을 반환해야 한다. 안전이 아니다.",
+    "risk_score는 지표면 침수 순위 점수다. 지하주차장 침수 확률이 아니다."
+  ],
+  "output_bytes": 14098804
+}

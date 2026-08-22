@@ -22,6 +22,7 @@ Waterpark는 경상북도 지하주차장 이용자를 위한 **공공데이터�
 - [전국 전처리 파이프라인](./docs/10-nationwide-preprocessing-pipeline.md): 원본부터 학습표까지 각 단계와 그렇게 결정한 이유
 - [모델 설계 비교](./docs/11-model-design-comparison.md): 11개 설계를 8개 시도 홀드아웃으로 실측 비교
 - [회고와 교훈](./docs/12-retrospective-and-lessons.md): 틀렸던 판단, 어떻게 발견했는지, 방법론으로 남길 것
+- [서빙 구조와 배포 준비](./docs/13-serving-architecture-and-deployment.md): 격자 사전계산, Lambda 핸들러, 인프라 구성 근거
 - [리서치 로그](./docs/research-log.md): 확인된 사실, 미확정 사항, 조사 결과와 결정 기록
 - [AGENTS.md](./AGENTS.md): 후속 AI 에이전트가 따라야 할 작업 범위
 
