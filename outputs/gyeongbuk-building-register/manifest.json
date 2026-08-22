@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-08-22T15:29:51+0900",
+  "source": {
+    "building_hub_api": "https://www.data.go.kr/data/15134735/openapi.do",
+    "gis_building_dbf_directory": "GIS건물통합정보_경북/AL_D010_47_20251204",
+    "gis_reference_date": "20251204"
+  },
+  "scope": "경상북도 GIS건물통합정보에서 지하층 수가 1 이상인 건물 후보",
+  "gis_basement_candidate_rows": 25340,
+  "gis_basement_candidate_unique_pnus": 21240,
+  "title_rows": 43681,
+  "probable_title_buildings": 3163,
+  "probable_parcels": 2689,
+  "floor_rows": 26921,
+  "confirmed_buildings": 1449,
+  "status_counts": {
+    "CONFIRMED_BASEMENT_PARKING_USE": 1449,
+    "GIS_BASEMENT_CANDIDATE_NOT_CONFIRMED_BY_TITLE": 18109,
+    "PROBABLE_NOT_CONFIRMED_IN_FLOOR_ROWS": 1714,
+    "UNDERGROUND_FLOOR_ONLY": 22409
+  },
+  "title_collection": {
+    "planned_tasks": 3990,
+    "completed_tasks": 3990,
+    "all_planned_tasks_completed": true
+  },
+  "floor_collection": {
+    "planned_code_groups": 493,
+    "completed_code_groups": 493,
+    "all_planned_code_groups_completed": true
+  },
+  "large_local_outputs": [
+    "data/processed/gyeongbuk-building-register/gyeongbuk_basement_candidate_titles.csv",
+    "data/processed/gyeongbuk-building-register/gyeongbuk_probable_parking_floors.csv",
+    "data/processed/gyeongbuk-building-register/gyeongbuk_underground_parking_candidates.csv"
+  ],
+  "committed_sample": "outputs/gyeongbuk-building-register/gyeongbuk_underground_parking_candidates_sample.csv",
+  "limitations": [
+    "수집 범위는 GIS 원본에서 지하층 수가 1 이상인 건물 후보이며 경북의 모든 표제부가 아니다.",
+    "옥내주차는 지하주차와 동일하지 않아 층별개요 지하층 용도로 별도 확인한다.",
+    "층별개요에 주차장 표기가 없다는 이유만으로 지하주차장이 없다고 단정하지 않는다.",
+    "건축물대장 API에는 위도·경도가 없으며 GIS Polygon과 PNU/주소로 연결해야 한다."
+  ]
+}

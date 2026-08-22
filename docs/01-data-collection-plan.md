@@ -2,9 +2,9 @@
 
 > 확인일: 2026-08-22
 >
-> 상태: 공식 제공 페이지와 공개 샘플을 확인한 단계. 전체 원본 데이터는 아직 확보하지 않았다.
+> 상태: 공식 제공 페이지와 필드를 확인했고, 경북 GIS건물통합정보 전체데이터와 건축HUB 건축물대장 후보 자료를 실제 확보했다. 다른 원본은 항목별 상태를 따른다.
 >
-> 원칙: 포항 필터 적용 후 실제 행 수, 결측률과 기간 범위는 전체 데이터 확보 후 기록한다.
+> 원칙: 실제 행 수, 결측률과 기간 범위는 경상북도 원본 또는 명시한 후보 범위를 확보한 뒤 기록한다.
 
 ## 1. 목표 데이터
 
@@ -34,8 +34,8 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | `D1` | 행정안전부 침수흔적도 | 정식 API는 [기존 Polygon 자료](https://www.safetydata.go.kr/disaster-data/view?dataSn=108), [새 심선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3845)·[위선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846). 대체 확보 경로는 [Esri Korea Living Atlas 미러](https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer) | REST JSON/XML, 기존 자료의 WKT Polygon, 새 자료의 X·Y. 미러는 GeoJSON(EPSG:4326) | 침수 위치, 시작·종료 시각, 수심, 재해명 | `surface_flood_observed`, `event_id`를 만드는 정답 후보 | 정식 API는 이용신청 승인 대기 중. 대체 미러(2002~2021년, 경북 1,402행)는 실제 확보해 KMA 시간 강수와 결합 완료 |
 | `D2` | 기상청 ASOS/AWS 시간 강수 | [ASOS](https://data.kma.go.kr/data/grnd/selectAsosList.do?pgmNo=34), [AWS](https://data.kma.go.kr/data/grnd/selectAwsList.do?pgmNo=35), [API허브](https://apihub.kma.go.kr/apiList.do) | ZIP/CSV, 조회 CSV/Excel, API | 관측소, 관측시각, 시간강수량 | `rain_1h`, `rain_6h`, `rain_24h` 생성 | 수집 가능, 지점 선택 미확정 |
-| `D3` | 건축물대장 표제부·층별개요 | [공공데이터포털 파일](https://www.data.go.kr/data/15044720/fileData.do), [현재 건축HUB OpenAPI](https://www.data.go.kr/data/15134735/openapi.do) | XLSX 또는 REST JSON/XML | 관리 PK, 주소, 용도, 지상·지하층, 층별 용도, 옥내·옥외 주차 속성 | 지하주차장 근거와 건물 특징 | 수집 경로·필드 확인, 실제 연결 키 미확정 |
-| `D4` | GIS건물통합정보 | [VWorld](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18) | SHP Polygon | 건물 위치와 경계, 공간 식별자 후보 | 모든 공간정보를 붙일 기준 건물 | 공식 원본은 로그인 차단, Overture 대체 건물 305,058행 확보 |
+| `D3` | 건축물대장 표제부·층별개요 | [공공데이터포털 파일](https://www.data.go.kr/data/15044720/fileData.do), [현재 건축HUB OpenAPI](https://www.data.go.kr/data/15134735/openapi.do) | XLSX 또는 REST JSON/XML | 관리 PK, 주소, 용도, 지상·지하층, 층별 용도, 옥내·옥외 주차 속성 | 지하주차장 근거와 건물 특징 | GIS 지하층 후보 범위에서 표제부 43,681행·층별개요 26,921행 수집, 지하주차장 용도 1,449건 확인 |
+| `D4` | GIS건물통합정보 | [VWorld](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18) | SHP Polygon | 건물 위치와 경계, 공간 식별자 후보 | 모든 공간정보를 붙일 기준 건물 | 경북 전체데이터 `AL_D010_47_20251204` 로컬 확보, Overture 대체 건물 305,058행도 보존 |
 | `D5` | 실제 DEM 래스터 | [국토지리정보원 DEM](https://www.data.go.kr/data/15059920/fileData.do), [Copernicus GLO-30](https://registry.opendata.aws/copernicus-dem/) | IMG 또는 COG 래스터 | 각 격자의 지표면 높이 | 건물 지표 표고, 주변 대비 고도, 경사 생성 | 공식 원본 미확보, Copernicus DSM 표고 304,929행 확보 |
 | `D6` | 국가기본도 하천중심선 | [VWorld](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=MK&dsId=20250122DS00008) | SHP LineString + 정의서 XLSX | 하천 위치와 속성 | 건물에서 가장 가까운 하천까지 거리 생성 | 다운로드 경로 확인, 라이선스 확인 필요 |
 

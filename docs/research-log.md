@@ -37,9 +37,9 @@
 
 | ID | 내용 | 상태 |
 | --- | --- | --- |
-| DATA-001 | 침수흔적도·기상·건물·DEM·하천 후보의 공식 제공 경로 | `FACT` — 공식 제공 경로 확인, 대체 건물·DSM 확보, 나머지 공식 원본 미확보 |
-| DATA-002 | 각 데이터의 필드, 형식, 단위와 공간·시간 해상도 | `NOTE` — 건물·강수·침수 명세 확인 및 Overture·Copernicus 실제 처리 완료, 공식 전체 파일 기준 재확인 필요 |
-| DATA-003 | 경상북도 22개 시군 필터 후 행 수, 과거 이력과 결측률 | `NOTE` — 주차장 2,010행, 대체 건물 305,058행, 표고 304,929행 확인 |
+| DATA-001 | 침수흔적도·기상·건물·DEM·하천 후보의 공식 제공 경로 | `FACT` — 공식 제공 경로 확인, GIS건물통합정보·건축물대장 후보와 대체 건물·DSM 확보 |
+| DATA-002 | 각 데이터의 필드, 형식, 단위와 공간·시간 해상도 | `NOTE` — 건물·강수·침수 명세 확인 및 건축물대장·Overture·Copernicus 실제 처리 완료, 최종 공간 조인 검증 필요 |
+| DATA-003 | 경상북도 22개 시군 필터 후 행 수, 과거 이력과 결측률 | `NOTE` — 주차장 2,010행, 대체 건물 305,058행, 표고 304,929행, 건축물대장 표제부 43,681행 확인 |
 | DATA-004 | 데이터 간 위치·시간 기준 결합 방법 | `NOTE` — 구조 분석 완료, CRS·연결 키 미확정 |
 | DATA-005 | XGBoost 입력과 정답 데이터로 사용할 수 있는 항목 | `NOTE` — 구조상 가능, 라벨 품질·독립 사건 수 미확인 |
 | DATA-006 | 데이터별 라이선스, 호출 제한과 재배포 조건 | `OPEN` — 일부 페이지 표기만 확인 |
@@ -81,19 +81,32 @@
 
 ## 2026-08-22 경상북도 건물·고도 실제 추출 결과
 
-- 상태: `FACT` — 대체 공개 원천의 실제 다운로드·공간절단·표고 추출 완료. 공식 지하주차장 여부는 `OPEN_AUTH`.
+- 상태: `FACT` — 대체 공개 원천의 실제 다운로드·공간절단·표고 추출 완료. 공식 건축물대장 후보 수집도 이후 완료했지만, 이 Overture 건물 좌표와의 연결은 아직 하지 않았다.
 - Overture Maps `2026-08-19.0` 릴리스에서 경북 경계상자 건물 634,311개와 행정경계를 내려받았다.
 - `country=KR`, `region=KR-47`, `admin_level=1`, `class=land`, 명칭 `경상북도`인 행정경계로 건물 대표점을 절단해 305,058행을 만들었다.
 - 경북 `admin_level=2` 시군 Polygon으로 22개 시군을 배정했으며 시군 결측은 0행이다.
 - Copernicus DEM GLO-30 Public 2021의 30m DSM 타일 9개를 내려받아 304,929행에 표고를 붙였다. 표고 결측은 129행이다.
 - 경북 전체 건물점 DSM 표고 중앙값은 약 64.61m다. 일부 해안 값은 -6.07m까지 있어 수직기준·해안 픽셀·DSM 오차 확인이 필요하다.
 - 주변 대비 표고는 0.01도 격자 3×3 근방의 건물 대표점 DSM 최저값 대비 차이로 계산했다. HAND·지형 전체 최저값·침수심이 아니다.
-- Overture의 지하층수 값은 경북에서 6행뿐이었다. 지하주차장 공식 확정은 0행이고 305,058행 모두 미상으로 보존했다.
+- Overture의 지하층수 값은 경북에서 6행뿐이었다. 따라서 이 Overture 산출물 자체의 지하주차장 상태는 305,058행 모두 미상으로 보존했다.
 - VWorld 연속수치지형도 건물 경북 파일은 `dsId=30162`, `fileNo=25`, 화면 표시 279MB로 확인했다. 비로그인 직접 호출은 0바이트였고 화면 스크립트도 로그인 여부를 검사한다.
-- 건축HUB OpenAPI `15134735`는 `serviceKey`, `sigunguCd`, `bjdongCd`가 필수다. 현재 환경에는 서비스키가 없어 표제부·층별개요 전수 수집을 실행하지 못했다.
+- 건축HUB OpenAPI `15134735`는 `serviceKey`, `sigunguCd`, `bjdongCd`가 필수다. 당시에는 키가 없었으나 이후 같은 날 키와 GIS 원본을 확보해 다음 절의 후보 수집을 완료했다.
 - 산출물: `data/processed/gyeongbuk_buildings_elevation.parquet`, `data/processed/gyeongbuk_buildings_elevation.csv.gz`, `outputs/gyeongbuk-buildings/waterpark_gyeongbuk_buildings_elevation.xlsx`
 - 상세 문서: [경상북도 건물·고도 실제 추출 결과](./05-gyeongbuk-building-elevation-extraction.md)
 - 출처: [Overture 공개 데이터](https://registry.opendata.aws/overture/), [Overture Python Client](https://docs.overturemaps.org/getting-data/overturemaps-py/), [Copernicus DEM 공개 데이터](https://registry.opendata.aws/copernicus-dem/), [VWorld 건물 데이터](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?dsId=30162), [건축HUB API](https://www.data.go.kr/data/15134735/openapi.do)
+- 확인일: 2026-08-22
+
+## 2026-08-22 경상북도 건축물대장 API 수집 결과
+
+- 상태: `FACT` — 건축HUB 표제부·층별개요 후보 범위 수집 완료.
+- 입력 범위는 경북 GIS건물통합정보 `AL_D010_47_20251204`에서 지하층 수가 1 이상인 25,340행, 고유 PNU 21,240개다. 경북 전체 대장을 무조건 전수 호출한 결과는 아니다.
+- 건축HUB 표제부 43,681행을 수집했고 지하층과 옥내주차가 함께 있는 관리건축물대장 PK 3,163개를 후보로 만들었다.
+- 후보의 층별개요 26,921행을 수집했다. `층구분코드=10`, 면적 0 초과, 주용도명 또는 기타용도에 `주차장` 포함 조건으로 1,449개 관리건축물대장 PK를 `confirmed`로 분류했다.
+- 지하층과 옥내주차는 있지만 층별개요에서 주차장을 확인하지 못한 1,714건은 `FALSE`가 아니라 미확인 후보로 남겼다.
+- 건축물대장 API에는 위도·경도가 없다. 다음 공간 결합에서는 GIS의 PNU와 Polygon을 기준으로 같은 PNU의 여러 동·대장을 구분해야 한다.
+- 전체 API 원응답과 CSV는 로컬 `data/raw/building-register/`, `data/processed/gyeongbuk-building-register/`에 저장하고 Git에서는 제외했다. 재현 스크립트, 500행 표본과 집계 manifest만 Git에 포함한다.
+- 산출물 설명: [경상북도 건축물대장 수집 결과](../outputs/gyeongbuk-building-register/README.md)
+- 출처: [건축HUB 건축물대장정보 API](https://www.data.go.kr/data/15134735/openapi.do), 경북 GIS건물통합정보 전체데이터
 - 확인일: 2026-08-22
 
 ## 2026-08-22 프론트엔드 지도·주차장 검색 확인 결과
