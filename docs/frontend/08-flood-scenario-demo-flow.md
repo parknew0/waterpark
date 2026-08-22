@@ -51,7 +51,8 @@ cd /Users/neon/Documents/Project/waterpark
 
 - 402×874 브라우저에서 네 화면 CTA 전환 성공
 - 위험 상세 `Warning`, 안전 상세 `Safe` 상태 확인
-- 길찾기 화면 목적지 `효곡동 노상8`, 거리 `2.1km`, 운전 9분 표시 확인
+- 긴급·안전 상세·길찾기 화면 목적지 `Hyogok-dong Street Parking 8` 영문 표기 확인
+- 길찾기 화면 거리 `2.1km`, 운전 9분 표시 확인
 - 현재 침수 레이어 1개와 저위험 경로 1개 렌더링 확인
 - 브라우저 console error·warning 0건
 - TypeScript production build와 ESLint 통과

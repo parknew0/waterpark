@@ -1,5 +1,6 @@
 import { ParkingMap } from "../ParkingMap";
 import type { FloodAwareRoute } from "../../types/routing";
+import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
 
 interface FloodLocationDetailViewProps {
   variant: "danger" | "safe";
@@ -18,8 +19,9 @@ export function FloodLocationDetailView({
   onContinue,
 }: FloodLocationDetailViewProps) {
   const isDanger = variant === "danger";
-  const name = isDanger ? "Current Parking Location" : (route?.destination.name ?? "Finding parking…");
-  const address = isDanger ? "POSTECH, Pohang-si, Gyeongsangbuk-do" : (route?.destination.address ?? "Calculating a lower-risk candidate");
+  const parkingLabel = route ? getEnglishParkingLabel(route.destination) : undefined;
+  const name = isDanger ? "Current Parking Location" : (parkingLabel?.name ?? "Finding parking…");
+  const address = isDanger ? "POSTECH, Nam-gu, Pohang-si, Gyeongsangbuk-do" : (parkingLabel?.address ?? "Calculating a lower-risk candidate");
   const distance = route?.distanceMeters ?? 0;
   const driveMinutes = Math.max(1, Math.ceil(distance / 250));
 

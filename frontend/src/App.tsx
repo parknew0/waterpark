@@ -9,6 +9,7 @@ import { useParkingSearch } from "./hooks/useParkingSearch";
 import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
+import { getEnglishParkingLabel } from "./lib/parkingEnglish";
 import type { Coordinate, ParkingPlace } from "./types/parking";
 
 const DEFAULT_CENTER: Coordinate = { latitude: 36.576, longitude: 128.505 };
@@ -37,6 +38,10 @@ export default function App() {
   const { places, source, isLoading, error, search } = useParkingSearch(kakaoAppKey);
   const isFloodDemoView = view === "emergency" || view === "risk-detail" || view === "safe-detail" || view === "route";
   const { route: evacuationRoute, error: routeError } = useFloodAwareRoute(showEvacuationRoute || isFloodDemoView);
+  const evacuationParkingLabel = useMemo(
+    () => evacuationRoute ? getEnglishParkingLabel(evacuationRoute.destination) : undefined,
+    [evacuationRoute],
+  );
 
   const selectedPlace = useMemo(
     () => places.find((place) => place.id === selected?.id) ?? selected,
@@ -142,8 +147,8 @@ export default function App() {
     return (
       <EmergencyView
         onBack={() => navigateToView("map")}
-        parkingName={evacuationRoute?.destination.name}
-        parkingAddress={evacuationRoute?.destination.address}
+        parkingName={evacuationParkingLabel?.name}
+        parkingAddress={evacuationParkingLabel?.address}
         distanceMeters={evacuationRoute?.distanceMeters}
         onMoveNow={() => {
           setShowEvacuationRoute(true);

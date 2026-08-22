@@ -306,6 +306,15 @@
 - 상세: [가짜 침수 상황 데모 흐름](./frontend/08-flood-scenario-demo-flow.md)
 - 출처: [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 길찾기 `90:755`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-755&m=dev)
 
+### 2026-08-22 — 긴급 화면 위치와 영문 주소 교정
+
+- `FACT`: Figma `90:675`의 경고 원은 402×874 기준 `x=126.5, y=131`, 차량 프레임은 `x=167, y=171`, 뒤로가기 아이콘 중심은 `(36, 86)`이다.
+- `FACT`: 기존 `max-height: 760px` CSS가 경고 원을 `y=92`로 이동시켜 뒤로가기와 간격을 깨뜨리고 있었다. 이 긴급 화면 예외를 제거했다.
+- `FACT`: 차량 프레임의 상대 x좌표를 35px에서 40.5px로 교정해 Figma와 동일한 절대 x=167을 만들었다.
+- `FACT`: 긴급·안전·길찾기 화면의 목적지명과 주소를 영문으로 통일했다.
+- `FACT`: 402×720에서 좌표 측정, 402×874 시각 검사, TypeScript build, ESLint와 console 오류·경고 0건을 확인했다.
+- 출처: [Figma 긴급 화면 `90:675`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-675&m=dev)
+
 ## 2026-08-22 전국 침수·건물 원본 확보 및 구조 검증
 
 - 상태: `FACT` — 전국 원본 다운로드와 구조·스키마 검증까지 완료. 전국 학습표 생성은 아직 하지 않았다.
