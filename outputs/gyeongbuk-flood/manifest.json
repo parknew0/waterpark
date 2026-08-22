@@ -1,0 +1,37 @@
+{
+  "created_at_kst": "2026-08-22",
+  "flood_source": "https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer",
+  "flood_source_approval": "https://www.safetydata.go.kr/disaster-data/view?dataSn=108",
+  "rain_source": "https://apihub.kma.go.kr/apiList.do?seqApi=2&seqApiSub=239 (AWS 시간통계, var=RN)",
+  "flood_record_count": 1402,
+  "flood_event_count": 30,
+  "flood_year_range": [
+    2002,
+    2021
+  ],
+  "hourly_timestamps_fetched": 427,
+  "event_rain_rows": 20018,
+  "inputs": {
+    "data/raw/flood-trace/gyeongbuk_flood_2002_2022.geojson": {
+      "sha256": "605c386de718da682c94022d0d771e945b10073510d23bb5b4160d2856ae62ef"
+    }
+  },
+  "outputs": {
+    "data/processed/gyeongbuk_flood_records.csv": {
+      "sha256": "75cbfd306848612e4aefc526a59f226e62ca5b63e7a5b555cc2e83c32da50e08"
+    },
+    "data/processed/gyeongbuk_flood_events.csv": {
+      "sha256": "d9e6d4e41203c0597c567c20fb183b62db39331fc6541303e9df22fb946285be"
+    },
+    "data/processed/gyeongbuk_flood_event_rain.csv": {
+      "sha256": "37d1f7ecb7bd3bc35cf57161cba95195a401e5a9792ee2a0ac3f0c81cdc2a085"
+    }
+  },
+  "critical_limitations": [
+    "The flood layer stops at 2021 (2022 Typhoon Hinnamno is not in this dataset); the source agency has stopped updating it.",
+    "fldn_bgng_tm is survey-estimated and rounded to the hour; some records read 0000, which may mean midnight or an unrecorded time, not necessarily verified.",
+    "rain_1h/6h/24h are computed per AWS/ASOS station, not yet matched to buildings or to the flood polygon's location -- station selection per event still needs to happen.",
+    "Older events (2002, 2008) may have few or no reporting AWS stations open at the time; check hours_available_of_24 before trusting a row.",
+    "Geometry (GEOM) was dropped from gyeongbuk_flood_records.csv; use the source GeoJSON for spatial joins against building polygons."
+  ]
+}

@@ -133,6 +133,23 @@
 - 출처: [Kakao Developers 앱 설정](https://developers.kakao.com/docs/ko/app-setting/app), [Kakao Developers FAQ](https://developers.kakao.com/docs/ko/getting-started/faq), [카카오맵 무료 쿼터 정책 공지](https://devtalk.kakao.com/t/api-notice-on-new-kakao-map-api-features-and-free-quota-policy/150222)
 - 확인일: 2026-08-22
 
+## 2026-08-22 경상북도 침수흔적도 확보 및 시간 강수 결합 결과
+
+- 상태: `FACT` — 대체 공개 미러에서 실제 다운로드, KMA 시간 강수와 결합 완료. `D1` 원 출처(safetydata.go.kr) 정식 API는 아직 미확보.
+- `safetydata.go.kr`의 `DSSP-IF-00117` 정식 API는 별도 `이용신청`과 승인 대기가 필요해 해커톤 일정상 사용하지 못했다. 대신 Esri Korea Living Atlas가 같은 행정안전부 침수흔적도를 승인서(`safetydata.go.kr/disaster-data/view?dataSn=108`)와 함께 공개 Feature Service로 미러링한 것을 사용자가 직접 확인해 GeoJSON으로 받았다.
+- 미러 출처: `https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer` (2002~2022년, 2025.0판, 데이터 기준일 2024-11-27). 원 제공기관은 더 이상 이 데이터를 갱신하지 않는다고 항목 설명에 명시되어 있다.
+- 파일을 직접 열어 검증했다. 좌표는 WGS84 경위도(EPSG:4326)이고, 전체 1,402행 모두 `stdg_ctpv_cd=47`(경상북도)로 이미 필터링되어 있다. 시군구 16개, 침수연도는 2002·2008·2011·2012·2018·2019·2020·2021년이다. 2022년 힌남노 기록은 없다.
+- 필드는 공식 API 명세와 거의 동일하고 `objectid`, `SHAPE__Length`, `SHAPE__Area`는 Esri Feature Service가 자동으로 붙이는 필드다.
+- `fldn_bgng_ymd`+`fldn_bgng_tm` 조합 기준 서로 다른 사건은 15개 날짜, 30개 (날짜, 시각) 조합이다. 포항(47111 남구 29건, 47113 북구 70건, 합 99건)은 2012·2019·2021년에만 기록이 있다.
+- `fldn_bgng_tm`은 조사 추정치로 시 단위로 반올림되어 있다. 1,402행 중 75행이 `0000`으로 기록되어 있어, 이것이 자정을 뜻하는지 미기록을 뜻하는지는 확정하지 않았다.
+- 30개 (날짜, 시각) 이벤트마다 KMA API허브 `AWS 시간통계`(`awsh.php`, `var=RN`, `apiList.do?seqApi=2&seqApiSub=239`)로 사건 시작시각 기준 과거 24시간의 `RN_HR1`을 시간별로 받아 `rain_1h`, `rain_6h`, `rain_24h`를 관측소별로 계산했다. 필요한 서로 다른 시간대는 427개였고, 결측(-99) 값은 제외했다.
+- 포항 관측소(138)는 검증한 모든 이벤트에서 24시간 전체 자료가 존재했다. 예: 2012-09-17 태풍 산바 당일 시각별 24시간 누적 강수가 98→216mm로 늘어나는 흐름을 확인했고, 2019-10-02 23:00 시점 24시간 누적은 276.8mm(태풍 미탁)였다.
+- 포항이 아닌 사건(예: 2008-07-24 안동)에서는 포항 관측소 값이 낮게 나왔다. 이벤트마다 해당 시군구에 맞는 관측소를 고르는 작업이 아직 남아 있다는 뜻이다.
+- 산출물: `data/processed/gyeongbuk_flood_records.csv`(1,402행, 지오메트리 제외), `data/processed/gyeongbuk_flood_events.csv`(30행), `data/processed/gyeongbuk_flood_event_rain.csv`(20,018행, 이벤트×관측소), 원본 `data/raw/flood-trace/gyeongbuk_flood_2002_2022.geojson`
+- 한계: 건물과의 공간 결합은 아직 하지 않았다(지오메트리는 CSV에서 제외, 원본 GeoJSON에는 보존). 관측소 선택은 아직 거리 기반이 아니라 전체 관측소를 남겨둔 상태다. 정식 `safetydata.go.kr` API는 여전히 미확보라 이 미러와 원 출처가 완전히 같은지는 재교차검증이 필요하다.
+- 출처: [Esri Korea Living Atlas 침수흔적도 미러](https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer), [행정안전부 침수흔적도 승인서](https://www.safetydata.go.kr/disaster-data/view?dataSn=108), [기상청 API허브 AWS 시간통계](https://apihub.kma.go.kr/apiList.do?seqApi=2&seqApiSub=239)
+- 확인일: 2026-08-22
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |
