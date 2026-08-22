@@ -10,6 +10,11 @@ The function exists for one reason that a static site cannot cover: the KMA
 API key must not reach the browser.  Everything else here could in principle
 be client-side.
 
+Dependencies are kept to numpy alone.  The one projection this needs is
+implemented in ``projection.py`` rather than pulled from pyproj, which would
+add 17 MB and compiled extensions that must be built for Lambda's Linux
+runtime instead of a developer's machine.
+
 Two invariants matter more than anything else in this file.
 
 Outside the surveyed area every band is nodata, and the response says
@@ -35,7 +40,8 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from pyproj import Transformer
+
+from projection import wgs84_to_grid
 
 BUNDLE = Path(os.environ.get("BUNDLE_DIR", Path(__file__).parent / "bundle"))
 KMA_KEY = os.environ.get("KMA_APIHUB_AUTH_KEY", "")
@@ -77,9 +83,6 @@ def state() -> dict[str, Any]:
             "meta": meta["grid"],
             "bands": json.loads((BUNDLE / "risk_bands.json").read_text(encoding="utf-8"))["bands"],
             "parking": json.loads((BUNDLE / "parking.json").read_text(encoding="utf-8")),
-            "to_grid": Transformer.from_crs(
-                "EPSG:4326", f"EPSG:{meta['grid']['epsg']}", always_xy=True
-            ),
         }
     )
     return _STATE
@@ -88,7 +91,7 @@ def state() -> dict[str, Any]:
 def cell_of(lon: float, lat: float) -> tuple[int, int] | None:
     st = state()
     meta = st["meta"]
-    x, y = st["to_grid"].transform(lon, lat)
+    x, y = wgs84_to_grid(lon, lat)
     col = int((x - meta["origin_x"]) // meta["cell_m"])
     row = int((meta["origin_y_top"] - y) // meta["cell_m"])
     if 0 <= row < meta["rows"] and 0 <= col < meta["cols"]:
