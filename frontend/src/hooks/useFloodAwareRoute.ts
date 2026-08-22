@@ -15,6 +15,19 @@ function featureByLayer(features: GeoJsonFeature[], layer: string) {
   return features.find((feature) => feature.properties.layer === layer);
 }
 
+function connectRouteEndpoints(path: Position[], origin: Position, destination: Position) {
+  if (path.length === 0) return [origin, destination];
+  const squaredDistance = (a: Position, b: Position) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2;
+  const oriented = squaredDistance(path[0], origin) <= squaredDistance(path.at(-1)!, origin)
+    ? [...path]
+    : [...path].reverse();
+  if (squaredDistance(oriented[0], origin) > 1e-12) oriented.unshift(origin);
+  else oriented[0] = origin;
+  if (squaredDistance(oriented.at(-1)!, destination) > 1e-12) oriented.push(destination);
+  else oriented[oriented.length - 1] = destination;
+  return oriented;
+}
+
 function toRiskZone(feature: GeoJsonFeature): RiskZone | null {
   const level = feature.properties.risk_level;
   if (level !== "HIGH" && level !== "VERY_HIGH" && level !== "CURRENT") return null;
@@ -41,6 +54,8 @@ function parseRoute(payload: RouteGeoJson): FloodAwareRoute {
   }
   const [originLongitude, originLatitude] = origin.geometry.coordinates as Position;
   const [destinationLongitude, destinationLatitude] = destination.geometry.coordinates as Position;
+  const originPosition: Position = [originLongitude, originLatitude];
+  const destinationPosition: Position = [destinationLongitude, destinationLatitude];
   const distanceMeters = Number(lowerRisk.properties.distance_m ?? 0);
   const travelTimeSeconds = Number(lowerRisk.properties.travel_time_s ?? 0);
   return {
@@ -53,8 +68,8 @@ function parseRoute(payload: RouteGeoJson): FloodAwareRoute {
       address: String(destination.properties.address ?? "주소 정보 없음"),
       safetyVerified: destination.properties.safety_verified === true,
     },
-    baselinePath: baseline.geometry.coordinates as Position[],
-    lowerRiskPath: lowerRisk.geometry.coordinates as Position[],
+    baselinePath: connectRouteEndpoints(baseline.geometry.coordinates as Position[], originPosition, destinationPosition),
+    lowerRiskPath: connectRouteEndpoints(lowerRisk.geometry.coordinates as Position[], originPosition, destinationPosition),
     riskZones: features.flatMap((feature) => {
       if (feature.properties.layer !== "risk_zone") return [];
       const zone = toRiskZone(feature);

@@ -1,10 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
-import type { Coordinate, ParkingPlace, SearchSource } from "../../types/parking";
+import type { Coordinate, ParkingPlace } from "../../types/parking";
 import type { FloodAwareRoute } from "../../types/routing";
 import { ParkingMap } from "../ParkingMap";
 import { BrandLogo } from "../brand/BrandLogo";
 import { RainIcon } from "../icons/RainIcon";
+import { ParkingMedia } from "./ParkingMedia";
 
 interface ParkingHomeViewProps {
   appKey?: string;
@@ -25,7 +26,6 @@ interface ParkingHomeViewProps {
   onSetCarLocation: () => void;
   places: ParkingPlace[];
   selected?: ParkingPlace;
-  source: SearchSource;
   routeError: string | null;
   replayLabel?: string;
   rainfallLabel?: string;
@@ -68,7 +68,6 @@ export function ParkingHomeView({
   onSetCarLocation,
   places,
   selected,
-  source,
   routeError,
   replayLabel,
   rainfallLabel = "--mm",
@@ -164,6 +163,7 @@ export function ParkingHomeView({
 
             {selected ? (
               <ParkingDetail
+                appKey={appKey}
                 place={selected}
                 onSetCarLocation={onSetCarLocation}
                 historicalRiskPreview={historicalRiskPreview}
@@ -188,7 +188,6 @@ export function ParkingHomeView({
 
                 <div className="nearby-heading">
                   <span>가까운 순</span>
-                  <span>{source === "kakao" ? "Kakao" : "공공데이터"}</span>
                 </div>
 
                 {isLoading ? <p className="sheet-state" role="status">현재 위치 주변 주차장을 찾고 있어요…</p> : null}
@@ -199,7 +198,13 @@ export function ParkingHomeView({
                   {nearbyPlaces.map((place, index) => (
                     <li key={place.id}>
                       <button type="button" className="nearby-parking-card" onClick={() => onSelect(place)}>
-                        <img src={thumbnails[index]} alt="" />
+                        <ParkingMedia
+                          appKey={appKey}
+                          className="nearby-parking-image"
+                          fallbackSrc={thumbnails[index]}
+                          mode="thumbnail"
+                          place={place}
+                        />
                         <span className="nearby-parking-copy">
                           <span className="nearby-parking-address">{place.address || "주소 정보 없음"}</span>
                           <strong>{place.name}</strong>
@@ -219,17 +224,24 @@ export function ParkingHomeView({
 }
 
 function ParkingDetail({
+  appKey,
   place,
   onSetCarLocation,
   historicalRiskPreview,
 }: {
+  appKey?: string;
   place: ParkingPlace;
   onSetCarLocation: () => void;
   historicalRiskPreview: boolean;
 }) {
   return (
     <div className="parking-detail">
-      <img className="parking-detail-image" src="/assets/parking/parking-detail.png" alt="선택한 주차장 예시 전경" />
+      <ParkingMedia
+        appKey={appKey}
+        className="parking-detail-image"
+        fallbackSrc="/assets/parking/parking-detail.png"
+        place={place}
+      />
       <div className="parking-detail-copy">
         <span className="prototype-warning">{historicalRiskPreview ? "Hinnamnor Replay" : "Prototype"}</span>
         <h2>{place.name}</h2>

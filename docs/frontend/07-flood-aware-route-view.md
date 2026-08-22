@@ -17,6 +17,8 @@
 
 `?view=route`의 `EvacuationRouteView`도 `VITE_KAKAO_MAP_APP_KEY`를 받아 실제 Kakao 지도를 표시한다. 경로는 직선 목업이 아니라 OSM 운전 도로 그래프에서 계산한 `lower_risk_route` 좌표열이며, `Polygon`, `Polyline`, `CustomOverlay`로 실제 좌표에 맞춰 렌더링한다. 지도는 드래그·확대·축소할 수 있다. 키가 없거나 SDK 로드가 실패할 때만 기존 지도 이미지 위 SVG 레이어로 같은 GeoJSON을 표시한다. Figma `244:3303`과 다르게 임의로 추가했던 파란 경로 출처 문구는 제거했고, 뒤로가기 아이콘은 Figma SVG 원본 비율을 유지한다.
 
+GeoJSON의 도로망 LineString은 OSM 노드에 스냅돼 실제 출발·도착 Point와 떨어질 수 있다. 프론트 파서는 경로 방향을 출발점 기준으로 정렬한 뒤 정확한 origin을 맨 앞에, destination을 맨 뒤에 연결한다. 이 짧은 연결 구간으로 청록색 선이 현재 위치 원과 목적지 `P` 마커에서 끊겨 보이던 문제를 없앴다. 도로거리·예상시간 원본 수치는 변경하지 않는다.
+
 ## 데이터 연결
 
 - 원본 산출물: `outputs/routing/pohang-postech-flood-aware-route.geojson`

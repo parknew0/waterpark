@@ -12,6 +12,7 @@ export interface ParkingPlace extends Coordinate {
   capacity?: number;
   parkingType?: string;
   placeUrl?: string;
+  imageUrl?: string;
   source: "kakao" | "public-data";
 }
 

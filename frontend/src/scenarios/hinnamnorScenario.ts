@@ -36,6 +36,7 @@ export const HINNAMNOR_SCENARIO: HistoricalWaterparkScenario = {
       longitude: 129.406536,
       distanceMeters: 0,
       parkingType: "지하",
+      imageUrl: "https://t1.daumcdn.net/news/202209/07/donga/20220907030059842cmpo.jpg",
       source: "public-data",
     },
     {

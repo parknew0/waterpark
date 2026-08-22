@@ -374,6 +374,15 @@
 - 출처: [호갱노노 우방신세계타운 1차 단지 페이지](https://hogangnono.com/apt/82Y81), [동아일보 힌남노 보도](https://www.donga.com/news/Society/article/all/20220907/115344711/1)
 - 확인일: 2026-08-23
 
+### 2026-08-23 — 주차장 이미지와 경로 끝점 UI 적용
+
+- `FACT`: Kakao 지도 Web SDK의 `RoadviewClient.getNearestPanoId(position, radius, callback)`는 특정 좌표 반경 내 가장 가까운 로드뷰 파노라마 ID를 반환한다.
+- `DECISION`: 장소 사진 URL이 없는 주차장은 목록과 상세에서 좌표 반경 120m의 Kakao 실제 로드뷰를 사용한다. 목록에서는 작은 프레임에 하늘만 잘리지 않도록 로드뷰를 큰 크기로 렌더링한 뒤 축소하고, 로드뷰 또는 SDK를 쓸 수 없을 때만 로컬 폴백 이미지를 사용한다.
+- `DECISION`: 목록의 `가까운 순` 오른쪽 출처 라벨은 제거하되 데이터 출처 메타데이터는 삭제하지 않는다.
+- `FACT`: OSM 도로망 경로의 시작·끝은 실제 출발·도착 Point와 스냅 오차가 있다. 렌더링 경로에 정확한 두 Point를 연결해 선과 마커 사이의 시각적 틈을 제거했다.
+- 출처: [Kakao 지도 Web API RoadviewClient](https://apis.map.kakao.com/web/documentation/)
+- 확인일: 2026-08-23
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |

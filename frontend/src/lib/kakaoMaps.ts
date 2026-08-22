@@ -39,6 +39,13 @@ interface KakaoDrawableInstance {
   setMap(map: KakaoMapInstance | null): void;
 }
 
+interface KakaoRoadviewInstance {
+  getViewpoint(): { pan: number; tilt: number; zoom: number };
+  setPanoId(panoId: number, position: KakaoLatLng): void;
+  setViewpoint(viewpoint: { pan: number; tilt: number; zoom: number }): void;
+  relayout(): void;
+}
+
 interface KakaoLatLngBounds {
   extend(position: KakaoLatLng): void;
 }
@@ -53,6 +60,14 @@ interface KakaoMapsApi {
     draggable?: boolean;
     scrollwheel?: boolean;
   }) => KakaoMapInstance;
+  Roadview: new (container: HTMLElement, options?: { disableZoomControl?: boolean }) => KakaoRoadviewInstance;
+  RoadviewClient: new () => {
+    getNearestPanoId(position: KakaoLatLng, radius: number, callback: (panoId: number | null) => void): void;
+  };
+  event: {
+    addListener(target: object, eventName: string, handler: () => void): void;
+    removeListener(target: object, eventName: string, handler: () => void): void;
+  };
   Marker: new (options: { map: KakaoMapInstance; position: KakaoLatLng; title?: string }) => KakaoMarkerInstance;
   CustomOverlay: new (options: {
     map: KakaoMapInstance;

@@ -47,7 +47,7 @@ export default function App() {
   const hasRequestedLocation = useRef(false);
   const historicalAlertTimer = useRef<number | undefined>(undefined);
   const requestHeadingPermission = useDeviceHeading();
-  const { places, source, isLoading, error, search } = useParkingSearch(kakaoAppKey);
+  const { places, isLoading, error, search } = useParkingSearch(kakaoAppKey);
   const isFloodDemoView = view === "emergency" || view === "risk-detail" || view === "safe-detail" || view === "route";
   const { route: evacuationRoute, error: routeError } = useFloodAwareRoute(
     showEvacuationRoute || isFloodDemoView,
@@ -337,7 +337,6 @@ export default function App() {
       onSetCarLocation={handleSetCarLocation}
       places={isRiskSelectionMode ? riskSelectionPlaces : visiblePlaces}
       selected={selectedPlace}
-      source={historicalScenario ? "public-data" : source}
       routeError={routeError}
       replayLabel={historicalScenario?.replayLabel}
       rainfallLabel={historicalScenario?.rainfallLabel}
