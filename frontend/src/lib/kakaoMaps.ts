@@ -11,6 +11,11 @@ export interface KakaoPlaceResult {
   place_url?: string;
 }
 
+interface KakaoAddressResult {
+  address?: { address_name: string };
+  road_address?: { address_name: string };
+}
+
 interface KakaoLatLng {
   getLat(): number;
   getLng(): number;
@@ -42,6 +47,11 @@ interface KakaoMapsApi {
       addressSearch(
         address: string,
         callback: (result: Array<{ x: string; y: string }>, status: string) => void,
+      ): void;
+      coord2Address(
+        longitude: number,
+        latitude: number,
+        callback: (result: KakaoAddressResult[], status: string) => void,
       ): void;
     };
     Places: new () => {
@@ -103,6 +113,20 @@ function geocodeAddress(maps: KakaoMapsApi, address: string): Promise<Coordinate
         return;
       }
       resolve({ latitude: Number(result[0].y), longitude: Number(result[0].x) });
+    });
+  });
+}
+
+export async function reverseGeocodeKakao(appKey: string, coordinate: Coordinate): Promise<string | null> {
+  const maps = await loadKakaoMaps(appKey);
+  const geocoder = new maps.services.Geocoder();
+  return new Promise((resolve) => {
+    geocoder.coord2Address(coordinate.longitude, coordinate.latitude, (result, status) => {
+      if (status !== maps.services.Status.OK || result.length === 0) {
+        resolve(null);
+        return;
+      }
+      resolve(result[0].road_address?.address_name ?? result[0].address?.address_name ?? null);
     });
   });
 }

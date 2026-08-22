@@ -16,6 +16,12 @@ const rainImpacts = [
   { x: 260, y: 566, duration: 2.1, delay: -0.55 },
   { x: 294, y: 588, duration: 1.85, delay: -1.7 },
   { x: 326, y: 612, duration: 2, delay: -0.95 },
+  { x: 22, y: 426, duration: 1.6, delay: -1.05 },
+  { x: 58, y: 439, duration: 2.15, delay: -0.15 },
+  { x: 132, y: 481, duration: 1.72, delay: -1.42 },
+  { x: 207, y: 532, duration: 1.88, delay: -0.68 },
+  { x: 278, y: 579, duration: 1.66, delay: -1.26 },
+  { x: 342, y: 625, duration: 2.08, delay: -0.32 },
 ] as const;
 
 export function OnboardingCarView({ onNext }: OnboardingCarViewProps) {

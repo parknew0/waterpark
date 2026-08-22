@@ -230,6 +230,20 @@
 - 출처: [Figma 차량 보호 소개 `136:2756`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2756&m=dev), [Figma 위치 동의 `123:2151`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2151&m=dev), [Vercel Web Interface Guidelines](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md)
 - 확인일: 2026-08-22
 
+## 2026-08-22 Figma 지도 홈·가까운 주차장·선택 상세 구현
+
+- 상태: `FACT` — Figma 노드 확인, React 구현, 402×874 브라우저 전환 검증 완료. 실제 위치 권한 환경 최종 확인은 `OPEN`.
+- 지도 홈 `123:1415`, 처음부터 열린 가까운 주차장 시트 `123:2075`, 주차장 선택 상세 `123:2360`, 위치 라벨 `123:1419`를 확인했다.
+- 온보딩 `Next`는 `?view=map`으로 바로 이동하고 위치 요청과 무관하게 가까운 주차장 시트를 즉시 표시한다.
+- 위치 권한이 허용되면 `navigator.geolocation` 좌표로 경북 공영주차장을 거리순 재정렬하고 Kakao `coord2Address` 결과를 상단 현재 위치 라벨에 표시한다.
+- 위치 권한이 없으면 기본 경북 중심 결과와 실패 메시지를 유지한다. 테스트 브라우저는 위치 권한을 확보하지 못했으므로 실제 주소 표시는 아직 최종 확인하지 못했다.
+- Figma 사진·아이콘은 로컬에 저장했다. Kakao 지도가 없을 때만 Figma 지도 이미지를 폴백으로 사용한다.
+- 강수 API와 위험 예측 API가 아직 연결되지 않아 예시 수치 `30mm`와 특정 주차장 `High risk` 판정을 사용하지 않았다. 각각 `--mm`, `Risk assessment is not connected yet`으로 명시했다.
+- 빗방울 충돌 효과는 10개에서 16개로 늘렸다.
+- 상세: [지도 홈·내 차 위치 설정 흐름](./frontend/05-parking-home-and-location-flow.md)
+- 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [가까운 주차장 `123:2075`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2075&m=dev), [선택 상세 `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev), [현재 위치 라벨 `123:1419`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1419&m=dev)
+- 확인일: 2026-08-22
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |

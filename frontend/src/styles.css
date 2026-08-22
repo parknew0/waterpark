@@ -320,6 +320,342 @@ h3 { margin: 0; font-size: 14px; }
   .source-badge { max-width: 132px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
+.parking-home-stage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background: #001817;
+}
+
+.parking-home-phone {
+  position: relative;
+  width: min(402px, 100vw);
+  height: min(874px, 100svh);
+  min-height: 720px;
+  overflow: hidden;
+  color: #fefefe;
+  background: #000;
+  font-family: "Plus Jakarta Sans", "Noto Sans KR", sans-serif;
+}
+
+.parking-home-map,
+.parking-home-map .map-wrap,
+.parking-home-map .fallback-map,
+.parking-home-map .kakao-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
+.parking-home-map .fallback-map {
+  background: #000 url("/assets/parking/map-blueprint.png") center / cover no-repeat;
+}
+
+.parking-home-map .map-grid { display: none; }
+.parking-home-map .map-pulse {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #fefefe;
+  background: #00e8ec;
+  box-shadow: 0 0 0 18px rgb(0 232 236 / 20%);
+}
+
+.parking-home-header {
+  position: absolute;
+  z-index: 5;
+  top: max(20px, env(safe-area-inset-top));
+  left: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.parking-home-header > strong {
+  font: 600 24px/1.4 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -.24px;
+}
+
+.current-location-button {
+  max-width: 260px;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ededed;
+  background: transparent;
+  font: 500 12px/1.4 "Noto Sans KR", sans-serif;
+  letter-spacing: -.12px;
+  cursor: pointer;
+}
+
+.current-location-button > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.current-location-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #474747;
+}
+
+.current-location-icon img { width: 13px; height: 15px; }
+
+.parking-weather-chip {
+  position: absolute;
+  z-index: 5;
+  top: 98px;
+  right: 16px;
+  min-width: 118px;
+  height: 44px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 24px;
+  color: #00e8ec;
+  background: #021b17;
+  font: 500 16px/1.4 "Plus Jakarta Sans", sans-serif;
+}
+
+.weather-icon { position: relative; width: 24px; height: 24px; flex: 0 0 24px; }
+.weather-cloud { position: absolute; top: 1px; left: 0; width: 24px; height: 18px; }
+.weather-line { position: absolute; top: 13px; width: 2px; height: 10px; }
+.weather-line--one { left: 8px; }
+.weather-line--two { left: 14px; }
+.weather-line--three { left: 20px; }
+
+.parking-home-disclaimer {
+  position: absolute;
+  z-index: 5;
+  left: 24px;
+  right: 24px;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  margin: 0;
+  color: #adadad;
+  text-align: center;
+  font: 500 12px/1.4 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -.12px;
+}
+
+.parking-home-message {
+  position: absolute;
+  z-index: 6;
+  left: 16px;
+  right: 16px;
+  bottom: 74px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: #e0e0e0;
+  background: rgb(42 44 44 / 94%);
+  font-size: 12px;
+}
+
+.parking-sheet-scrim {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  background: rgb(0 0 0 / 76%);
+}
+
+.car-location-sheet {
+  position: absolute;
+  z-index: 9;
+  inset: 31px 0 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 24px 24px 0 0;
+  color: #fefefe;
+  background: #2a2c2c;
+  scrollbar-width: none;
+}
+
+.car-location-sheet::-webkit-scrollbar { display: none; }
+
+.car-location-sheet-header {
+  position: relative;
+  z-index: 2;
+  height: 72px;
+  display: grid;
+  place-items: center;
+}
+
+.car-location-sheet-header h1 {
+  margin: 0;
+  font: 600 18px/1.4 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -.18px;
+}
+
+.sheet-back-button {
+  position: absolute;
+  left: 16px;
+  top: 12px;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sheet-back-button img { width: 16px; height: 9px; transform: rotate(90deg); }
+
+.car-location-search {
+  position: relative;
+  width: calc(100% - 32px);
+  height: 50px;
+  margin: 0 16px 24px;
+}
+
+.car-location-search input {
+  width: 100%;
+  height: 50px;
+  padding: 0 52px 0 20px;
+  border: 0;
+  border-radius: 16px;
+  color: #fefefe;
+  background: #343939;
+  font: 500 16px/1.4 "Plus Jakarta Sans", sans-serif;
+}
+
+.car-location-search input::placeholder { color: #7a7a7a; }
+.car-location-search button {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  cursor: pointer;
+}
+.car-location-search button img { width: 17px; height: 15px; }
+
+.nearby-heading {
+  margin: 0 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fefefe;
+  font-size: 12px;
+}
+.nearby-heading span:last-child { color: #7a7a7a; }
+
+.sheet-state { margin: -8px 16px 18px; color: #adadad; font-size: 13px; }
+.sheet-state--error { color: #f97575; }
+
+.nearby-parking-list {
+  margin: 0;
+  padding: 0 15px 32px;
+  display: grid;
+  gap: 16px;
+  list-style: none;
+}
+
+.nearby-parking-card {
+  width: 100%;
+  min-height: 106px;
+  padding: 0;
+  border: 0;
+  display: grid;
+  grid-template-columns: 101px minmax(0, 1fr);
+  gap: 20px;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+}
+
+.nearby-parking-card > img {
+  width: 101px;
+  height: 101px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.nearby-parking-copy { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.nearby-parking-address { overflow: hidden; color: #adadad; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.nearby-parking-copy strong { min-height: 50px; font: 600 18px/1.4 "Plus Jakarta Sans", "Noto Sans KR", sans-serif; letter-spacing: -.18px; }
+.nearby-parking-distance { align-self: flex-end; color: #00e8ec; font-size: 14px; }
+
+.parking-detail { min-height: calc(100% - 72px); padding-bottom: 88px; }
+.parking-detail-image { width: 100%; height: 200px; display: block; object-fit: cover; }
+.parking-detail-copy { position: relative; padding: 24px 16px 18px; }
+.prototype-warning {
+  display: inline-flex;
+  min-height: 40px;
+  margin-bottom: 8px;
+  padding: 0 16px;
+  align-items: center;
+  border-radius: 24px;
+  color: #f97575;
+  background: #362020;
+  font: 600 14px/1.4 "Noto Sans KR", sans-serif;
+}
+.parking-detail-copy h2 { margin: 0 0 6px; font: 600 18px/1.4 "Plus Jakarta Sans", "Noto Sans KR", sans-serif; letter-spacing: -.18px; }
+.parking-detail-copy p { margin: 0; color: #c7c7c7; font-size: 14px; }
+.parking-detail-distance { display: block; margin-top: 8px; color: #00e8ec; text-align: right; font-size: 14px; }
+
+.parking-risk-preview {
+  margin: 0 16px 18px;
+  padding: 19px 18px 16px;
+  border-radius: 12px;
+  background: #343939;
+}
+.parking-risk-preview h3 { margin: 0 0 22px; font: 600 20px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.2px; }
+.parking-risk-preview h3 span { color: #f97575; }
+.parking-risk-preview p { margin: 0 0 10px; color: #adadad; font-size: 14px; }
+.parking-risk-preview ul { margin: 0; padding-left: 24px; color: #e0e0e0; font-size: 16px; line-height: 1.5; }
+
+.parking-detail-footer {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgb(42 44 44 / 0%), #2a2c2c 20%);
+}
+.parking-detail-footer button {
+  width: 100%;
+  height: 50px;
+  border: 0;
+  border-radius: 30px;
+  color: #2e2e2e;
+  background: #00e8ec;
+  font: 500 16px/1.4 "Plus Jakarta Sans", sans-serif;
+  cursor: pointer;
+}
+
+@media (min-width: 481px) {
+  .parking-home-stage { background: radial-gradient(circle at 50% 25%, #0b3331, #001817 54%); }
+  .parking-home-phone { border: 1px solid rgb(255 255 255 / 7%); box-shadow: 0 30px 90px rgb(0 0 0 / 34%); }
+}
+
+@media (max-height: 760px) {
+  .car-location-sheet { top: 20px; }
+  .car-location-sheet-header { height: 60px; }
+  .parking-detail-image { height: 150px; }
+  .parking-risk-preview h3 { margin-bottom: 12px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }

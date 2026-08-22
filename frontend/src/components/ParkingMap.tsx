@@ -43,6 +43,8 @@ export function ParkingMap({ appKey, center, places, selected, onSelect }: Parki
 
   useEffect(() => {
     if (!appKey || !mapRef.current) return;
+    const mapContainer = mapRef.current;
+    mapContainer.replaceChildren();
     let disposed = false;
     let clearMarkers: () => void = () => {};
 
@@ -60,6 +62,7 @@ export function ParkingMap({ appKey, center, places, selected, onSelect }: Parki
     return () => {
       disposed = true;
       clearMarkers();
+      mapContainer.replaceChildren();
     };
   }, [appKey, center, places, selected]);
 
