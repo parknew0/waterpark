@@ -265,6 +265,15 @@
 - 테스트 브라우저에서는 위치 권한을 확보하지 못해 실제 현재 위치와 센서 회전은 검증하지 못했다. 권한 실패 시 가짜 현재 위치를 표시하지 않는 처리, 목록 즉시 표시, 상세, 확정 후 주변 후보·차 마커·저장 카드 상태를 확인했다.
 - 출처: [Figma 지도 홈 `123:1415`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1415&m=dev), [지도 선택 `123:1958`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1958&m=dev), [검색 입력창 `123:1631`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1631&m=dev), [상세 CTA `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev), [현재 위치 마커 `123:2320`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2320&m=dev), [My Location 카드 `176:2956`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=176-2956&m=dev), [내 차 마커 `136:2639`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2639&m=dev), [W3C Device Orientation and Motion](https://www.w3.org/TR/orientation-event/), [Apple DeviceOrientationEvent](https://developer.apple.com/documentation/webkitjs/deviceorientationevent)
 
+### 2026-08-22 — 긴급 상황 화면과 경고 모션 구현
+
+- `FACT`: Figma `90:675`는 402×874 긴급 화면이며 경고 아이콘 149px, 안전 주차장 카드 370×172px, CTA 영역 402×74px로 확인했다.
+- `FACT`: Figma `90:675`와 `136:2576`의 모션 컨텍스트에는 애니메이션 노드가 없었다.
+- `DECISION`: 정적 레이아웃은 Figma 디자인 컨텍스트를 따르고, 사용자 요청에 따라 26개 빗방울 낙하와 1.15초 경고 진동·외곽 원 펄스를 CSS로 추가했다.
+- `FACT`: 402×874 브라우저에서 경고 아이콘 `x=126.5, y=131`, 카드 `x=16, y=506`, CTA `y=748`을 측정했고 애니메이션의 computed transform 변화도 확인했다.
+- `LIMITATION`: `30min`, 배정 주차장과 `156m away`는 실제 예측·주차 여석 API 값이 아닌 Figma 프로토타입 고정값이다.
+- 출처: [Figma 긴급 화면 `90:675`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-675&m=dev), [Figma 경고 원 `136:2576`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=136-2576&m=dev)
+
 ## 2026-08-22 전국 침수·건물 원본 확보 및 구조 검증
 
 - 상태: `FACT` — 전국 원본 다운로드와 구조·스키마 검증까지 완료. 전국 학습표 생성은 아직 하지 않았다.

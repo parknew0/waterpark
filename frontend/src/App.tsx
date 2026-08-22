@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { EmergencyView } from "./components/emergency/EmergencyView";
 import { LocationConsentView } from "./components/onboarding/LocationConsentView";
 import { OnboardingCarView } from "./components/onboarding/OnboardingCarView";
 import { ParkingHomeView } from "./components/parking-home/ParkingHomeView";
@@ -10,11 +11,11 @@ import type { Coordinate, ParkingPlace } from "./types/parking";
 const DEFAULT_CENTER: Coordinate = { latitude: 36.576, longitude: 128.505 };
 const kakaoAppKey = import.meta.env.VITE_KAKAO_MAP_APP_KEY?.trim();
 
-type AppView = "car" | "consent" | "map";
+type AppView = "car" | "consent" | "map" | "emergency";
 
 function getInitialView(): AppView {
   const view = new URLSearchParams(window.location.search).get("view");
-  return view === "consent" || view === "map" ? view : "car";
+  return view === "consent" || view === "map" || view === "emergency" ? view : "car";
 }
 
 export default function App() {
@@ -131,6 +132,14 @@ export default function App() {
 
   if (view === "car") return <OnboardingCarView onNext={() => navigateToView("consent")} />;
   if (view === "consent") return <LocationConsentView onAgree={handleOpenParkingHome} />;
+  if (view === "emergency") {
+    return (
+      <EmergencyView
+        onBack={() => navigateToView("map")}
+        onMoveNow={() => navigateToView("map")}
+      />
+    );
+  }
 
   return (
     <ParkingHomeView

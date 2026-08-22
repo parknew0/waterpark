@@ -282,9 +282,252 @@ h3 { margin: 0; font-size: 14px; }
 .permission-copy span { font-size: 16px; font-weight: 500; letter-spacing: -.16px; white-space: nowrap; }
 .permission-detail { position: absolute; left: 24px; right: 20px; bottom: calc(80px + env(safe-area-inset-bottom)); margin: 0; color: #7a7a7a; font: 500 12px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.12px; }
 
+.emergency-stage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #001817;
+}
+
+.emergency-phone {
+  position: relative;
+  width: min(402px, 100vw);
+  height: min(874px, 100svh);
+  min-height: 720px;
+  overflow: hidden;
+  color: #fefefe;
+  background: #001817;
+  font-family: "Plus Jakarta Sans", "Noto Sans KR", sans-serif;
+}
+
+.emergency-back-button {
+  position: absolute;
+  z-index: 7;
+  top: 62px;
+  left: 0;
+  width: 72px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  cursor: pointer;
+}
+
+.emergency-back-button img {
+  width: 16px;
+  height: 9px;
+  transform: rotate(90deg);
+}
+
+.emergency-alert {
+  position: absolute;
+  z-index: 4;
+  top: 131px;
+  left: 50%;
+  width: 149px;
+  height: 149px;
+  transform: translateX(-50%);
+  animation: emergency-alert-jitter 1.15s ease-in-out infinite;
+  will-change: transform;
+}
+
+.emergency-alert-ring { position: absolute; display: block; max-width: none; }
+.emergency-alert-ring--outer {
+  inset: 0;
+  width: 149px;
+  height: 149px;
+  animation: emergency-alert-pulse 1.15s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+.emergency-alert-ring--middle { top: 13px; left: 13px; width: 123px; height: 123px; }
+.emergency-alert-ring--inner { top: 19px; left: 21px; width: 116px; height: 116px; }
+
+.emergency-car-icon {
+  position: absolute;
+  top: 40px;
+  left: 35px;
+  width: 69px;
+  height: 69px;
+  overflow: hidden;
+}
+
+.emergency-car-part {
+  position: absolute;
+  display: block;
+  background: #fff0f0;
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+}
+
+.emergency-car-body {
+  top: 3px;
+  left: 14.94px;
+  width: 39.11px;
+  height: 63.16px;
+  mask-image: url("/assets/parking/car-body.svg");
+  -webkit-mask-image: url("/assets/parking/car-body.svg");
+}
+
+.emergency-car-wheel { width: 3.1px; height: 9.3px; }
+.emergency-car-wheel--back-left {
+  top: 49.57px;
+  left: 15.72px;
+  mask-image: url("/assets/parking/car-wheel-back-left.svg");
+  -webkit-mask-image: url("/assets/parking/car-wheel-back-left.svg");
+}
+.emergency-car-wheel--front-left {
+  top: 12.76px;
+  left: 15.76px;
+  mask-image: url("/assets/parking/car-wheel-front-left.svg");
+  -webkit-mask-image: url("/assets/parking/car-wheel-front-left.svg");
+}
+.emergency-car-wheel--front-right {
+  top: 12.76px;
+  left: 50.22px;
+  mask-image: url("/assets/parking/car-wheel-front-right.svg");
+  -webkit-mask-image: url("/assets/parking/car-wheel-front-right.svg");
+}
+.emergency-car-wheel--back-right {
+  top: 49.6px;
+  left: 50.22px;
+  mask-image: url("/assets/parking/car-wheel-back-right.svg");
+  -webkit-mask-image: url("/assets/parking/car-wheel-back-right.svg");
+}
+
+.emergency-copy {
+  position: absolute;
+  z-index: 4;
+  top: 290px;
+  left: 16px;
+  right: 16px;
+  text-align: center;
+}
+
+.emergency-copy h1 {
+  margin: 0;
+  color: #fefefe;
+  font: 600 36px/1.4 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -.36px;
+}
+.emergency-copy h1 span { color: #f97575; }
+
+.emergency-safe-time {
+  position: absolute;
+  z-index: 4;
+  top: 419px;
+  left: 50%;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: translateX(-50%);
+  line-height: 1.4;
+}
+.emergency-safe-time span { font-size: 16px; font-weight: 500; letter-spacing: -.16px; }
+.emergency-safe-time strong { color: #00e8ec; font-size: 20px; font-weight: 600; letter-spacing: -.2px; }
+
+.emergency-parking-card {
+  position: absolute;
+  z-index: 4;
+  top: 506px;
+  left: 16px;
+  width: calc(100% - 32px);
+  min-height: 172px;
+  padding: 31px 18px 31px 19px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 12px;
+  color: #fefefe;
+  background: #2e2e2e;
+}
+.emergency-parking-card > span { margin-bottom: 17px; color: #ededed; font-size: 14px; font-weight: 500; letter-spacing: -.14px; }
+.emergency-parking-card strong,
+.emergency-parking-card p { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.emergency-parking-card strong { font-size: 18px; font-weight: 600; letter-spacing: -.18px; }
+.emergency-parking-card p { margin: 8px 0 0; color: #c7c7c7; font-size: 12px; font-weight: 500; letter-spacing: -.12px; }
+.emergency-parking-card em { width: 100%; margin-top: 8px; color: #00e8ec; font-size: 14px; font-style: normal; font-weight: 500; letter-spacing: -.14px; text-align: right; }
+
+.emergency-footer {
+  position: absolute;
+  z-index: 6;
+  top: 748px;
+  left: 0;
+  width: 100%;
+  padding: 12px 16px;
+}
+.emergency-footer button {
+  width: 100%;
+  height: 50px;
+  border: 0;
+  border-radius: 30px;
+  color: #2e2e2e;
+  background: #00e8ec;
+  font: 500 16px/1.4 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -.32px;
+  cursor: pointer;
+}
+.emergency-footer button:hover { background: #68f8fa; }
+.emergency-footer button:active { transform: translateY(1px); }
+
+.emergency-rain {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.emergency-rain-drop {
+  --rain-left: 50%;
+  --rain-speed: 1.2s;
+  --rain-wait: 0s;
+  --rain-length: 30px;
+  position: absolute;
+  top: -90px;
+  left: var(--rain-left);
+  width: 1.5px;
+  height: var(--rain-length);
+  border-radius: 999px;
+  opacity: 0;
+  background: linear-gradient(180deg, rgb(127 252 255 / 0%), rgb(127 252 255 / 82%));
+  filter: drop-shadow(0 0 2px rgb(0 232 236 / 38%));
+  transform: translate3d(36px, -80px, 0) rotate(10deg);
+  animation: emergency-rain-fall var(--rain-speed) linear var(--rain-wait) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes emergency-rain-fall {
+  0% { opacity: 0; transform: translate3d(36px, -80px, 0) rotate(10deg); }
+  8% { opacity: .28; }
+  82% { opacity: .72; }
+  100% { opacity: 0; transform: translate3d(-100px, 1040px, 0) rotate(10deg); }
+}
+
+@keyframes emergency-alert-jitter {
+  0%, 16%, 100% { transform: translateX(-50%) translate3d(0, 0, 0) rotate(0); }
+  3% { transform: translateX(-50%) translate3d(-4px, 1px, 0) rotate(-2deg); }
+  6% { transform: translateX(-50%) translate3d(4px, -1px, 0) rotate(2deg); }
+  9% { transform: translateX(-50%) translate3d(-3px, 0, 0) rotate(-1deg); }
+  12% { transform: translateX(-50%) translate3d(3px, 1px, 0) rotate(1deg); }
+}
+
+@keyframes emergency-alert-pulse {
+  0%, 16%, 100% { opacity: .78; transform: scale(1); }
+  8% { opacity: 1; transform: scale(1.07); }
+}
+
 @media (min-width: 481px) {
   .onboarding-stage { background: radial-gradient(circle at 50% 25%, #0b3331, #001817 54%); }
   .onboarding-phone { border: 1px solid rgb(255 255 255 / 7%); box-shadow: 0 30px 90px rgb(0 0 0 / 34%); }
+  .emergency-stage { background: radial-gradient(circle at 50% 25%, #0b3331, #001817 54%); }
+  .emergency-phone { border: 1px solid rgb(255 255 255 / 7%); box-shadow: 0 30px 90px rgb(0 0 0 / 34%); }
 }
 
 @media (max-height: 760px) {
@@ -292,6 +535,16 @@ h3 { margin: 0; font-size: 14px; }
   .onboarding-car-image { top: 290px; width: 450px; height: 361px; }
   .onboarding-rain { transform: translateY(-41px) scale(.9); transform-origin: top left; }
   .permission-detail { bottom: calc(80px + env(safe-area-inset-bottom)); }
+  .emergency-phone { min-height: 100svh; }
+  .emergency-alert { top: 92px; }
+  .emergency-copy { top: 245px; }
+  .emergency-safe-time { top: 370px; }
+  .emergency-parking-card { top: 450px; }
+  .emergency-footer { top: auto; bottom: 34px; }
+}
+
+@media (max-width: 480px) {
+  .emergency-phone { width: 100vw; height: 100svh; min-height: 100svh; }
 }
 
 @media (max-width: 360px) {
