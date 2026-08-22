@@ -1,0 +1,104 @@
+{
+  "approval_year_histogram": {
+    "1997": 1,
+    "2001": 1,
+    "2011": 1
+  },
+  "building_use_top20": {
+    "단독주택": 2,
+    "숙박시설": 1
+  },
+  "dbf": {
+    "a27_missing_or_blank": 180,
+    "a27_zero_or_negative": 75656,
+    "basement_rows": 1516,
+    "dbf_declared_rows": 77352,
+    "deleted_rows": 0
+  },
+  "flood": {
+    "dropped": 0,
+    "flood_province_codes": [
+      "36"
+    ],
+    "flood_year_range": [
+      2012,
+      2022
+    ],
+    "invalid_repaired": 0,
+    "polygons_by_flood_code": {
+      "36": 25
+    },
+    "polygons_without_year": 0,
+    "province_polygons": 25
+  },
+  "flooded_csv": "data/interim/vworld-buildings/basement_flood_overlap_36_flooded.csv",
+  "flooded_samples": [
+    {
+      "approval_date": "1997-09-19",
+      "approval_year": 1997,
+      "building_use_code": "01000",
+      "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2017,
+      "gis_building_id": "1997225918563452469100000000",
+      "last_flood_year": 2017,
+      "latitude": 36.6080291,
+      "legal_dong_code": "3611025034",
+      "longitude": 127.290488,
+      "pnu": "3611025034101700012",
+      "source_dbf": "AL_D010_36_20260809.dbf",
+      "underground_floor_count": 1
+    },
+    {
+      "approval_date": "2001-09-26",
+      "approval_year": 2001,
+      "building_use_code": "15000",
+      "building_use_name": "숙박시설",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2018,
+      "gis_building_id": "2001218200533541099800000000",
+      "last_flood_year": 2018,
+      "latitude": 36.688072,
+      "legal_dong_code": "3611037022",
+      "longitude": 127.2044405,
+      "pnu": "3611037022102510010",
+      "source_dbf": "AL_D010_36_20260809.dbf",
+      "underground_floor_count": 1
+    },
+    {
+      "approval_date": "2011-06-21",
+      "approval_year": 2011,
+      "building_use_code": "01000",
+      "building_use_name": "단독주택",
+      "existed_at_flood": "YES",
+      "first_flood_year": 2018,
+      "gis_building_id": "2011218186883540320600000000",
+      "last_flood_year": 2018,
+      "latitude": 36.6873708,
+      "legal_dong_code": "3611037022",
+      "longitude": 127.204285,
+      "pnu": "3611037022102320004",
+      "source_dbf": "AL_D010_36_20260809.dbf",
+      "underground_floor_count": 1
+    }
+  ],
+  "inside_rate": 0.001979,
+  "province_code": "36",
+  "province_name": "세종특별자치시",
+  "source_dir": "data/raw/vworld-buildings/national/AL_D010_36_20260809",
+  "source_epsg": "5186",
+  "timeline": {
+    "approval_date_missing": 0,
+    "approval_year_unparsed": 0,
+    "approved_after_first_flood": 0,
+    "approved_after_last_flood": 0,
+    "approved_before_or_same_year": 3,
+    "flood_year_unknown": 0
+  },
+  "totals": {
+    "basement_buildings": 1516,
+    "geometry_missing": 0,
+    "geometry_resolved": 1516,
+    "inside_flood_polygon": 3
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "excluded_features": [
+    "elevation_above_nearest_stream_m"
+  ],
+  "features": [
+    "surface_elevation_m",
+    "relative_elevation_200m_m",
+    "relative_elevation_500m_m",
+    "relative_elevation_1000m_m",
+    "relative_elevation_2000m_m",
+    "distance_to_national_river_m",
+    "distance_to_local_river_m",
+    "distance_to_stream_m",
+    "elevation_above_nearest_national_river_m",
+    "elevation_above_nearest_local_river_m"
+  ],
+  "notes": [
+    "라벨은 지표면 침수이며 지하주차장 침수가 아니다.",
+    "강수 변수는 넣지 않았다. 전국 213개 사건의 강수를 아직 수집하지 않았다.",
+    "무작위 분할은 같은 시도가 학습·평가 양쪽에 들어가므로 배포 성능이 아니다."
+  ],
+  "province_positives": {
+    "11": 9498,
+    "26": 2343,
+    "41": 3341,
+    "43": 454,
+    "44": 496,
+    "47": 175,
+    "48": 1019,
+    "52": 461
+  },
+  "province_rows": {
+    "11": 30590,
+    "26": 4838,
+    "41": 8654,
+    "43": 1416,
+    "44": 933,
+    "47": 456,
+    "48": 1942,
+    "52": 909
+  },
+  "results": [
+    {
+      "importance": {
+        "distance_to_national_river_m": 0.08120845258235931,
+        "distance_to_stream_m": 0.06744241714477539,
+        "elevation_above_nearest_local_river_m": 0.1065385639667511,
+        "relative_elevation_1000m_m": 0.3581894636154175,
+        "relative_elevation_500m_m": 0.08422847837209702,
+        "surface_elevation_m": 0.07788383215665817
+      },
+      "rule": {
+        "base_rate": 0.0399,
+        "pr_auc": 0.2141,
+        "roc_auc": 0.7967
+      },
+      "split": "타 시도 학습 → 47 평가",
+      "test_positives": 175,
+      "test_rows": 456,
+      "train_positives": 17612,
+      "train_rows": 49282,
+      "xgboost": {
+        "base_rate": 0.0399,
+        "pr_auc": 0.1881,
+        "roc_auc": 0.7817
+      }
+    },
+    {
+      "importance": {
+        "distance_to_national_river_m": 0.08843864500522614,
+        "distance_to_stream_m": 0.0701555386185646,
+        "elevation_above_nearest_local_river_m": 0.11483491212129593,
+        "relative_elevation_1000m_m": 0.3189735412597656,
+        "relative_elevation_500m_m": 0.08496268838644028,
+        "surface_elevation_m": 0.07843174785375595
+      },
+      "rule": {
+        "base_rate": 0.0357,
+        "pr_auc": 0.081,
+        "roc_auc": 0.7389
+      },
+      "split": "무작위 분할 (참고)",
+      "test_positives": 5330,
+      "test_rows": 14922,
+      "train_positives": 12457,
+      "train_rows": 34816,
+      "xgboost": {
+        "base_rate": 0.0357,
+        "pr_auc": 0.4132,
+        "roc_auc": 0.9257
+      }
+    }
+  ],
+  "rule_feature": "relative_elevation_500m_m"
+}

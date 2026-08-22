@@ -1,0 +1,164 @@
+{
+  "notes": [
+    "각 시도를 완전히 제외하고 학습한 뒤 그 시도로 평가한다.",
+    "부트스트랩 CI가 0을 포함하면 두 방식의 차이는 표본 잡음과 구분되지 않는다.",
+    "시도내 순위 변수는 예측 시점에 해당 시도 분포표가 필요하다."
+  ],
+  "per_province": [
+    {
+      "_boot": {
+        "ci_high": 0.0432,
+        "ci_low": 0.034,
+        "mean_difference": 0.0384,
+        "share_model_wins": 1.0
+      },
+      "base_rate": 0.0291,
+      "province": "11",
+      "rule": 0.0527,
+      "test_positives": 9498,
+      "test_rows": 30590,
+      "고도 + 시도내 순위": 0.1126,
+      "고도만 (거리 제외)": 0.0907,
+      "고도만 + 얕은 트리": 0.0803,
+      "전체 변수 (현재)": 0.0334
+    },
+    {
+      "_boot": {
+        "ci_high": -0.0134,
+        "ci_low": -0.0538,
+        "mean_difference": -0.0329,
+        "share_model_wins": 0.0
+      },
+      "base_rate": 0.0589,
+      "province": "26",
+      "rule": 0.1931,
+      "test_positives": 2343,
+      "test_rows": 4838,
+      "고도 + 시도내 순위": 0.1739,
+      "고도만 (거리 제외)": 0.1602,
+      "고도만 + 얕은 트리": 0.1601,
+      "전체 변수 (현재)": 0.182
+    },
+    {
+      "_boot": {
+        "ci_high": 0.0285,
+        "ci_low": 0.0138,
+        "mean_difference": 0.0211,
+        "share_model_wins": 1.0
+      },
+      "base_rate": 0.0402,
+      "province": "41",
+      "rule": 0.0768,
+      "test_positives": 3341,
+      "test_rows": 8654,
+      "고도 + 시도내 순위": 0.1434,
+      "고도만 (거리 제외)": 0.0978,
+      "고도만 + 얕은 트리": 0.0842,
+      "전체 변수 (현재)": 0.0727
+    },
+    {
+      "_boot": {
+        "ci_high": 0.0267,
+        "ci_low": -0.0003,
+        "mean_difference": 0.0126,
+        "share_model_wins": 0.973
+      },
+      "base_rate": 0.0305,
+      "province": "43",
+      "rule": 0.0636,
+      "test_positives": 454,
+      "test_rows": 1416,
+      "고도 + 시도내 순위": 0.0718,
+      "고도만 (거리 제외)": 0.0749,
+      "고도만 + 얕은 트리": 0.068,
+      "전체 변수 (현재)": 0.0673
+    },
+    {
+      "_boot": {
+        "ci_high": 0.014,
+        "ci_low": -0.0588,
+        "mean_difference": -0.0233,
+        "share_model_wins": 0.105
+      },
+      "base_rate": 0.0703,
+      "province": "44",
+      "rule": 0.163,
+      "test_positives": 496,
+      "test_rows": 933,
+      "고도 + 시도내 순위": 0.1427,
+      "고도만 (거리 제외)": 0.1386,
+      "고도만 + 얕은 트리": 0.1101,
+      "전체 변수 (현재)": 0.1011
+    },
+    {
+      "_boot": {
+        "ci_high": 0.0195,
+        "ci_low": -0.2176,
+        "mean_difference": -0.0996,
+        "share_model_wins": 0.04
+      },
+      "base_rate": 0.0399,
+      "province": "47",
+      "rule": 0.2141,
+      "test_positives": 175,
+      "test_rows": 456,
+      "고도 + 시도내 순위": 0.1975,
+      "고도만 (거리 제외)": 0.1151,
+      "고도만 + 얕은 트리": 0.1206,
+      "전체 변수 (현재)": 0.1667
+    },
+    {
+      "_boot": {
+        "ci_high": 0.1061,
+        "ci_low": 0.0392,
+        "mean_difference": 0.07,
+        "share_model_wins": 1.0
+      },
+      "base_rate": 0.0686,
+      "province": "48",
+      "rule": 0.1219,
+      "test_positives": 1019,
+      "test_rows": 1942,
+      "고도 + 시도내 순위": 0.1772,
+      "고도만 (거리 제외)": 0.1882,
+      "고도만 + 얕은 트리": 0.16,
+      "전체 변수 (현재)": 0.2785
+    },
+    {
+      "_boot": {
+        "ci_high": -0.0812,
+        "ci_low": -0.1925,
+        "mean_difference": -0.1271,
+        "share_model_wins": 0.0
+      },
+      "base_rate": 0.0642,
+      "province": "52",
+      "rule": 0.2385,
+      "test_positives": 461,
+      "test_rows": 909,
+      "고도 + 시도내 순위": 0.196,
+      "고도만 (거리 제외)": 0.1171,
+      "고도만 + 얕은 트리": 0.1089,
+      "전체 변수 (현재)": 0.0945
+    }
+  ],
+  "rule_feature": "relative_elevation_500m_m",
+  "variants": {
+    "고도 + 시도내 순위": {
+      "depth": 5,
+      "estimators": 400
+    },
+    "고도만 (거리 제외)": {
+      "depth": 5,
+      "estimators": 400
+    },
+    "고도만 + 얕은 트리": {
+      "depth": 3,
+      "estimators": 200
+    },
+    "전체 변수 (현재)": {
+      "depth": 5,
+      "estimators": 400
+    }
+  }
+}

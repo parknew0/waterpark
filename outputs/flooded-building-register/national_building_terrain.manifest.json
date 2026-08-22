@@ -1,0 +1,39 @@
+{
+  "elevation_bands": [
+    {
+      "band": "0~2m",
+      "flooded_buildings": 6
+    },
+    {
+      "band": "2~5m",
+      "flooded_buildings": 134
+    },
+    {
+      "band": "5~10m",
+      "flooded_buildings": 2894
+    },
+    {
+      "band": "10~20m",
+      "flooded_buildings": 14019
+    },
+    {
+      "band": "20m 이상",
+      "flooded_buildings": 2691
+    }
+  ],
+  "elevation_source": "Copernicus DEM GLO-30 (DSM)",
+  "local_min_method": "lowest finite DSM cell within 1000 m",
+  "notes": [
+    "GLO-30은 DSM이라 건물과 수목 높이가 포함된다. 지반고가 아니다.",
+    "주변 최저고도는 라스터에서 직접 읽는다. 경북 기존 표는 건물점 3x3 격자 최솟값을 썼다.",
+    "이 표는 침수 건물만 담는다. 음성 표본에도 같은 특징을 붙여야 학습표가 된다."
+  ],
+  "output_csv": "data/processed/buildings/national_flooded_building_terrain.csv",
+  "radius_m": 1000.0,
+  "rows": 19745,
+  "sampling_stats": {
+    "outside_tile": 1
+  },
+  "terrain_missing": 1,
+  "terrain_resolved": 19744
+}
