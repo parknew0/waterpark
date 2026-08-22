@@ -15,7 +15,11 @@ function formatDistance(distanceMeters: number) {
 
 export function EvacuationRouteView({ appKey, route, onBack }: EvacuationRouteViewProps) {
   const distance = route?.distanceMeters ?? 0;
-  const driveMinutes = Math.max(1, Math.ceil(distance / 250));
+  const driveMinutes = route?.estimatedDriveMinutes ?? 0;
+  const forecastMinutes = route?.forecastHorizonMinutes ?? 0;
+  const safeTime = forecastMinutes >= 60 && forecastMinutes % 60 === 0
+    ? `${forecastMinutes / 60} hour`
+    : `${forecastMinutes} min`;
   const parkingLabel = route ? getEnglishParkingLabel(route.destination) : undefined;
 
   return (
@@ -35,7 +39,7 @@ export function EvacuationRouteView({ appKey, route, onBack }: EvacuationRouteVi
         </div>
 
         <button className="evacuation-directions-back" type="button" onClick={onBack} aria-label="Back">
-          <img src="/assets/parking/back-arrow.svg" alt="" />
+          <span aria-hidden="true"><img src="/assets/parking/back-arrow.svg" alt="" /></span>
         </button>
 
         <div className="evacuation-waypoints" aria-label="Route endpoints">
@@ -53,15 +57,13 @@ export function EvacuationRouteView({ appKey, route, onBack }: EvacuationRouteVi
 
         <div className="evacuation-safe-time">
           <span>Safe time</span>
-          <strong>30 min</strong>
+          <strong>{safeTime}</strong>
         </div>
 
         <div className="evacuation-route-metrics">
           <span>Drive<strong>{driveMinutes} min</strong></span>
           <span>Distance<strong>{formatDistance(distance)}</strong></span>
         </div>
-
-        <p className="evacuation-route-label">LOWER-RISK ROUTE · © OPENSTREETMAP CONTRIBUTORS</p>
       </section>
     </main>
   );

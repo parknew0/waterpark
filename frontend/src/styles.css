@@ -718,8 +718,9 @@ h3 { margin: 0; font-size: 14px; }
 .evacuation-directions-map .route-line--lower-risk { stroke-width: 5; }
 .evacuation-directions-map .route-risk-zone { opacity: .68; }
 
-.evacuation-directions-back { position: absolute; z-index: 8; top: 62px; left: 16px; width: 48px; height: 48px; padding: 0; border: 0; display: grid; place-items: center; background: transparent; cursor: pointer; }
-.evacuation-directions-back img { width: 16px; height: 16px; transform: rotate(90deg); }
+.evacuation-directions-back { position: absolute; z-index: 8; top: 62px; left: 12px; width: 48px; height: 48px; padding: 0; border: 0; display: grid; place-items: center; background: transparent; cursor: pointer; }
+.evacuation-directions-back span { width: 24px; height: 24px; display: grid; place-items: center; transform: rotate(90deg); }
+.evacuation-directions-back img { width: 15.5px; height: 8.5px; display: block; }
 
 .evacuation-waypoints { position: absolute; z-index: 7; top: 115px; right: 16px; left: 16px; display: grid; gap: 9px; }
 .evacuation-waypoints::before { content: ""; position: absolute; z-index: 2; top: 34px; left: 20px; height: 52px; border-left: 1px dashed #fbfbfb; }
@@ -739,7 +740,6 @@ h3 { margin: 0; font-size: 14px; }
 .evacuation-route-metrics { right: 16px; width: 192px; height: 65px; padding: 10px; display: flex; justify-content: center; gap: 10px; }
 .evacuation-route-metrics > span { width: 64px; display: flex; flex-direction: column; }
 .evacuation-route-metrics strong { color: #fff; font-size: 18px; font-weight: 600; }
-.evacuation-route-label { position: absolute; z-index: 7; top: 12px; right: 16px; width: 156px; margin: 0; color: #00e8ec; font-size: 8px; font-weight: 700; line-height: 1.25; letter-spacing: .04em; text-align: right; text-shadow: 0 1px 3px #001c1c; }
 
 @media (min-width: 481px) {
   .onboarding-stage { background: radial-gradient(circle at 50% 25%, #0b3331, #001817 54%); }

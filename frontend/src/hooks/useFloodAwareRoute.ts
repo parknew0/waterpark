@@ -41,6 +41,8 @@ function parseRoute(payload: RouteGeoJson): FloodAwareRoute {
   }
   const [originLongitude, originLatitude] = origin.geometry.coordinates as Position;
   const [destinationLongitude, destinationLatitude] = destination.geometry.coordinates as Position;
+  const distanceMeters = Number(lowerRisk.properties.distance_m ?? 0);
+  const travelTimeSeconds = Number(lowerRisk.properties.travel_time_s ?? 0);
   return {
     origin: { latitude: originLatitude, longitude: originLongitude },
     destination: {
@@ -58,7 +60,9 @@ function parseRoute(payload: RouteGeoJson): FloodAwareRoute {
       const zone = toRiskZone(feature);
       return zone ? [zone] : [];
     }),
-    distanceMeters: Number(lowerRisk.properties.distance_m ?? 0),
+    distanceMeters,
+    estimatedDriveMinutes: Math.max(1, Math.ceil(travelTimeSeconds > 0 ? travelTimeSeconds / 60 : distanceMeters / 250)),
+    forecastHorizonMinutes: Number(payload.metadata?.forecast_horizon_minutes ?? 60),
     baselineDistanceMeters: Number(baseline.properties.distance_m ?? 0),
     disclaimer: String(payload.metadata?.disclaimer ?? "실제 재난 안내와 도로 통제를 함께 확인하세요."),
     generatedAt: String(payload.metadata?.generated_at ?? ""),
