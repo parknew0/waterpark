@@ -1,0 +1,159 @@
+{
+  "dataset": "전국 침수흔적도(2002-2022) 전처리 1단계",
+  "input": {
+    "attribute_fields": [
+      "objectid",
+      "sn",
+      "fldn_dst_nm",
+      "fldn_grade",
+      "fldn_dowa",
+      "fldn_area",
+      "fldn_yr",
+      "fldn_bgng_ymd",
+      "fldn_bgng_tm",
+      "fldn_end_ymd",
+      "fldn_end_tm",
+      "fldn_cs_dtl_nm",
+      "stdg_sgg_cd",
+      "stdg_ctpv_cd",
+      "SHAPE__Length",
+      "SHAPE__Area"
+    ],
+    "feature_count": 38003,
+    "geometry_handling": "Geometry is intentionally excluded from the records CSV and remains unchanged in the raw GeoJSON.",
+    "path": "data/raw/flood-trace/korea_flood_2002_2022.geojson",
+    "raw_manifest_path": "data/raw/flood-trace/korea_flood_2002_2022.manifest.json",
+    "sha256": "e46e69e1e633144fd2d09497508281b3172a76a7e9ddb1a295d8183535f3e0ea"
+  },
+  "outputs": {
+    "qa_by_province": {
+      "path": "data/interim/flood-trace/korea_flood_qa_by_province.csv",
+      "row_count": 17,
+      "sha256": "1c46c64edfeaea447291b8c49cb066f7464128ae840ee8134f5bc7b01266aef2"
+    },
+    "qa_by_year": {
+      "path": "data/interim/flood-trace/korea_flood_qa_by_year.csv",
+      "row_count": 21,
+      "sha256": "fd69ec87411689b5fc19fd894af1f5df1f298f2e97356ac926db447e5e28da05"
+    },
+    "records": {
+      "path": "data/interim/flood-trace/korea_flood_records.csv",
+      "row_count": 38003,
+      "sha256": "dc99a3fac402b94bc5f1e39aa81d774c38a129efc6ff4552c48e501ce903c3ec"
+    }
+  },
+  "script": "scripts/prepare_korea_flood_trace.py",
+  "validation": {
+    "all_source_attribute_names_preserved": true,
+    "event_id_created": false,
+    "expected_province_count": 17,
+    "expected_record_count": 38003,
+    "missing_count_by_source_field": {
+      "SHAPE__Area": 0,
+      "SHAPE__Length": 0,
+      "fldn_area": 0,
+      "fldn_bgng_tm": 988,
+      "fldn_bgng_ymd": 451,
+      "fldn_cs_dtl_nm": 1362,
+      "fldn_dowa": 0,
+      "fldn_dst_nm": 465,
+      "fldn_end_tm": 991,
+      "fldn_end_ymd": 453,
+      "fldn_grade": 0,
+      "fldn_yr": 0,
+      "objectid": 0,
+      "sn": 0,
+      "stdg_ctpv_cd": 0,
+      "stdg_sgg_cd": 0
+    },
+    "objectid_unique_count": 38003,
+    "province_codes": [
+      11,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      36,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      50
+    ],
+    "province_count": 17,
+    "record_count": 38003,
+    "time_quality": {
+      "fldn_bgng_tm": {
+        "literal_0000_count": 8789,
+        "missing_count": 988,
+        "unavailable_count": 9777
+      },
+      "fldn_end_tm": {
+        "literal_0000_count": 6933,
+        "missing_count": 991,
+        "unavailable_count": 7924
+      }
+    },
+    "topology": {
+      "checked": true,
+      "expected_invalid_count": 22,
+      "invalid_count": 22,
+      "invalid_objectids": [
+        24845,
+        26446,
+        26739,
+        27045,
+        27089,
+        29481,
+        30273,
+        30888,
+        31251,
+        31501,
+        34504,
+        35798,
+        35894,
+        36013,
+        36782,
+        36830,
+        37012,
+        37048,
+        37118,
+        37476,
+        37743,
+        37808
+      ],
+      "raw_geometry_modified": false,
+      "validation_method": "Verified the downloader topology result against the raw GeoJSON SHA-256; no geometry was repaired or modified."
+    },
+    "year_value_count": 21,
+    "year_values": [
+      0,
+      2002,
+      2003,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022
+    ]
+  }
+}

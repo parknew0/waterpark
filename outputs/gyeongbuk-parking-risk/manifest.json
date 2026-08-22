@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-22T17:09:03+09:00",
+  "generated_at": "2026-08-22T20:38:27+09:00",
   "rows": 25336,
   "method": "rule-based; terrain bands measured from our own flood training table, rainfall trigger taken from official KMA 호우특보 criteria",
   "terrain_bands": [

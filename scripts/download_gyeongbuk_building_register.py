@@ -42,10 +42,15 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import unquote, urlencode
 from urllib.request import Request, urlopen
 
+from data_paths import (
+    INTERIM_BUILDING_REGISTER,
+    RAW_BUILDING_REGISTER,
+    RAW_VWORLD_GYEONGBUK,
+    ROOT,
+)
 
-ROOT = Path(__file__).resolve().parents[1]
-RAW_DIR = ROOT / "data/raw/building-register"
-PROCESSED_DIR = ROOT / "data/processed/gyeongbuk-building-register"
+RAW_DIR = RAW_BUILDING_REGISTER
+PROCESSED_DIR = INTERIM_BUILDING_REGISTER
 OUTPUT_DIR = ROOT / "outputs/gyeongbuk-building-register"
 ENV_FILE = ROOT / ".env"
 API_BASE = "https://apis.data.go.kr/1613000/BldRgstHubService"
@@ -169,16 +174,17 @@ def load_env_key() -> str:
 
 
 def latest_gis_dbf_dir() -> Path:
-    roots = sorted(
+    roots = {
         path
-        for path in (ROOT / "GIS건물통합정보_경북").glob("AL_D010_47_*")
-        if path.is_dir() and list(path.glob("*.dbf"))
-    )
+        for pattern in ("AL_D010_47_*", "AL_47_D010_*")
+        for path in RAW_VWORLD_GYEONGBUK.glob(pattern)
+        if path.is_dir() and any(path.glob("*.dbf"))
+    }
     if not roots:
         raise FileNotFoundError(
-            "No AL_D010_47_* DBF directory found under GIS건물통합정보_경북"
+            f"No Gyeongbuk GIS-building DBF directory found under {RAW_VWORLD_GYEONGBUK}"
         )
-    return roots[-1]
+    return max(roots, key=lambda path: path.name.rsplit("_", 1)[-1])
 
 
 def dbf_layout(path: Path) -> tuple[int, int, int, dict[str, tuple[int, int]]]:
@@ -480,14 +486,15 @@ def title_tasks(
 
 
 def collect_titles(
-    tasks: list[QueryTask], candidate_pnus: set[str], workers: int, call_budget: int
+    tasks: list[QueryTask], candidate_pnus: set[str], workers: int, budget: CallBudget
 ) -> dict[str, Any]:
     completed = load_completed(TITLE_COMPLETED)
+    planned_task_ids = {task.task_id for task in tasks}
     pending = [task for task in tasks if task.task_id not in completed]
-    budget = CallBudget(call_budget)
     client = ApiClient("getBrTitleInfo", load_env_key(), budget)
     failures: list[dict[str, str]] = []
     started = time.time()
+    calls_at_start = budget.used
 
     def run(task: QueryTask) -> tuple[QueryTask, list[dict[str, Any]], int]:
         rows, total = client.all_pages(task_params(task))
@@ -505,9 +512,10 @@ def collect_titles(
             {
                 "stage": "titles",
                 "planned_tasks": len(tasks),
-                "already_completed": len(completed),
+                "already_completed": len(completed & planned_task_ids),
                 "pending_tasks": len(pending),
-                "call_budget": call_budget,
+                "shared_call_budget": budget.limit,
+                "shared_calls_already_used": budget.used,
             },
             ensure_ascii=False,
         ),
@@ -540,10 +548,14 @@ def collect_titles(
                     ),
                     flush=True,
                 )
+    completed_after = load_completed(TITLE_COMPLETED)
     return {
         "planned_tasks": len(tasks),
-        "completed_tasks": len(load_completed(TITLE_COMPLETED)),
-        "api_calls_this_run": budget.used,
+        "completed_tasks": len(completed_after & planned_task_ids),
+        "all_planned_tasks_completed": planned_task_ids <= completed_after,
+        "api_calls_this_stage": budget.used - calls_at_start,
+        "api_calls_total_run": budget.used,
+        "shared_call_budget": budget.limit,
         "failures": failures[:100],
     }
 
@@ -622,16 +634,17 @@ def collect_floors(
     probable_pks: set[str],
     probable_pnus_by_code: dict[str, set[str]],
     workers: int,
-    call_budget: int,
+    budget: CallBudget,
 ) -> dict[str, Any]:
     completed = load_completed(FLOOR_COMPLETED)
     codes = sorted(probable_pnus_by_code)
+    planned_codes = set(codes)
     pending = [code for code in codes if code not in completed]
-    budget = CallBudget(call_budget)
     client = ApiClient("getBrFlrOulnInfo", load_env_key(), budget)
     failures: list[dict[str, str]] = []
     modes: Counter[str] = Counter()
     started = time.time()
+    calls_at_start = budget.used
 
     def run(code: str) -> tuple[str, list[dict[str, Any]], str]:
         rows, mode = collect_floor_group(
@@ -646,9 +659,10 @@ def collect_floors(
                 "probable_building_pks": len(probable_pks),
                 "probable_parcels": sum(len(v) for v in probable_pnus_by_code.values()),
                 "planned_code_groups": len(codes),
-                "already_completed": len(completed),
+                "already_completed": len(completed & planned_codes),
                 "pending_code_groups": len(pending),
-                "call_budget": call_budget,
+                "shared_call_budget": budget.limit,
+                "shared_calls_already_used": budget.used,
             },
             ensure_ascii=False,
         ),
@@ -683,10 +697,14 @@ def collect_floors(
                     ),
                     flush=True,
                 )
+    completed_after = load_completed(FLOOR_COMPLETED)
     return {
         "planned_code_groups": len(codes),
-        "completed_code_groups": len(load_completed(FLOOR_COMPLETED)),
-        "api_calls_this_run": budget.used,
+        "completed_code_groups": len(completed_after & planned_codes),
+        "all_planned_code_groups_completed": planned_codes <= completed_after,
+        "api_calls_this_stage": budget.used - calls_at_start,
+        "api_calls_total_run": budget.used,
+        "shared_call_budget": budget.limit,
         "query_modes": dict(modes),
         "failures": failures[:100],
     }
@@ -895,14 +913,15 @@ def main() -> None:
         pnu for values in candidate_pnus_by_code.values() for pnu in values
     }
     tasks = title_tasks(all_rows_by_code, candidate_pnus_by_code)
+    shared_budget = CallBudget(args.call_budget)
     title_stats: dict[str, Any] | None = None
     floor_stats: dict[str, Any] | None = None
 
     if args.stage in ("titles", "all"):
         title_stats = collect_titles(
-            tasks, all_candidate_pnus, args.workers, args.call_budget
+            tasks, all_candidate_pnus, args.workers, shared_budget
         )
-        if title_stats["completed_tasks"] < title_stats["planned_tasks"]:
+        if not title_stats["all_planned_tasks_completed"]:
             print(json.dumps(title_stats, ensure_ascii=False, indent=2), file=sys.stderr)
             finalize(gis_candidates, dbf_dir, title_stats=title_stats)
             raise SystemExit(2)
@@ -935,9 +954,9 @@ def main() -> None:
             probable_pks,
             probable_pnus_by_code,
             args.workers,
-            args.call_budget,
+            shared_budget,
         )
-        if floor_stats["completed_code_groups"] < floor_stats["planned_code_groups"]:
+        if not floor_stats["all_planned_code_groups_completed"]:
             print(json.dumps(floor_stats, ensure_ascii=False, indent=2), file=sys.stderr)
             finalize(
                 gis_candidates,

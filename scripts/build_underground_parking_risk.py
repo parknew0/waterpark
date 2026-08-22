@@ -3,13 +3,15 @@
 
 Why this is rule-based and not a model
 --------------------------------------
-train_flood_model.py showed the honest result: split by rainfall event, XGBoost
-reaches PR-AUC ~0.09 against a 0.065 base rate, while the single terrain rule
+train_flood_model.py showed the honest result: split by storm group, XGBoost
+reaches PR-AUC 0.126 against a 0.065 base rate, while the single terrain rule
 "lower ground relative to its surroundings floods more" reaches ~0.25 with no
-fitting at all. With only 21 events carrying positives, and rainfall constant
-across all buildings inside one event, there is no rain-to-flood relationship
-left to learn. So terrain is measured from our own data, and the rainfall
-trigger comes from the official KMA 호우특보 thresholds instead of being learnt.
+fitting at all. The 30 timestamp-level records collapse to only 13 derived storm
+groups, and rainfall is constant across all buildings assigned to one station
+inside one event. The current data therefore does not support a reliable learned
+rain-to-flood relationship. So terrain is measured from our own data, and the
+rainfall trigger comes from the official KMA 호우특보 thresholds instead of
+being learnt.
 
 Two separate things are produced per building:
 
@@ -36,12 +38,13 @@ from shapely.geometry import Point, shape
 from shapely.ops import unary_union
 from shapely.strtree import STRtree
 
-ROOT = Path(__file__).resolve().parents[1]
-BUILDINGS_CSV = ROOT / "data/processed/gyeongbuk_building_underground_parking_features.csv"
-OVERTURE_GZ = ROOT / "data/processed/gyeongbuk_buildings_elevation.csv.gz"
-FLOOD_GEOJSON = ROOT / "data/raw/flood-trace/gyeongbuk_flood_2002_2022.geojson"
+from data_paths import PROCESSED_BUILDINGS, PROCESSED_ML_PREDICTIONS, RAW_FLOOD_TRACE, ROOT
 
-OUT_CSV = ROOT / "data/processed/gyeongbuk_underground_parking_risk.csv"
+BUILDINGS_CSV = PROCESSED_BUILDINGS / "gyeongbuk_building_underground_parking_features.csv"
+OVERTURE_GZ = PROCESSED_BUILDINGS / "gyeongbuk_buildings_elevation.csv.gz"
+FLOOD_GEOJSON = RAW_FLOOD_TRACE / "gyeongbuk_flood_2002_2022.geojson"
+
+OUT_CSV = PROCESSED_ML_PREDICTIONS / "gyeongbuk_underground_parking_risk.csv"
 OUT_DIR = ROOT / "outputs/gyeongbuk-parking-risk"
 MANIFEST = OUT_DIR / "manifest.json"
 SAMPLE = OUT_DIR / "gyeongbuk_underground_parking_risk_sample.csv"
@@ -59,7 +62,8 @@ TERRAIN_BANDS = [
 
 # Official KMA 호우특보 / 극한호우 criteria. Source: 기상청 예보업무 안내
 # (kma.go.kr/kma/biz/forecast03.jsp) and the 2023-06-15 극한호우 직접 발송 기준.
-# These are NOT fitted to our data -- our 21 events carry no usable rain signal.
+# These are NOT fitted to our data -- the 13 derived storm groups do not provide
+# a reliable learned rain signal.
 RAIN_RULES = {
     "호우주의보": "3시간 60mm 이상 또는 12시간 110mm 이상",
     "호우경보": "3시간 90mm 이상 또는 12시간 180mm 이상",
@@ -143,6 +147,7 @@ def main() -> None:
     log(f"[check] {len(polys):,} historical flood polygons loaded")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
     header = [
         "building_id",
         "pnu",

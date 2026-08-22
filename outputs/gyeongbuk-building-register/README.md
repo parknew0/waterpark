@@ -25,10 +25,10 @@ GIS건물통합정보의 지하층 보유 후보
 
 | 로컬 파일 | 내용 |
 | --- | --- |
-| `data/processed/gyeongbuk-building-register/gyeongbuk_gis_basement_candidates.csv` | GIS 원본에서 지하층이 있는 건물 후보 |
-| `data/processed/gyeongbuk-building-register/gyeongbuk_basement_candidate_titles.csv` | 후보 지번에서 조회한 건축물대장 표제부 |
-| `data/processed/gyeongbuk-building-register/gyeongbuk_probable_parking_floors.csv` | 지하층과 옥내주차가 함께 있는 후보의 층별개요 |
-| `data/processed/gyeongbuk-building-register/gyeongbuk_underground_parking_candidates.csv` | 표제부와 층별개요를 합쳐 판정 상태를 붙인 전체 결과 |
+| `data/interim/building-register/gyeongbuk_gis_basement_candidates.csv` | GIS 원본에서 지하층이 있는 건물 후보 |
+| `data/interim/building-register/gyeongbuk_basement_candidate_titles.csv` | 후보 지번에서 조회한 건축물대장 표제부 |
+| `data/interim/building-register/gyeongbuk_probable_parking_floors.csv` | 지하층과 옥내주차가 함께 있는 후보의 층별개요 |
+| `data/interim/building-register/gyeongbuk_underground_parking_candidates.csv` | 표제부와 층별개요를 합쳐 판정 상태를 붙인 전체 결과 |
 
 ## 판정값
 

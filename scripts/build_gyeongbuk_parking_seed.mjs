@@ -1,13 +1,14 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
+import { fileURLToPath } from "node:url";
 
-const root = process.cwd();
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const rawFiles = [
   "data/raw/parking_standard_page_1.json",
   "data/raw/parking_standard_page_2.json",
 ];
-const outputDir = path.join(root, "data/processed");
+const outputDir = path.join(root, "data/processed/parking");
 const cityCountyPattern = /(포항시|경주시|김천시|안동시|구미시|영주시|영천시|상주시|문경시|경산시|의성군|청송군|영양군|영덕군|청도군|고령군|성주군|칠곡군|예천군|봉화군|울진군|울릉군)/;
 
 const pages = await Promise.all(

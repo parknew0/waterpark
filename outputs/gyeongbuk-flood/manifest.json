@@ -5,9 +5,10 @@
   "rain_source": "https://apihub.kma.go.kr/apiList.do?seqApi=2&seqApiSub=239 (AWS 시간통계, var=RN)",
   "flood_record_count": 1402,
   "flood_event_count": 30,
+  "storm_group_count": 13,
   "flood_year_range": [
-    2002,
-    2021
+    "2002",
+    "2021"
   ],
   "hourly_timestamps_fetched": 427,
   "event_rain_rows": 20018,
@@ -17,21 +18,22 @@
     }
   },
   "outputs": {
-    "data/processed/gyeongbuk_flood_records.csv": {
-      "sha256": "75cbfd306848612e4aefc526a59f226e62ca5b63e7a5b555cc2e83c32da50e08"
+    "data/interim/flood-trace/gyeongbuk/gyeongbuk_flood_records.csv": {
+      "sha256": "de529c328c55946dc2633aaeb73dafcb012c5d49cb8f5505e5f23969f25cc9e5"
     },
-    "data/processed/gyeongbuk_flood_events.csv": {
-      "sha256": "d9e6d4e41203c0597c567c20fb183b62db39331fc6541303e9df22fb946285be"
+    "data/interim/flood-trace/gyeongbuk/gyeongbuk_flood_events.csv": {
+      "sha256": "e59d2bd3ae2b244d3585572ecc1d98ee80cea572425bd2f1ef46ab3ff9d01200"
     },
-    "data/processed/gyeongbuk_flood_event_rain.csv": {
-      "sha256": "38f415688cf4d3d884c17dcf26fa909fbe18fa668cd9fa237b07ee77657fecbc"
+    "data/processed/rainfall/gyeongbuk_flood_event_rain.csv": {
+      "sha256": "9c6b6c402d4aacaa55dbbdfca83de02c6c58df41e0d6c9bcfef6a0bd158cf270"
     }
   },
   "critical_limitations": [
     "The flood layer stops at 2021 (2022 Typhoon Hinnamno is not in this dataset); the source agency has stopped updating it.",
     "fldn_bgng_tm is survey-estimated and rounded to the hour; some records read 0000, which may mean midnight or an unrecorded time, not necessarily verified.",
-    "rain_1h/6h/24h are computed per AWS/ASOS station, not yet matched to buildings or to the flood polygon's location -- station selection per event still needs to happen.",
-    "Older events (2002, 2008) may have few or no reporting AWS stations open at the time; check hours_available_of_24 before trusting a row.",
+    "This output is event x station data. The downstream training-table script selects the nearest eligible station for each building and records rain_station_distance_km.",
+    "Rainfall windows are populated only when every expected hourly value exists; inspect hours_available_1h/3h/6h/12h/24h for coverage.",
+    "storm_group_id conservatively merges all event timestamps on the same or consecutive dates so one storm is not split across model folds; it remains a derived grouping, not an official disaster identifier.",
     "Geometry (GEOM) was dropped from gyeongbuk_flood_records.csv; use the source GeoJSON for spatial joins against building polygons."
   ]
 }

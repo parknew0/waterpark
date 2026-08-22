@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-08-22T15:29:51+0900",
+  "generated_at": "2026-08-22T20:31:44+0900",
   "source": {
     "building_hub_api": "https://www.data.go.kr/data/15134735/openapi.do",
-    "gis_building_dbf_directory": "GIS건물통합정보_경북/AL_D010_47_20251204",
+    "gis_building_dbf_directory": "data/raw/vworld-buildings/gyeongbuk/AL_D010_47_20251204",
     "gis_reference_date": "20251204"
   },
   "scope": "경상북도 GIS건물통합정보에서 지하층 수가 1 이상인 건물 후보",
@@ -30,9 +30,9 @@
     "all_planned_code_groups_completed": true
   },
   "large_local_outputs": [
-    "data/processed/gyeongbuk-building-register/gyeongbuk_basement_candidate_titles.csv",
-    "data/processed/gyeongbuk-building-register/gyeongbuk_probable_parking_floors.csv",
-    "data/processed/gyeongbuk-building-register/gyeongbuk_underground_parking_candidates.csv"
+    "data/interim/building-register/gyeongbuk_basement_candidate_titles.csv",
+    "data/interim/building-register/gyeongbuk_probable_parking_floors.csv",
+    "data/interim/building-register/gyeongbuk_underground_parking_candidates.csv"
   ],
   "committed_sample": "outputs/gyeongbuk-building-register/gyeongbuk_underground_parking_candidates_sample.csv",
   "limitations": [

@@ -34,10 +34,10 @@
 
 | ID | 필요한 원본 데이터 | 제공기관·공식 경로 | 원본 형태 | 가져올 정보 | 최종 역할 | 현재 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
-| `D1` | 행정안전부 침수흔적도 | 정식 API는 [기존 Polygon 자료](https://www.safetydata.go.kr/disaster-data/view?dataSn=108), [새 심선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3845)·[위선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846). 대체 확보 경로는 [Esri Korea Living Atlas 미러](https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer) | REST JSON/XML, 기존 자료의 WKT Polygon, 새 자료의 X·Y. 미러는 GeoJSON(EPSG:4326) | 침수 위치, 시작·종료 시각, 수심, 재해명 | `surface_flood_observed`, `event_id`를 만드는 정답 후보 | 정식 API는 이용신청 승인 대기 중. 대체 미러(2002~2021년, 경북 1,402행)는 실제 확보해 KMA 시간 강수와 결합 완료 |
-| `D2` | 기상청 ASOS/AWS 시간 강수 | [ASOS](https://data.kma.go.kr/data/grnd/selectAsosList.do?pgmNo=34), [AWS](https://data.kma.go.kr/data/grnd/selectAwsList.do?pgmNo=35), [API허브](https://apihub.kma.go.kr/apiList.do) | ZIP/CSV, 조회 CSV/Excel, API | 관측소, 관측시각, 시간강수량 | `rain_1h`, `rain_6h`, `rain_24h` 생성 | 수집 가능, 지점 선택 미확정 |
+| `D1` | 행정안전부 침수흔적도 | 정식 API는 [기존 Polygon 자료](https://www.safetydata.go.kr/disaster-data/view?dataSn=108), [새 심선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3845)·[위선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846). 대체 확보 경로는 [Esri Korea Living Atlas 미러](https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer) | REST JSON/XML, 기존 자료의 WKT Polygon, 새 자료의 X·Y. 미러는 GeoJSON(EPSG:4326) | 침수 위치, 시작·종료 시각, 수심, 재해명 | `surface_flood_observed`, 호우 그룹 후보를 만드는 정답 원천 | 정식 API는 이용신청 승인 대기 중. 대체 미러 전국 38,003건과 경북 부분집합 1,402건을 확보·검증했고, 경북 자료는 KMA 시간 강수와 결합 완료 |
+| `D2` | 기상청 ASOS/AWS 시간 강수 | [ASOS](https://data.kma.go.kr/data/grnd/selectAsosList.do?pgmNo=34), [AWS](https://data.kma.go.kr/data/grnd/selectAwsList.do?pgmNo=35), [API허브](https://apihub.kma.go.kr/apiList.do) | ZIP/CSV, 조회 CSV/Excel, API | 관측소, 관측시각, 시간강수량 | `rain_1h`, `rain_6h`, `rain_24h` 생성 | 경북 침수 시각 후보와 관측소를 결합한 강수 특징 20,018행 확보. 완전한 시간창에만 누적값을 생성 |
 | `D3` | 건축물대장 표제부·층별개요 | [공공데이터포털 파일](https://www.data.go.kr/data/15044720/fileData.do), [현재 건축HUB OpenAPI](https://www.data.go.kr/data/15134735/openapi.do) | XLSX 또는 REST JSON/XML | 관리 PK, 주소, 용도, 지상·지하층, 층별 용도, 옥내·옥외 주차 속성 | 지하주차장 근거와 건물 특징 | GIS 지하층 후보 범위에서 표제부 43,681행·층별개요 26,921행 수집, 지하주차장 용도 1,449건 확인 |
-| `D4` | GIS건물통합정보 | [VWorld](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18) | SHP Polygon | 건물 위치와 경계, 공간 식별자 후보 | 모든 공간정보를 붙일 기준 건물 | 경북 전체데이터 `AL_D010_47_20251204` 로컬 확보, Overture 대체 건물 305,058행도 보존 |
+| `D4` | GIS건물통합정보 | [VWorld](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18) | SHP Polygon | 건물 위치와 경계, 공간 식별자 후보 | 모든 공간정보를 붙일 기준 건물 | 경북 2020~2025 원본과 전국 2022 원본 확보. 전국 DBF 헤더 합계 13,885,793행·17개 시도이며 2022 스키마에는 지하층수 `A27`이 없음 |
 | `D5` | 실제 DEM 래스터 | [국토지리정보원 DEM](https://www.data.go.kr/data/15059920/fileData.do), [Copernicus GLO-30](https://registry.opendata.aws/copernicus-dem/) | IMG 또는 COG 래스터 | 각 격자의 지표면 높이 | 건물 지표 표고, 주변 대비 고도, 경사 생성 | 공식 원본 미확보, Copernicus DSM 표고 304,929행 확보 |
 | `D6` | 국가기본도 하천중심선 | [VWorld](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=MK&dsId=20250122DS00008) | SHP LineString + 정의서 XLSX | 하천 위치와 속성 | 건물에서 가장 가까운 하천까지 거리 생성 | 다운로드 경로 확인, 라이선스 확인 필요 |
 
@@ -145,7 +145,7 @@ ASOS 한 지점만 사용하면 이 표를 `event_id`로 붙일 수 있다. 여�
 | 형식 | API는 JSON/XML, 샘플 다운로드는 CSV |
 | 인증 | 전체 API는 회원가입과 활용 신청으로 받은 `serviceKey` 필요 |
 | 갱신 | 공식 페이지 표기상 1일 |
-| 행 수 | `TBD` — 전체 API 호출 후 포항/경북 필터 기준으로 산정 |
+| 확인 행 수 | Esri 미러 전국 38,003건, 그중 경북 1,402건. 정식 API 응답의 전체 건수는 승인 후 별도 교차검증 |
 
 공개 샘플과 미리보기를 직접 확인했다. 첫 두 행은 영문 컬럼명과 한글 설명이며 이후 최대 100개 레코드가 들어 있다. `GEOM`은 WKT `POLYGON(...)` 문자열로 제공된다.
 
@@ -197,7 +197,7 @@ API를 통해 원본을 받는 것 자체는 가능하다. 다만 XGBoost 라벨
 | 형식 | 포털 파일셋은 연 단위 ZIP/CSV, 조회 화면은 CSV/Excel, API는 텍스트/CSV형 응답 |
 | 인증 | API허브 활용 신청과 인증키 필요 |
 | 포항 지점 | ASOS 표준지점번호 `138`, 지점명 `포항` 확인 |
-| 행 수 | `TBD` — 선택 지점·기간·결측을 반영해 확보 후 산정 |
+| 현재 가공 행 수 | 경북 침수 시각 후보 × 관측소 강수 특징 20,018행. 장기 원본 전체 행 수는 선택 지점·기간별로 별도 산정 |
 
 ### 확인된 ASOS 시간자료 필드
 
@@ -249,14 +249,14 @@ API허브의 ASOS 기간 조회는 한 번에 최대 31일이다. 장기간 학�
 | 좌표계 | 최근 배포본 `EPSG:5186`, 과거 배포본 `EPSG:5174`로 페이지에 표기 |
 | 갱신 | 월간·일간 변동 데이터 |
 | 접근 | VWorld 로그인 필요, 대용량 다운로드 솔루션 안내 |
-| 경북 전체 목록 | `경상북도 + 전체데이터(AL) + SHP`로 조회 가능. 2026-08-22 확인한 최신 기준일 2026-08-09, 약 290MB |
-| 행 수 | `TBD` — 경북 전체 파일 확보 후 산정 |
+| 경북 전체 목록 | 2020~2025년 연말 스냅샷 6개를 확보. 현재 특징 생성은 2025-12-04의 29필드 자료를 사용 |
+| 확인 행 수 | 경북 2025 DBF 헤더 합계 2,008,310행. 전국 2022 묶음은 17개 시도·24개 SHP part·DBF 헤더 합계 13,885,793행 |
 
-VWorld 페이지는 SHP 속성이 `A0 ... An`으로 표시되며 별도 컬럼 정의서를 참고하라고 안내한다. 정의서에서 GIS건물통합식별번호, PNU, 법정동·지번, 용도, 건물명·동명, 지상·지하층 수를 확인했다. 사용자가 확인한 `CH_D010`은 일간 변동분이므로 최초 경북 전체 목록에는 사용할 수 없고 `AL_D010` 전체데이터가 필요하다. 정확한 건물 ID와 건축물대장 연결 키는 실제 경북 파일을 받은 뒤 매칭률로 확정한다.
+VWorld 페이지는 SHP 속성이 `A0 ... An`으로 표시되며 별도 컬럼 정의서를 참고하라고 안내한다. 실제 파일과 공식 정의서를 대조한 결과, 2022 전국 스냅샷은 `A0~A22` 23필드라 `A26 지상층수`, `A27 지하층수`가 없다. 경북 2024~2025 스냅샷은 `A0~A28` 29필드이므로 현재 경북 지하층 후보 추출에는 2025 자료를 사용한다. 사용자가 확인한 `CH_D010`은 일간 변동분이고 `AL_D010`은 전체데이터다. `A1`은 공백·중복이 있어 단독 기본키로 확정하지 않는다.
 
 ### 수집 판단
 
-건물 Polygon과 지하층·용도 속성을 각각 확보할 경로는 존재한다. 그러나 두 자료의 연결 키와 매칭률을 확인하기 전에는 `BULD_ID`, 좌표, 지하층 수가 한 행에 바로 온다고 가정할 수 없다.
+건물 Polygon과 지하층·용도 속성을 각각 확보할 경로는 존재한다. 경북 2025 자료와 건축HUB는 PNU 기준으로 연결해 가공표를 만들었지만, PNU는 필지 단위라 여러 건물이 같은 판정을 공유할 수 있다. 전국 2022 자료는 위치·PNU·용도·면적에는 쓸 수 있으나 지하층수 원천으로는 쓸 수 없다. 전체 필드와 상태는 [`data/catalog.csv`](../data/catalog.csv)와 [전국 데이터 및 코드 감사](./08-national-data-and-code-audit.md)를 기준으로 확인한다.
 
 ## 7. DEM — 지형 Feature 후보
 

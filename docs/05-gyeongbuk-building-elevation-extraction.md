@@ -25,12 +25,12 @@
 
 | 파일 | 내용 | 용도 |
 | --- | --- | --- |
-| `data/processed/gyeongbuk_buildings_elevation.parquet` | 305,058행 전체, WKB 건물 도형 포함 | 공간분석·모델 전처리 기본 파일 |
-| `data/processed/gyeongbuk_buildings_elevation.csv.gz` | 305,058행 전체, 도형 제외 | 일반 분석 도구 전달 |
-| `data/processed/gyeongbuk_buildings_elevation.manifest.json` | 행 수·해시·원천 릴리스·한계 | 재현·검증 |
+| `data/processed/buildings/gyeongbuk_buildings_elevation.parquet` | 305,058행 전체, WKB 건물 도형 포함 | 공간분석·모델 전처리 기본 파일 |
+| `data/processed/buildings/gyeongbuk_buildings_elevation.csv.gz` | 305,058행 전체, 도형 제외 | 일반 분석 도구 전달 |
+| `data/processed/buildings/gyeongbuk_buildings_elevation.manifest.json` | 행 수·해시·원천 릴리스·한계 | 재현·검증 |
 | `outputs/gyeongbuk-buildings/gyeongbuk_buildings_elevation_sample.csv` | 앞 20,000행 표본 | 빠른 열람 |
 | `outputs/gyeongbuk-buildings/gyeongbuk_buildings_by_municipality.csv` | 22개 시군 통계 | 범위·분포 검증 |
-| `outputs/gyeongbuk-buildings/waterpark_gyeongbuk_buildings_elevation.xlsx` | 요약·시군 통계·20,000행 표본·재실행 조건 | 팀 공유 |
+| `outputs/reports/waterpark_gyeongbuk_buildings_elevation.xlsx` | 요약·시군 통계·20,000행 표본·재실행 조건 | 팀 공유 |
 
 전체 행 분석에는 XLSX 표본이 아니라 Parquet를 사용한다.
 
@@ -139,7 +139,7 @@ python scripts/build_gyeongbuk_building_elevation_dataset.py
 node scripts/build_gyeongbuk_building_elevation_workbook.mjs
 ```
 
-입력·출력 SHA-256은 `data/processed/gyeongbuk_buildings_elevation.manifest.json`에 기록했다.
+입력·출력 SHA-256은 `data/processed/buildings/gyeongbuk_buildings_elevation.manifest.json`에 기록했다.
 
 ## 9. 출처
 

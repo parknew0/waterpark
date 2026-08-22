@@ -10,7 +10,7 @@
 
 공식 전국주차장정보표준데이터 18,879행을 내려받아 경상북도 22개 시군의 2,010행을 추출했다. 이 중 1,986행은 위도·경도가 있고 24행은 좌표가 없다.
 
-이 자료는 침수 예측의 학습 행이 아니라 **차량 대피 목적지 후보**다. 건물×호우 사건 학습표에 주차장 행을 억지로 붙이지 않는다. 대신 하나의 전달용 [통합 워크북](../data/processed/waterpark_gyeongbuk_integration.xlsx)에 다음을 담았다.
+이 자료는 침수 예측의 학습 행이 아니라 **차량 대피 목적지 후보**다. 건물×호우 사건 학습표에 주차장 행을 억지로 붙이지 않는다. 대신 하나의 전달용 [통합 워크북](../outputs/reports/waterpark_gyeongbuk_integration.xlsx)에 다음을 담았다.
 
 - `경북_주차장_원본`: 실제 확보한 경북 주차장 후보 2,010행
 - `조인_준비상태`: 핵심 D1~D6과 보조 S1의 접근·확보 상태
@@ -39,13 +39,13 @@
 | `data/raw/parking_standard_header.json` | 공식 컬럼·전체 행 메타데이터 | 34개 컬럼 | `FACT` |
 | `data/raw/parking_standard_page_1.json` | 전국주차장 원본 1페이지 | 10,000 | `FACT` |
 | `data/raw/parking_standard_page_2.json` | 전국주차장 원본 2페이지 | 8,879 | `FACT` |
-| `data/processed/gyeongbuk_parking_seed.csv` | 경북 22개 시군 정규화 결과 | 2,010 | `FACT` |
-| `data/processed/gyeongbuk_parking_seed.manifest.json` | 행 수·좌표 결측·시군별 집계 | 1 | `FACT` |
-| `data/processed/waterpark_gyeongbuk_integration.xlsx` | 전달용 통합 워크북 | 3개 시트 | `FACT` |
-| `data/processed/gyeongbuk-building-register/gyeongbuk_gis_basement_candidates.csv` | GIS 지하층 보유 후보 | 25,340 | `FACT` |
-| `data/processed/gyeongbuk-building-register/gyeongbuk_basement_candidate_titles.csv` | 후보 범위의 건축물대장 표제부 | 43,681 | `FACT` |
-| `data/processed/gyeongbuk-building-register/gyeongbuk_probable_parking_floors.csv` | 지하층·옥내주차 후보의 층별개요 | 26,921 | `FACT` |
-| `data/processed/gyeongbuk-building-register/gyeongbuk_underground_parking_candidates.csv` | 표제부·층별개요 판정 통합 결과 | 43,681 | `FACT` |
+| `data/processed/parking/gyeongbuk_parking_seed.csv` | 경북 22개 시군 정규화 결과 | 2,010 | `FACT` |
+| `data/processed/parking/gyeongbuk_parking_seed.manifest.json` | 행 수·좌표 결측·시군별 집계 | 1 | `FACT` |
+| `outputs/reports/waterpark_gyeongbuk_integration.xlsx` | 전달용 통합 워크북 | 3개 시트 | `FACT` |
+| `data/interim/building-register/gyeongbuk_gis_basement_candidates.csv` | GIS 지하층 보유 후보 | 25,340 | `FACT` |
+| `data/interim/building-register/gyeongbuk_basement_candidate_titles.csv` | 후보 범위의 건축물대장 표제부 | 43,681 | `FACT` |
+| `data/interim/building-register/gyeongbuk_probable_parking_floors.csv` | 지하층·옥내주차 후보의 층별개요 | 26,921 | `FACT` |
+| `data/interim/building-register/gyeongbuk_underground_parking_candidates.csv` | 표제부·층별개요 판정 통합 결과 | 43,681 | `FACT` |
 
 원자료는 2026-08-22에 [공공데이터포털 전국주차장정보표준데이터](https://www.data.go.kr/data/15012896/standard.do)의 공개 다운로드 요청을 사용해 확보했다.
 
@@ -53,7 +53,7 @@
 
 | ID | 데이터 | 역할 | 접근 상태 | 판정 |
 | --- | --- | --- | --- | --- |
-| `D1` | 침수흔적도 | 건물×사건 라벨 | 정식 API 승인 대기, 대체 미러의 경북 Polygon 1,402행 확보 | `ALT_SOURCE_READY` |
+| `D1` | 침수흔적도 | 건물×사건 라벨 | 정식 API 승인 대기, 대체 미러 전국 38,003건·경북 부분집합 1,402건 확보 | `ALT_SOURCE_READY` |
 | `D2` | ASOS/AWS 강수 | 시간별 강수 feature | 대체 침수 30개 사건 시각에 대한 관측소별 1·6·24시간 강수 계산, 최종 관측소 선택 필요 | `EVENT_RAIN_READY` |
 | `D3` | 건축물대장 | 지하층·층별용도·주차 속성 | GIS 지하층 후보 범위에서 표제부 43,681행·층별개요 26,921행 수집 | `CANDIDATE_READY` |
 | `D4` | GIS건물통합정보 | 기준 건물 Polygon | 공식 경북 전체데이터 `AL_D010_47_20251204` 확보, Overture 대체 건물 305,058행도 보존 | `SOURCE_READY` |
@@ -61,7 +61,7 @@
 | `D6` | 하천중심선 | 최근접 하천 거리 | VWorld 로그인 필요 | `BLOCKED_LOGIN` |
 | `S1` | 전국주차장 표준데이터 | 대피 후보 | 공개 다운로드 완료 | `SOURCE_ONLY` |
 
-침수흔적도 정식 API는 활용신청 승인이 필요하지만, 같은 행정안전부 자료를 제공하는 Esri Korea 미러에서 경북 1,402행을 확보했다. 공식 국토지리정보원 DEM은 로그인과 영역 지정 다운로드가 필요해 Copernicus GLO-30 DSM을 대체 원천으로 확보했다. 정식 원본과 대체 원천의 상태는 계속 분리해 기록한다.
+침수흔적도 정식 API는 활용신청 승인이 필요하지만, 같은 행정안전부 자료를 제공하는 Esri Korea 미러에서 전국 38,003건을 받았고 그 안의 경북 1,402건이 기존 부분집합과 일치함을 확인했다. 공식 국토지리정보원 DEM은 로그인과 영역 지정 다운로드가 필요해 Copernicus GLO-30 DSM을 대체 원천으로 확보했다. 정식 원본과 대체 원천의 상태는 계속 분리해 기록한다.
 
 ## 5. 하나의 학습 데이터로 만드는 기준
 

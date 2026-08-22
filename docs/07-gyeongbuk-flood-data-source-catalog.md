@@ -48,7 +48,7 @@
 | 자료 | 제공처·형식 | 경북에서 알 수 있는 것 | 접근 | Waterpark 판단 |
 | --- | --- | --- | --- | --- |
 | [행정안전부 침수흔적도](https://www.safetydata.go.kr/disaster-data/view?dataSn=108) | 재난안전데이터 공유플랫폼 REST JSON/XML, WKT Polygon | 침수 구역, 시작·종료 일시, 침수심·면적, 재해명·원인 | 전체 API는 활용신청 승인 필요, 샘플은 100건 | `P0`; 실제 지표면 침수 양성 라벨 후보. 지하주차장 직접 침수 기록은 아님 |
-| [Esri Korea 침수흔적도 공개 미러](https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer) | ArcGIS Feature Service, GeoJSON 가능 | 경북 침수흔적 Polygon 1,402건 | 즉시 다운로드 가능 | `P0`; 해커톤용 대체 경로. 정식 원 API와 버전·라이선스 교차확인 필요 |
+| [Esri Korea 침수흔적도 공개 미러](https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer) | ArcGIS Feature Service, GeoJSON 가능 | 전국 38,003건, 그중 경북 침수흔적 Polygon 1,402건 | 전국 다운로드·건수·CRS·필드 검증 완료 | `P0`; 해커톤용 대체 경로. 정식 원 API와 버전·라이선스 교차확인 필요 |
 | [침수흔적도 심선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3845) | REST JSON/XML, 점 또는 선 기준 위치 | 침수 위치와 행정구역 보조정보 | 활용신청 필요 | `P2`; Polygon이 없어 건물 침수 라벨로 바로 쓸 수 없음 |
 | [침수흔적도 위선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846) | REST JSON/XML, X·Y와 침수위·일시 | 사건 위치·시각과 평균침수위 보강 | 활용신청 필요 | `P2`; Polygon이 없어 건물 포함 여부를 직접 계산할 수 없음 |
 | [긴급재난문자](https://www.safetydata.go.kr/disaster-data/view?dataSn=228) | REST JSON, 1분 갱신 | 경북 시군의 침수·도로통제·대피 알림 시각과 문구 | 활용신청 필요 | `P1`; 사건 날짜·지역 검증용. 건물 단위 라벨은 아님 |

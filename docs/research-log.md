@@ -75,7 +75,7 @@
 - 주차구획수는 실시간 여석이 아니며, DEM·침수흔적·접근도로·기관 승인을 확인하기 전 안전 대피 주차장으로 판정하지 않는다.
 - 침수흔적도 전체 API는 회원가입·활용 신청이 필요하고 샘플 다운로드는 첫 100건으로 제한된다.
 - 국토지리정보원 DEM은 무료이나 국토정보플랫폼 로그인과 영역 지정 다운로드가 필요하다.
-- 산출물: `data/processed/gyeongbuk_parking_seed.csv`, `data/processed/waterpark_gyeongbuk_integration.xlsx`
+- 산출물: `data/processed/parking/gyeongbuk_parking_seed.csv`, `outputs/reports/waterpark_gyeongbuk_integration.xlsx`
 - 출처: [전국주차장정보표준데이터](https://www.data.go.kr/data/15012896/standard.do), [기존 침수흔적도](https://www.safetydata.go.kr/disaster-data/view?dataSn=108), [새 침수흔적도 위선](https://www.safetydata.go.kr/disaster-data/view?dataSn=3846), [국토지리정보원 DEM](https://www.data.go.kr/data/15059920/fileData.do)
 - 확인일: 2026-08-22
 
@@ -91,7 +91,7 @@
 - Overture의 지하층수 값은 경북에서 6행뿐이었다. 따라서 이 Overture 산출물 자체의 지하주차장 상태는 305,058행 모두 미상으로 보존했다.
 - VWorld 연속수치지형도 건물 경북 파일은 `dsId=30162`, `fileNo=25`, 화면 표시 279MB로 확인했다. 비로그인 직접 호출은 0바이트였고 화면 스크립트도 로그인 여부를 검사한다.
 - 건축HUB OpenAPI `15134735`는 `serviceKey`, `sigunguCd`, `bjdongCd`가 필수다. 당시에는 키가 없었으나 이후 같은 날 키와 GIS 원본을 확보해 다음 절의 후보 수집을 완료했다.
-- 산출물: `data/processed/gyeongbuk_buildings_elevation.parquet`, `data/processed/gyeongbuk_buildings_elevation.csv.gz`, `outputs/gyeongbuk-buildings/waterpark_gyeongbuk_buildings_elevation.xlsx`
+- 산출물: `data/processed/buildings/gyeongbuk_buildings_elevation.parquet`, `data/processed/buildings/gyeongbuk_buildings_elevation.csv.gz`, `outputs/reports/waterpark_gyeongbuk_buildings_elevation.xlsx`
 - 상세 문서: [경상북도 건물·고도 실제 추출 결과](./05-gyeongbuk-building-elevation-extraction.md)
 - 출처: [Overture 공개 데이터](https://registry.opendata.aws/overture/), [Overture Python Client](https://docs.overturemaps.org/getting-data/overturemaps-py/), [Copernicus DEM 공개 데이터](https://registry.opendata.aws/copernicus-dem/), [VWorld 건물 데이터](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?dsId=30162), [건축HUB API](https://www.data.go.kr/data/15134735/openapi.do)
 - 확인일: 2026-08-22
@@ -104,7 +104,7 @@
 - 후보의 층별개요 26,921행을 수집했다. `층구분코드=10`, 면적 0 초과, 주용도명 또는 기타용도에 `주차장` 포함 조건으로 1,449개 관리건축물대장 PK를 `confirmed`로 분류했다.
 - 지하층과 옥내주차는 있지만 층별개요에서 주차장을 확인하지 못한 1,714건은 `FALSE`가 아니라 미확인 후보로 남겼다.
 - 건축물대장 API에는 위도·경도가 없다. 다음 공간 결합에서는 GIS의 PNU와 Polygon을 기준으로 같은 PNU의 여러 동·대장을 구분해야 한다.
-- 전체 API 원응답과 CSV는 로컬 `data/raw/building-register/`, `data/processed/gyeongbuk-building-register/`에 저장하고 Git에서는 제외했다. 재현 스크립트, 500행 표본과 집계 manifest만 Git에 포함한다.
+- 전체 API 원응답과 CSV는 로컬 `data/raw/building-register/`, `data/interim/building-register/`에 저장하고 Git에서는 제외했다. 재현 스크립트, 500행 표본과 집계 manifest만 Git에 포함한다.
 - 산출물 설명: [경상북도 건축물대장 수집 결과](../outputs/gyeongbuk-building-register/README.md)
 - 출처: [건축HUB 건축물대장정보 API](https://www.data.go.kr/data/15134735/openapi.do), 경북 GIS건물통합정보 전체데이터
 - 확인일: 2026-08-22
@@ -158,7 +158,7 @@
 - 30개 (날짜, 시각) 이벤트마다 KMA API허브 `AWS 시간통계`(`awsh.php`, `var=RN`, `apiList.do?seqApi=2&seqApiSub=239`)로 사건 시작시각 기준 과거 24시간의 `RN_HR1`을 시간별로 받아 `rain_1h`, `rain_6h`, `rain_24h`를 관측소별로 계산했다. 필요한 서로 다른 시간대는 427개였고, 결측(-99) 값은 제외했다.
 - 포항 관측소(138)는 검증한 모든 이벤트에서 24시간 전체 자료가 존재했다. 예: 2012-09-17 태풍 산바 당일 시각별 24시간 누적 강수가 98→216mm로 늘어나는 흐름을 확인했고, 2019-10-02 23:00 시점 24시간 누적은 276.8mm(태풍 미탁)였다.
 - 포항이 아닌 사건(예: 2008-07-24 안동)에서는 포항 관측소 값이 낮게 나왔다. 이벤트마다 해당 시군구에 맞는 관측소를 고르는 작업이 아직 남아 있다는 뜻이다.
-- 산출물: `data/processed/gyeongbuk_flood_records.csv`(1,402행, 지오메트리 제외), `data/processed/gyeongbuk_flood_events.csv`(30행), `data/processed/gyeongbuk_flood_event_rain.csv`(20,018행, 이벤트×관측소), 원본 `data/raw/flood-trace/gyeongbuk_flood_2002_2022.geojson`
+- 산출물: `data/interim/flood-trace/gyeongbuk/gyeongbuk_flood_records.csv`(1,402행, 지오메트리 제외), `data/interim/flood-trace/gyeongbuk/gyeongbuk_flood_events.csv`(30행), `data/processed/rainfall/gyeongbuk_flood_event_rain.csv`(20,018행, 이벤트×관측소), 원본 `data/raw/flood-trace/gyeongbuk_flood_2002_2022.geojson`
 - 한계: 건물과의 공간 결합은 아직 하지 않았다(지오메트리는 CSV에서 제외, 원본 GeoJSON에는 보존). 관측소 선택은 아직 거리 기반이 아니라 전체 관측소를 남겨둔 상태다. 정식 `safetydata.go.kr` API는 여전히 미확보라 이 미러와 원 출처가 완전히 같은지는 재교차검증이 필요하다.
 - 출처: [Esri Korea Living Atlas 침수흔적도 미러](https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer), [행정안전부 침수흔적도 승인서](https://www.safetydata.go.kr/disaster-data/view?dataSn=108), [기상청 API허브 AWS 시간통계](https://apihub.kma.go.kr/apiList.do?seqApi=2&seqApiSub=239)
 - 확인일: 2026-08-22
@@ -166,7 +166,7 @@
 ## 2026-08-22 공식 GIS건물통합정보 확보 및 건물 특징표 생성
 
 - 상태: `FACT` — 공식 `D4` SHP를 로컬에서 확인하고 좌표를 실제로 추출했다. 침수 라벨 결합은 아직 `OPEN`.
-- 사용자가 VWorld `GIS건물통합정보` 경상북도 전체데이터를 직접 받아 `GIS건물통합정보_경북/AL_D010_47_20251204`에 두었다. 기존 문서가 `공식 원본은 로그인 차단`으로 기록했던 `D4`가 실제로는 확보된 상태다.
+- 사용자가 VWorld `GIS건물통합정보` 경상북도 전체데이터를 직접 받았고, 원천자료를 `data/raw/vworld-buildings/gyeongbuk/AL_D010_47_20251204`로 정리했다. 기존 문서가 `공식 원본은 로그인 차단`으로 기록했던 `D4`가 실제로는 확보된 상태다.
 - 파일 구성은 SHP 3개 묶음으로 각각 1,000,000 + 1,000,000 + 8,310 레코드이며 합계 2,008,310동이다. 세 파일은 중복이 아니라 서로 다른 분할분임을 `gis_building_id` 기준으로 확인했다.
 - 좌표계는 `.prj`에 `EPSG:5186`(Korea 2000 중부원점 2010)으로 명시되어 있다. 침수흔적도(`EPSG:4326`)와 다르므로 공간 결합 전 변환이 필요하다.
 - 조인 키 검증 결과 건축물대장의 `mgmBldrgstPk`(예: `122613634`)와 GIS의 `A19` 연계 ID(예: `37009`)는 형식이 달라 건물 단위 1:1 결합이 불가능했다. 유일하게 신뢰 가능한 공통 키는 `PNU`(필지)이며, 등록부 고유 PNU 20,788개가 GIS PNU에 100% 포함된다.
@@ -176,7 +176,7 @@
 - 좌표 타당성 검증: 25,336동 전부가 경북 경위도 범위 안이며 범위 밖 0건이다. 독립 출처인 Overture 건물 305,058동과 대조했을 때 표본 400동의 최근접 거리 중앙값은 7.6m, 30m 이내가 80.6%로 같은 건물 수준이다.
 - 지하주차장 확정은 필지 1,372개이며 그 위의 건물 1,787동이다. 기존 매니페스트의 `1,449`는 등록부 행 기준이고 이 값은 건물 기준이라 서로 다른 단위다.
 - 확정 건물의 시군 분포는 구미 405, 경산 338, 포항 북구 195, 경주 194, 포항 남구 175동 순으로 도시 지역에 집중된다.
-- 산출물: `data/processed/gyeongbuk_building_underground_parking_features.csv`(25,336행, 27컬럼)
+- 산출물: `data/processed/buildings/gyeongbuk_building_underground_parking_features.csv`(25,336행, 27컬럼)
 - 한계: 지하주차장 판정은 필지 단위라 한 필지의 여러 동이 같은 값을 갖는다. 지하층이 있는 건물만 포함해 음성 표본을 이 파일만으로 만들 수 없다. `CONFIRMED`가 아닌 값은 지하주차장이 없다는 뜻이 아니다. 침수 라벨과 강수는 아직 붙이지 않았다.
 - 출처: [VWorld GIS건물통합정보](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18), [건축HUB 건축물대장 API](https://www.data.go.kr/data/15134735/openapi.do)
 - 확인일: 2026-08-22
@@ -189,15 +189,15 @@
 - 따라서 조사 기록이 없는 지역을 `flood=0`으로 둘 수 없다. [전처리 계획](./02-preprocessing-and-xgboost-feasibility.md) 3.3절의 경고가 실제 데이터에서 그대로 확인됐다.
 - 대체 목표로 `지표면 침수`를 학습했다. 학습표는 45,920행, 양성 2,993(6.52%)이며 음성은 같은 사건의 조사 Polygon에서 1km 이내인 건물만 인정하고 그 밖은 미확인으로 제외했다.
 - 누수 차단: `distance_to_flood_polygon_m`(양성은 전부 0), `longitude`, `latitude`(같은 건물이 여러 사건에 등장)를 제외했다. 분할은 무작위 대신 사건 단위와 건물 단위로 각각 수행했다.
-- 평가 결과 사건 단위 CV는 PR-AUC 0.099, 시간 순서 분할은 0.104로 기준선 0.065를 거의 넘지 못했다. 건물 단위 CV는 0.825로 높지만 같은 호우 사건이 학습·검증 양쪽에 있어 성능으로 주장할 수 없다.
-- **주변 대비 고도 규칙 하나의 PR-AUC가 0.249로 XGBoost 사건 단위 0.099보다 높다.** 학습 없이 계산되는 값이므로 누수가 없다. 규칙이 모델을 이겼다.
-- 강수는 신호가 없다. 24시간 누적 구간별 침수율이 3.9%, 9.6%, 8.5%, 3.7%, 7.2%로 단조가 아니고, 저지대만 보면 비가 많을수록 침수율이 오히려 낮다. 한 사건 안에서 모든 건물의 강수가 동일하고 사건이 21개뿐이라 강수-침수 관계를 분리할 수 없다.
+- 같은·연속 날짜의 30개 사건시각을 보수적으로 13개 `storm_group_id`로 묶고, 같은 폭풍이 학습·검증에 나뉘지 않도록 다시 평가했다. 폭풍 그룹 CV PR-AUC는 0.1257, 시간 순서 분할은 0.1188로 기준선 0.065보다 높지만 여전히 낮다. 건물 단위 CV는 0.8233으로 높지만 같은 호우가 양쪽에 있어 새 폭풍 성능으로 주장할 수 없다.
+- **주변 대비 고도 규칙 하나의 PR-AUC가 0.249로 XGBoost 폭풍 그룹 CV 0.1257보다 높다.** 학습 없이 계산되는 값이므로 누수가 없다. 현재 데이터에서는 규칙이 모델보다 강하다.
+- 강수는 안정적인 신호로 확인되지 않았다. 24시간 누적 구간별 침수율이 단조가 아니고, 한 사건 안에서 같은 관측소를 쓰는 건물은 동일한 강수값을 공유한다. 양성이 있는 사건시각은 21개지만 독립 폭풍 대리그룹은 13개뿐이라 강수-침수 관계를 분리하기에 부족하다.
 - 지형은 신호가 뚜렷하다. 주변 대비 고도별 침수율은 0~2m 35.5%, 2~5m 14.8%, 5~10m 5.2%, 10~20m 0.4%, 20m 이상 0.0%로 단조 감소한다.
 - 위험점수는 지형 관측값에 과거 침수 500m 이내 상향을 더한 상시 위험도로 만들고, 강수 발령 기준은 학습하지 않고 기상청 공식 호우특보 기준을 적용했다. 공식 기준은 호우주의보 3시간 60mm 또는 12시간 110mm, 호우경보 3시간 90mm 또는 12시간 180mm, 극한호우 1시간 50mm이면서 3시간 90mm 또는 1시간 72mm다.
 - 위험도에는 가능성만 포함하고 지하주차장 유무·주차 대수는 피해 규모이므로 별도 컬럼으로 분리했다.
 - 25,336동 상시 위험도 분포는 VERY_HIGH 341, HIGH 2,283, MODERATE 4,979, LOW 6,582, VERY_LOW 8,729, UNKNOWN 2,422다. UNKNOWN은 100m 이내 표고 공여 건물이 없는 경우다.
 - 기상청 관측지점정보 CSV는 로그인 없이 `POST /tmeta/stn/selectStnListDownload.do`로 받을 수 있다. 지점정보 API(`stn_inf.php`)와 일통계 API(`sfc_aws_day.php`)는 별도 활용신청이 필요해 403이다.
-- 산출물: `data/processed/gyeongbuk_flood_training_table.csv`(45,920행), `data/processed/gyeongbuk_underground_parking_risk.csv`(25,336행), `outputs/gyeongbuk-flood-model/model_report.json`
+- 산출물: `data/processed/ml/training/gyeongbuk_flood_training_table.csv`(45,920행), `data/processed/ml/predictions/gyeongbuk_underground_parking_risk.csv`(25,336행), `outputs/gyeongbuk-flood-model/model_report.json`
 - 상세 문서: [침수 위험 산출 결과](./06-flood-risk-modeling.md)
 - 출처: [기상청 예보업무 기상특보 기준](https://www.kma.go.kr/kma/biz/forecast03.jsp), [기상청 관측지점정보](https://data.kma.go.kr/tmeta/stn/selectStnList.do?pgmNo=123), [Esri Korea 침수흔적도 미러](https://portal.esrikr.com/arcgis/rest/services/Hosted/Flood_2002_2022/FeatureServer)
 - 확인일: 2026-08-22
@@ -216,6 +216,20 @@
 - 상세 목록과 판별 순서: [경상북도 침수 관련 공공데이터 소스 조사](./07-gyeongbuk-flood-data-source-catalog.md)
 - 확인일: 2026-08-22
 
+## 2026-08-22 전국 침수·건물 원본 확보 및 구조 검증
+
+- 상태: `FACT` — 전국 원본 다운로드와 구조·스키마 검증까지 완료. 전국 학습표 생성은 아직 하지 않았다.
+- 전국 침수흔적도는 38,003건, 17개 시도, Polygon 37,898건과 MultiPolygon 105건이다. 원본 geometry는 바꾸지 않았고 self-intersection 22건을 manifest에 기록했다.
+- VWorld GIS건물통합정보는 침수 원천의 마지막 연도에 맞춘 2022-12-03 전국 전체데이터를 Chrome에서 선택해 내려받았다. 외부 ZIP은 17개 시도 ZIP, 내부는 24개 SHP part이고 압축 CRC가 정상이다.
+- 전국 건물 DBF 헤더 합계는 13,885,793행이다. 모든 part는 동일한 23필드 `A0~A22`, 좌표계 `EPSG:5174`다.
+- 공식 VWorld 컬럼 정의서와 대조한 결과 건물 ID·PNU·주소·용도·구조·면적·사용승인일·높이는 있지만 `A26 지상층수`와 `A27 지하층수`는 2022 스키마에 없다. 따라서 이 파일만으로 전국 지하층 후보를 만들 수 없다.
+- 경북 2020~2022 원본도 23필드·EPSG:5174이고, 2023은 24필드·EPSG:5186, 2024~2025는 29필드·EPSG:5186다. 현재 경북 지하층 특징표는 A27이 있는 2025 스냅샷을 사용한다.
+- 대용량 전국·경북 VWorld 원본과 전국 침수 GeoJSON은 재배포 조건 확인 전 로컬 전용이다. Git에는 재현 스크립트·manifest·QA·필드 사전만 포함한다.
+- 산출물: `data/interim/flood-trace/korea_flood_records.csv`, `data/interim/vworld-buildings/national_2022-12-03_inventory.csv`, `data/interim/vworld-buildings/national_2022-12-03_field_dictionary.csv`, `data/catalog.csv`
+- 상세: [전국 데이터 및 코드 감사](./08-national-data-and-code-audit.md)
+- 출처: [Esri Korea 전국 침수흔적도](https://www.arcgis.com/home/item.html?id=36b15209737c49b3893332c71db04a27), [VWorld GIS건물통합정보](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18)
+- 확인일: 2026-08-22
+
 ## 결정 로그
 
 | ID | 날짜 | 결정 | 상태 |
@@ -226,8 +240,8 @@
 | D-004 | 2026-08-22 | 현재 개발 순서를 데이터 판별·전처리, 머신러닝, 백엔드, 프론트엔드 전달로 둔다. | `DECISION` |
 | D-005 | 2026-08-22 | 데이터 수집·통합 기본 범위를 포항이 아닌 경상북도 22개 시군 전체로 둔다. | `DECISION` |
 | D-006 | 2026-08-22 | 지하주차장 침수 지도학습은 양성 9건으로 불가하므로, 규칙 기반 위험점수를 주력으로 하고 지표면 침수 XGBoost를 보조로 병행한다. | `DECISION` |
-| D-006 | 2026-08-22 | 프론트엔드 로우파이는 React·TypeScript·Vite로 구현한다. | `DECISION` |
-| D-007 | 2026-08-22 | 지도·주소·주차장 검색은 Kakao 지도 JavaScript SDK를 우선 사용하고, 키가 없거나 실패하면 경북 공영주차장 좌표 데이터로 전환한다. | `DECISION` |
+| D-007 | 2026-08-22 | 프론트엔드 로우파이는 React·TypeScript·Vite로 구현한다. | `DECISION` |
+| D-008 | 2026-08-22 | 지도·주소·주차장 검색은 Kakao 지도 JavaScript SDK를 우선 사용하고, 키가 없거나 실패하면 경북 공영주차장 좌표 데이터로 전환한다. | `DECISION` |
 
 ## 조사 결과 기록 형식
 

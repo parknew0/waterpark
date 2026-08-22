@@ -10,7 +10,9 @@
 4. `docs/03-gyeongbuk-data-integration-runbook.md`
 5. `docs/04-building-rain-flood-source-verification.md`
 6. `docs/07-gyeongbuk-flood-data-source-catalog.md`
-7. `docs/research-log.md`
+7. `data/README.md`와 `data/catalog.csv`
+8. `docs/08-national-data-and-code-audit.md`
+9. `docs/research-log.md`
 
 ## 확정 사항
 

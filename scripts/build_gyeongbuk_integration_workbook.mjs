@@ -1,7 +1,15 @@
 import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { SpreadsheetFile, Workbook } from "@oai/artifact-tool";
 
-const csvText = await fs.readFile("data/processed/gyeongbuk_parking_seed.csv", "utf8");
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const parkingCsvPath = path.join(root, "data/processed/parking/gyeongbuk_parking_seed.csv");
+const reportsDir = path.join(root, "outputs/reports");
+const outputPath = path.join(reportsDir, "waterpark_gyeongbuk_integration.xlsx");
+const previewPath = path.join(reportsDir, "waterpark_gyeongbuk_integration_preview.png");
+
+const csvText = await fs.readFile(parkingCsvPath, "utf8");
 const parkingBook = await Workbook.fromCSV(csvText, { sheetName: "경북_주차장_원본" });
 const parkingSheet = parkingBook.worksheets.getItem("경북_주차장_원본");
 const used = parkingSheet.getUsedRange();
@@ -64,7 +72,8 @@ dictionary.showGridLines = false;
 
 const inspection = await parkingBook.inspect({ kind: "sheet,region", maxChars: 3000, tableMaxRows: 5, tableMaxCols: 8 });
 console.log(inspection.ndjson ?? inspection);
+await fs.mkdir(reportsDir, { recursive: true });
 const output = await SpreadsheetFile.exportXlsx(parkingBook);
-await output.save("data/processed/waterpark_gyeongbuk_integration.xlsx");
+await output.save(outputPath);
 const preview = await parkingBook.render({ sheetName: "조인_준비상태", autoCrop: "all", scale: 1, format: "png" });
-await fs.writeFile("/tmp/waterpark_gyeongbuk_integration_preview.png", new Uint8Array(await preview.arrayBuffer()));
+await fs.writeFile(previewPath, new Uint8Array(await preview.arrayBuffer()));
