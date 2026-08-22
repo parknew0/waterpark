@@ -1,0 +1,179 @@
+{
+  "generated_at": "2026-08-22T17:04:24+09:00",
+  "target": "surface_flood_observed (건물 위치의 지표면 침수 여부)",
+  "row_unit": "one building x one flood event",
+  "rows": 45920,
+  "positive": 2993,
+  "negative": 42927,
+  "positive_rate": 0.0652,
+  "events_total": 30,
+  "events_with_positive": 21,
+  "negative_radius_m": 1000.0,
+  "max_station_distance_km": 30.0,
+  "per_event": [
+    {
+      "event": "20020831-1600",
+      "positive": 84,
+      "negative": 360
+    },
+    {
+      "event": "20080724-1600",
+      "positive": 0,
+      "negative": 6
+    },
+    {
+      "event": "20110709-1000",
+      "positive": 171,
+      "negative": 1185
+    },
+    {
+      "event": "20110709-1900",
+      "positive": 99,
+      "negative": 81
+    },
+    {
+      "event": "20120823-0000",
+      "positive": 0,
+      "negative": 74
+    },
+    {
+      "event": "20120917-0000",
+      "positive": 15,
+      "negative": 435
+    },
+    {
+      "event": "20120917-0500",
+      "positive": 252,
+      "negative": 3073
+    },
+    {
+      "event": "20120917-0800",
+      "positive": 484,
+      "negative": 5872
+    },
+    {
+      "event": "20120917-1000",
+      "positive": 243,
+      "negative": 6081
+    },
+    {
+      "event": "20120917-1200",
+      "positive": 286,
+      "negative": 957
+    },
+    {
+      "event": "20120917-1300",
+      "positive": 306,
+      "negative": 2832
+    },
+    {
+      "event": "20120917-1400",
+      "positive": 368,
+      "negative": 4615
+    },
+    {
+      "event": "20120917-1500",
+      "positive": 67,
+      "negative": 5861
+    },
+    {
+      "event": "20120917-1600",
+      "positive": 23,
+      "negative": 315
+    },
+    {
+      "event": "20180704-2000",
+      "positive": 0,
+      "negative": 1199
+    },
+    {
+      "event": "20181005-0000",
+      "positive": 12,
+      "negative": 263
+    },
+    {
+      "event": "20181006-0000",
+      "positive": 3,
+      "negative": 0
+    },
+    {
+      "event": "20181006-0600",
+      "positive": 103,
+      "negative": 2550
+    },
+    {
+      "event": "20190922-1600",
+      "positive": 13,
+      "negative": 1095
+    },
+    {
+      "event": "20191002-0000",
+      "positive": 0,
+      "negative": 71
+    },
+    {
+      "event": "20191002-2000",
+      "positive": 119,
+      "negative": 730
+    },
+    {
+      "event": "20191002-2200",
+      "positive": 117,
+      "negative": 1687
+    },
+    {
+      "event": "20191002-2300",
+      "positive": 0,
+      "negative": 126
+    },
+    {
+      "event": "20191003-1200",
+      "positive": 204,
+      "negative": 2598
+    },
+    {
+      "event": "20200724-0100",
+      "positive": 21,
+      "negative": 124
+    },
+    {
+      "event": "20200807-1500",
+      "positive": 3,
+      "negative": 300
+    },
+    {
+      "event": "20210711-0000",
+      "positive": 0,
+      "negative": 122
+    },
+    {
+      "event": "20210711-1900",
+      "positive": 0,
+      "negative": 313
+    },
+    {
+      "event": "20210824-0700",
+      "positive": 0,
+      "negative": 0
+    },
+    {
+      "event": "20210824-1200",
+      "positive": 0,
+      "negative": 2
+    }
+  ],
+  "inputs": {
+    "flood": "data/raw/flood-trace/gyeongbuk_flood_2002_2022.geojson",
+    "buildings": "data/processed/gyeongbuk_buildings_elevation.csv.gz",
+    "rain": "data/processed/gyeongbuk_flood_event_rain.csv",
+    "stations": "data/raw/kma-stations/kma_station_list.csv"
+  },
+  "critical_limitations": [
+    "Target is SURFACE flooding at the building location, not underground car park flooding. They are not the same event.",
+    "Negatives are only buildings within 1000 m of a surveyed polygon of the SAME event. Buildings further away are dropped as unknown, not labelled 0.",
+    "Overture buildings carry no construction year, so a building built after an event can still appear in that event's rows.",
+    "Elevation is a Copernicus GLO-30 DSM (surface, not bare earth), so tall buildings and tree canopy bias it upward.",
+    "Rainfall is the nearest reporting station's value, not rainfall measured at the building; rain_station_distance_km records how far that was.",
+    "The flood survey stops in 2021 and the agency no longer updates it."
+  ]
+}

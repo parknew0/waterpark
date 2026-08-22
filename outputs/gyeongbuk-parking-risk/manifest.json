@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-08-22T17:09:03+09:00",
+  "rows": 25336,
+  "method": "rule-based; terrain bands measured from our own flood training table, rainfall trigger taken from official KMA 호우특보 criteria",
+  "terrain_bands": [
+    {
+      "max_relative_elevation_m": 2.0,
+      "label": "VERY_HIGH",
+      "observed_flood_rate": 0.355,
+      "lift_vs_base_rate": 5.5
+    },
+    {
+      "max_relative_elevation_m": 5.0,
+      "label": "HIGH",
+      "observed_flood_rate": 0.148,
+      "lift_vs_base_rate": 2.3
+    },
+    {
+      "max_relative_elevation_m": 10.0,
+      "label": "MODERATE",
+      "observed_flood_rate": 0.052,
+      "lift_vs_base_rate": 0.8
+    },
+    {
+      "max_relative_elevation_m": 20.0,
+      "label": "LOW",
+      "observed_flood_rate": 0.004,
+      "lift_vs_base_rate": 0.1
+    },
+    {
+      "max_relative_elevation_m": null,
+      "label": "VERY_LOW",
+      "observed_flood_rate": 0.0,
+      "lift_vs_base_rate": 0.0
+    }
+  ],
+  "base_flood_rate_in_training_table": 0.065,
+  "rain_rules_official": {
+    "호우주의보": "3시간 60mm 이상 또는 12시간 110mm 이상",
+    "호우경보": "3시간 90mm 이상 또는 12시간 180mm 이상",
+    "극한호우": "1시간 50mm 이상이면서 3시간 90mm 이상, 또는 1시간 72mm 이상"
+  },
+  "terrain_to_trigger": {
+    "VERY_HIGH": "호우주의보",
+    "HIGH": "호우주의보",
+    "MODERATE": "호우경보",
+    "LOW": "극한호우",
+    "VERY_LOW": "극한호우"
+  },
+  "terrain_risk_counts": {
+    "MODERATE": 5225,
+    "LOW": 7122,
+    "HIGH": 1532,
+    "UNKNOWN": 2422,
+    "VERY_LOW": 8888,
+    "VERY_HIGH": 147
+  },
+  "static_risk_counts": {
+    "MODERATE": 4979,
+    "LOW": 6582,
+    "VERY_HIGH": 341,
+    "HIGH": 2283,
+    "UNKNOWN": 2422,
+    "VERY_LOW": 8729
+  },
+  "elevation_donor": "nearest Overture building (same DSM feature definition)",
+  "elevation_match_limit_m": 100.0,
+  "buildings_without_elevation_donor": 2422,
+  "critical_limitations": [
+    "terrain_risk predicts SURFACE flooding at the building, not flooding of the underground car park itself. No dataset records the latter.",
+    "Observed flood rates come from areas within 1 km of a surveyed flood polygon, so they describe flood-prone neighbourhoods, not all Gyeongbuk.",
+    "The rainfall trigger is an official warning threshold, not a fitted probability. It says when to act, not how likely flooding is.",
+    "Elevation is a Copernicus GLO-30 DSM including buildings and canopy, borrowed from the nearest Overture building.",
+    "underground_parking_status is parcel-level, so buildings sharing a parcel share the flag.",
+    "The flood survey ends in 2021 and mostly covered farmland and river plains, so urban districts such as 경산 have no historical record at all. distance_to_past_flood_m being large is not evidence of safety."
+  ]
+}

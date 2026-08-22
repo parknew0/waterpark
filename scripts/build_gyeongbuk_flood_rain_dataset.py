@@ -220,7 +220,20 @@ def main() -> None:
     with EVENT_RAIN_CSV.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.writer(fh)
         writer.writerow(
-            ["event_id", "fldn_bgng_ymd", "fldn_bgng_tm", "station_id", "rain_1h", "rain_6h", "rain_24h", "hours_available_of_24"]
+            [
+                "event_id",
+                "fldn_bgng_ymd",
+                "fldn_bgng_tm",
+                "station_id",
+                "rain_1h",
+                # 3h and 12h exist so the official KMA 호우특보 thresholds can be
+                # applied directly: 주의보 3h>=60 or 12h>=110, 경보 3h>=90 or 12h>=180.
+                "rain_3h",
+                "rain_6h",
+                "rain_12h",
+                "rain_24h",
+                "hours_available_of_24",
+            ]
         )
         for row in event_rows:
             hours = event_hours[row["event_id"]]
@@ -233,12 +246,25 @@ def main() -> None:
                 if not available:
                     rows_dropped_empty += 1
                     continue
+                def window_sum(hours_back: int):
+                    chunk = vals[:hours_back]
+                    present = [v for v in chunk if v is not None]
+                    return round(sum(present), 1) if present else None
+
                 rain_1h = vals[0]
-                first6 = vals[:6]
-                rain_6h = round(sum(v for v in first6 if v is not None), 1) if any(v is not None for v in first6) else None
-                rain_24h = round(sum(available), 1)
                 writer.writerow(
-                    [row["event_id"], row["fldn_bgng_ymd"], row["fldn_bgng_tm"], stn, rain_1h, rain_6h, rain_24h, len(available)]
+                    [
+                        row["event_id"],
+                        row["fldn_bgng_ymd"],
+                        row["fldn_bgng_tm"],
+                        stn,
+                        rain_1h,
+                        window_sum(3),
+                        window_sum(6),
+                        window_sum(12),
+                        window_sum(24),
+                        len(available),
+                    ]
                 )
                 rows_written += 1
     print(

@@ -1,0 +1,110 @@
+{
+  "generated_at": "2026-08-22T17:09:16+09:00",
+  "rows": 45886,
+  "positive_rate": 0.065,
+  "features": [
+    "surface_elevation_m",
+    "relative_elevation_m",
+    "local_min_elevation_m",
+    "rain_1h",
+    "rain_3h",
+    "rain_6h",
+    "rain_12h",
+    "rain_24h",
+    "rain_station_distance_km"
+  ],
+  "excluded_as_leakage": [
+    "distance_to_flood_polygon_m",
+    "longitude",
+    "latitude"
+  ],
+  "scale_pos_weight": 14.38,
+  "baseline_relative_elevation_only": {
+    "n": 45886,
+    "positives": 2984,
+    "pr_auc": 0.249,
+    "roc_auc": 0.8186,
+    "precision": 0.1166,
+    "recall": 0.8968,
+    "f1": 0.2064,
+    "baseline_pr_auc": 0.065
+  },
+  "temporal_holdout": {
+    "n": 7640,
+    "positives": 477,
+    "pr_auc": 0.1035,
+    "roc_auc": 0.6437,
+    "precision": 0.1292,
+    "recall": 0.2558,
+    "f1": 0.1717,
+    "baseline_pr_auc": 0.0624,
+    "train_years": "<=2018",
+    "test_years": ">=2019"
+  },
+  "grouped_cv_by_event": {
+    "n": 45886,
+    "positives": 2984,
+    "pr_auc": 0.0991,
+    "roc_auc": 0.6741,
+    "precision": 0.1134,
+    "recall": 0.0597,
+    "f1": 0.0782,
+    "baseline_pr_auc": 0.065
+  },
+  "grouped_cv_by_building": {
+    "n": 45886,
+    "positives": 2984,
+    "pr_auc": 0.8247,
+    "roc_auc": 0.9825,
+    "precision": 0.5098,
+    "recall": 0.9481,
+    "f1": 0.6631,
+    "baseline_pr_auc": 0.065
+  },
+  "feature_importance_gain": [
+    {
+      "feature": "relative_elevation_m",
+      "importance": 0.2096
+    },
+    {
+      "feature": "rain_6h",
+      "importance": 0.1615
+    },
+    {
+      "feature": "rain_3h",
+      "importance": 0.1239
+    },
+    {
+      "feature": "rain_1h",
+      "importance": 0.1122
+    },
+    {
+      "feature": "rain_24h",
+      "importance": 0.1069
+    },
+    {
+      "feature": "rain_12h",
+      "importance": 0.0908
+    },
+    {
+      "feature": "local_min_elevation_m",
+      "importance": 0.0836
+    },
+    {
+      "feature": "rain_station_distance_km",
+      "importance": 0.0638
+    },
+    {
+      "feature": "surface_elevation_m",
+      "importance": 0.0477
+    }
+  ],
+  "critical_limitations": [
+    "Target is surface flooding, NOT underground car park flooding.",
+    "Event CV and building CV disagree with each other; the event split is the honest estimate for a new storm, the building split for a new location.",
+    "Only 21 of 30 events contain any positive, and 2012 Typhoon Sanba dominates, so the model largely learns that one storm's terrain.",
+    "Negatives exist only within 1 km of a surveyed polygon, so the model is calibrated for 'near a known flood area', not for all of Gyeongbuk.",
+    "Rainfall comes from the nearest station, so buildings sharing a station in one event share identical rain features.",
+    "Elevation is a DSM, so it includes buildings and tree canopy."
+  ]
+}

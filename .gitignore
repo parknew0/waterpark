@@ -15,9 +15,13 @@ data/processed/gyeongbuk-building-register/
 # Generated inspection sidecar.
 outputs/**/*.inspect.ndjson
 
+# Python virtualenv for the analysis scripts.
+.venv/
+
 # React frontend local artifacts and secrets.
 frontend/node_modules/
 frontend/dist/
 frontend/.env
 frontend/.env.*
 !frontend/.env.example
+data/raw/kma-stations/kma_station_list_raw.csv
