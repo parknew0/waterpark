@@ -1,0 +1,404 @@
+{
+  "evacuate": {
+    "location": {
+      "lat": 36.03,
+      "lon": 129.36
+    },
+    "terrain": {
+      "surveyStatus": "SURVEYED",
+      "riskLevel": "HIGH",
+      "riskScore": 0.7953,
+      "rainTrigger": "호우주의보",
+      "evidence": {
+        "relativeElevationM": 5.9,
+        "elevationAboveNationalRiverM": 4.8,
+        "distanceToFloodTraceM": 538
+      }
+    },
+    "rainfall": {
+      "available": true,
+      "stationId": "138",
+      "stationDistanceKm": 1.8,
+      "mm1h": 74.0,
+      "mm3h": 118.0,
+      "mm12h": 165.0,
+      "hoursCollected": 12,
+      "observedHourKst": "202608230200",
+      "warningLevel": "극한호우"
+    },
+    "alert": {
+      "level": "EVACUATE",
+      "headline": "지금 차를 빼세요",
+      "reasons": [
+        "이 위치는 주변보다 5.9m 낮습니다",
+        "가장 가까운 국가하천 수면보다 4.8m 높습니다",
+        "과거 침수 구역까지 538m입니다",
+        "현재 강수는 극한호우 기준을 넘었습니다"
+      ]
+    },
+    "nearbyUndergroundParking": [],
+    "dataQuality": {
+      "labelMeaning": "SURFACE_FLOOD_TRACE",
+      "floodSurveyPeriod": "2002-2022",
+      "disclaimer": "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
+    }
+  },
+  "prepare": {
+    "location": {
+      "lat": 36.03,
+      "lon": 129.36
+    },
+    "terrain": {
+      "surveyStatus": "SURVEYED",
+      "riskLevel": "HIGH",
+      "riskScore": 0.7953,
+      "rainTrigger": "호우주의보",
+      "evidence": {
+        "relativeElevationM": 5.9,
+        "elevationAboveNationalRiverM": 4.8,
+        "distanceToFloodTraceM": 538
+      }
+    },
+    "rainfall": {
+      "available": true,
+      "stationId": "138",
+      "stationDistanceKm": 1.8,
+      "mm1h": 34.0,
+      "mm3h": 92.0,
+      "mm12h": 140.0,
+      "hoursCollected": 12,
+      "observedHourKst": "202608230200",
+      "warningLevel": "호우경보"
+    },
+    "alert": {
+      "level": "PREPARE",
+      "headline": "차량 이동을 준비하세요",
+      "reasons": [
+        "이 위치는 주변보다 5.9m 낮습니다",
+        "가장 가까운 국가하천 수면보다 4.8m 높습니다",
+        "과거 침수 구역까지 538m입니다",
+        "현재 강수는 호우경보 기준을 넘었습니다"
+      ]
+    },
+    "nearbyUndergroundParking": [],
+    "dataQuality": {
+      "labelMeaning": "SURFACE_FLOOD_TRACE",
+      "floodSurveyPeriod": "2002-2022",
+      "disclaimer": "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
+    }
+  },
+  "watch": {
+    "location": {
+      "lat": 36.03,
+      "lon": 129.36
+    },
+    "terrain": {
+      "surveyStatus": "SURVEYED",
+      "riskLevel": "HIGH",
+      "riskScore": 0.7953,
+      "rainTrigger": "호우주의보",
+      "evidence": {
+        "relativeElevationM": 5.9,
+        "elevationAboveNationalRiverM": 4.8,
+        "distanceToFloodTraceM": 538
+      }
+    },
+    "rainfall": {
+      "available": true,
+      "stationId": "138",
+      "stationDistanceKm": 1.8,
+      "mm1h": 22.0,
+      "mm3h": 62.0,
+      "mm12h": 88.0,
+      "hoursCollected": 12,
+      "observedHourKst": "202608230200",
+      "warningLevel": "호우주의보"
+    },
+    "alert": {
+      "level": "WATCH",
+      "headline": "상황을 지켜보세요",
+      "reasons": [
+        "이 위치는 주변보다 5.9m 낮습니다",
+        "가장 가까운 국가하천 수면보다 4.8m 높습니다",
+        "과거 침수 구역까지 538m입니다",
+        "현재 강수는 호우주의보 기준을 넘었습니다"
+      ]
+    },
+    "nearbyUndergroundParking": [],
+    "dataQuality": {
+      "labelMeaning": "SURFACE_FLOOD_TRACE",
+      "floodSurveyPeriod": "2002-2022",
+      "disclaimer": "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
+    }
+  },
+  "calm": {
+    "location": {
+      "lat": 36.03,
+      "lon": 129.36
+    },
+    "terrain": {
+      "surveyStatus": "SURVEYED",
+      "riskLevel": "HIGH",
+      "riskScore": 0.7953,
+      "rainTrigger": "호우주의보",
+      "evidence": {
+        "relativeElevationM": 5.9,
+        "elevationAboveNationalRiverM": 4.8,
+        "distanceToFloodTraceM": 538
+      }
+    },
+    "rainfall": {
+      "available": true,
+      "stationId": "138",
+      "stationDistanceKm": 1.8,
+      "mm1h": 0.0,
+      "mm3h": 0.0,
+      "mm12h": 0.0,
+      "hoursCollected": 12,
+      "observedHourKst": "202608230200",
+      "warningLevel": "없음"
+    },
+    "alert": {
+      "level": "CALM",
+      "headline": "현재 비는 오지 않습니다 (상시 위험도 HIGH)",
+      "reasons": [
+        "이 위치는 주변보다 5.9m 낮습니다",
+        "가장 가까운 국가하천 수면보다 4.8m 높습니다",
+        "과거 침수 구역까지 538m입니다"
+      ]
+    },
+    "nearbyUndergroundParking": [],
+    "dataQuality": {
+      "labelMeaning": "SURFACE_FLOOD_TRACE",
+      "floodSurveyPeriod": "2002-2022",
+      "disclaimer": "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
+    }
+  },
+  "moderateTerrainHeavyRain": {
+    "location": {
+      "lat": 37.48,
+      "lon": 126.95
+    },
+    "terrain": {
+      "surveyStatus": "SURVEYED",
+      "riskLevel": "MODERATE",
+      "riskScore": 0.2835,
+      "rainTrigger": "호우경보",
+      "evidence": {
+        "relativeElevationM": 14.5,
+        "elevationAboveNationalRiverM": 39.7,
+        "distanceToFloodTraceM": 17
+      }
+    },
+    "rainfall": {
+      "available": true,
+      "stationId": "138",
+      "stationDistanceKm": 1.8,
+      "mm1h": 34.0,
+      "mm3h": 92.0,
+      "mm12h": 140.0,
+      "hoursCollected": 12,
+      "observedHourKst": "202608230200",
+      "warningLevel": "호우경보"
+    },
+    "alert": {
+      "level": "WATCH",
+      "headline": "상황을 지켜보세요",
+      "reasons": [
+        "이 위치는 주변보다 14.5m 낮습니다",
+        "가장 가까운 국가하천 수면보다 39.7m 높습니다",
+        "과거 침수 구역까지 17m입니다",
+        "현재 강수는 호우경보 기준을 넘었습니다"
+      ]
+    },
+    "nearbyUndergroundParking": [
+      {
+        "pnu": "1162010100108770006",
+        "lon": 126.95011,
+        "lat": 37.47981,
+        "use": "제1종근린생활시설",
+        "ugFloors": 1,
+        "approvalYear": "1995",
+        "distanceM": 23
+      },
+      {
+        "pnu": "1162010100108770035",
+        "lon": 126.950165,
+        "lat": 37.480188,
+        "use": "공동주택",
+        "ugFloors": 1,
+        "approvalYear": "1995",
+        "distanceM": 25
+      },
+      {
+        "pnu": "1162010100108760009",
+        "lon": 126.949746,
+        "lat": 37.480611,
+        "use": "업무시설",
+        "ugFloors": 1,
+        "approvalYear": "2000",
+        "distanceM": 71
+      }
+    ],
+    "dataQuality": {
+      "labelMeaning": "SURFACE_FLOOD_TRACE",
+      "floodSurveyPeriod": "2002-2022",
+      "disclaimer": "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
+    }
+  },
+  "lowTerrainHeavyRain": {
+    "location": {
+      "lat": 33.51,
+      "lon": 126.52
+    },
+    "terrain": {
+      "surveyStatus": "SURVEYED",
+      "riskLevel": "LOW",
+      "riskScore": 0.2283,
+      "rainTrigger": "극한호우",
+      "evidence": {
+        "relativeElevationM": 16.0,
+        "elevationAboveNationalRiverM": 21.8,
+        "distanceToFloodTraceM": 22
+      }
+    },
+    "rainfall": {
+      "available": true,
+      "stationId": "138",
+      "stationDistanceKm": 1.8,
+      "mm1h": 34.0,
+      "mm3h": 92.0,
+      "mm12h": 140.0,
+      "hoursCollected": 12,
+      "observedHourKst": "202608230200",
+      "warningLevel": "호우경보"
+    },
+    "alert": {
+      "level": "WATCH",
+      "headline": "상황을 지켜보세요",
+      "reasons": [
+        "이 위치는 주변보다 16.0m 낮습니다",
+        "가장 가까운 국가하천 수면보다 21.8m 높습니다",
+        "과거 침수 구역까지 22m입니다",
+        "현재 강수는 호우경보 기준을 넘었습니다"
+      ]
+    },
+    "nearbyUndergroundParking": [
+      {
+        "pnu": "5011010600108030032",
+        "lon": 126.520068,
+        "lat": 33.509588,
+        "use": "제2종근린생활시설",
+        "ugFloors": 1,
+        "approvalYear": "1992",
+        "distanceM": 46
+      },
+      {
+        "pnu": "5011010600108210002",
+        "lon": 126.52035,
+        "lat": 33.510782,
+        "use": "단독주택",
+        "ugFloors": 1,
+        "approvalYear": "2000",
+        "distanceM": 92
+      },
+      {
+        "pnu": "5011010600102590019",
+        "lon": 126.521812,
+        "lat": 33.507519,
+        "use": "단독주택",
+        "ugFloors": 1,
+        "approvalYear": "1996",
+        "distanceM": 318
+      }
+    ],
+    "dataQuality": {
+      "labelMeaning": "SURFACE_FLOOD_TRACE",
+      "floodSurveyPeriod": "2002-2022",
+      "disclaimer": "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
+    }
+  },
+  "unknown": {
+    "location": {
+      "lat": 37.8,
+      "lon": 128.5
+    },
+    "terrain": {
+      "surveyStatus": "NOT_SURVEYED",
+      "riskLevel": "UNKNOWN",
+      "riskScore": null,
+      "rainTrigger": "호우경보",
+      "evidence": {},
+      "note": "이 지역은 침수 조사 기록이 없습니다. 안전하다는 뜻이 아닙니다."
+    },
+    "rainfall": {
+      "available": true,
+      "stationId": "138",
+      "stationDistanceKm": 1.8,
+      "mm1h": 0.0,
+      "mm3h": 0.0,
+      "mm12h": 0.0,
+      "hoursCollected": 12,
+      "observedHourKst": "202608230200",
+      "warningLevel": "없음"
+    },
+    "alert": {
+      "level": "UNKNOWN",
+      "headline": "이 지역은 침수 조사 기록이 없습니다",
+      "reasons": [
+        "안전하다는 뜻이 아니라 확인된 자료가 없다는 뜻입니다"
+      ]
+    },
+    "nearbyUndergroundParking": [],
+    "dataQuality": {
+      "labelMeaning": "SURFACE_FLOOD_TRACE",
+      "floodSurveyPeriod": "2002-2022",
+      "disclaimer": "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
+    }
+  },
+  "rainfallUnavailable": {
+    "location": {
+      "lat": 36.03,
+      "lon": 129.36
+    },
+    "terrain": {
+      "surveyStatus": "SURVEYED",
+      "riskLevel": "HIGH",
+      "riskScore": 0.7953,
+      "rainTrigger": "호우주의보",
+      "evidence": {
+        "relativeElevationM": 5.9,
+        "elevationAboveNationalRiverM": 4.8,
+        "distanceToFloodTraceM": 538
+      }
+    },
+    "rainfall": {
+      "available": false,
+      "reason": "FETCH_FAILED"
+    },
+    "alert": {
+      "level": "UNKNOWN",
+      "headline": "강수 정보를 가져오지 못했습니다 (상시 위험도 HIGH)",
+      "reasons": [
+        "이 위치는 주변보다 5.9m 낮습니다",
+        "가장 가까운 국가하천 수면보다 4.8m 높습니다",
+        "과거 침수 구역까지 538m입니다",
+        "비가 오지 않는다는 뜻이 아니라 기상청 조회에 실패했다는 뜻입니다"
+      ]
+    },
+    "nearbyUndergroundParking": [],
+    "dataQuality": {
+      "labelMeaning": "SURFACE_FLOOD_TRACE",
+      "floodSurveyPeriod": "2002-2022",
+      "disclaimer": "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
+    }
+  },
+  "errorBadRequest": {
+    "error": "lat과 lon이 필요합니다",
+    "code": "BAD_REQUEST"
+  },
+  "errorOutOfRange": {
+    "error": "대한민국 범위 밖 좌표입니다",
+    "code": "OUT_OF_RANGE"
+  }
+}

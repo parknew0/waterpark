@@ -30,55 +30,82 @@ export interface UseFloodRiskState {
 export function useFloodRisk(point: { lat: number; lon: number } | null) {
   const [state, setState] = useState<UseFloodRiskState>({
     data: null,
-    loading: false,
+    // A point supplied at mount means a request is already on its way, so the
+    // first render should not claim to be idle.
+    loading: point != null,
     error: null,
   });
   const inFlight = useRef<AbortController | null>(null);
 
-  const query = useCallback(async (request: FloodRiskRequest) => {
-    inFlight.current?.abort();
-    const controller = new AbortController();
-    inFlight.current = controller;
-
-    setState((previous) => ({ ...previous, loading: true, error: null }));
-    try {
-      const response = await fetch(ENDPOINT, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(request),
-        signal: controller.signal,
-      });
-      const payload = await response.json();
-      if (!response.ok) {
-        setState({
-          data: null,
-          loading: false,
-          error: payload?.error ?? "위험도를 불러오지 못했습니다",
-        });
+  /**
+   * Run one request and report its outcome.
+   *
+   * Every setState here happens inside a promise callback rather than on the
+   * caller's synchronous path. That is what lets the effect below use this
+   * directly: React 19 treats a synchronous setState inside an effect as a
+   * cascading render, and the other hooks in this app avoid it the same way.
+   */
+  const run = useCallback((request: FloodRiskRequest, signal: AbortSignal) => {
+    return fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(request),
+      signal,
+    })
+      .then(async (response) => {
+        const payload = await response.json();
+        if (!response.ok) {
+          setState({
+            data: null,
+            loading: false,
+            error: payload?.error ?? "위험도를 불러오지 못했습니다",
+          });
+          return null;
+        }
+        setState({ data: payload as FloodRiskResponse, loading: false, error: null });
+        return payload as FloodRiskResponse;
+      })
+      .catch((caught: unknown) => {
+        // An abort is this hook superseding itself, not a failure to report.
+        if (caught instanceof DOMException && caught.name === "AbortError") return null;
+        setState({ data: null, loading: false, error: "위험도를 불러오지 못했습니다" });
         return null;
-      }
-      setState({ data: payload as FloodRiskResponse, loading: false, error: null });
-      return payload as FloodRiskResponse;
-    } catch (error) {
-      // An abort is this hook superseding itself, not a failure to report.
-      if (error instanceof DOMException && error.name === "AbortError") return null;
-      setState({
-        data: null,
-        loading: false,
-        error: "위험도를 불러오지 못했습니다",
       });
-      return null;
-    }
   }, []);
 
+  /**
+   * Ask about a point on demand, from an event handler.
+   *
+   * Unlike the effect, a handler may mark the request in flight immediately,
+   * which is what a tap on the map should do.
+   */
+  const query = useCallback(
+    (request: FloodRiskRequest) => {
+      inFlight.current?.abort();
+      const controller = new AbortController();
+      inFlight.current = controller;
+      setState((previous) => ({ ...previous, loading: true, error: null }));
+      return run(request, controller.signal);
+    },
+    [run],
+  );
+
+  const lat = point?.lat;
+  const lon = point?.lon;
+
   useEffect(() => {
-    if (!point) return;
-    void query({
-      lat: point.lat,
-      lon: point.lon,
-      nearbyParking: { include: true, radiusM: 1000, limit: 5 },
-    });
-  }, [point?.lat, point?.lon, query]);
+    if (lat == null || lon == null) return;
+    const controller = new AbortController();
+    inFlight.current = controller;
+    // `loading` is deliberately left alone here. Blanking a reading that is
+    // already on screen every time the map settles reads as a fault; keeping
+    // the previous number until the new one lands does not.
+    void run(
+      { lat, lon, nearbyParking: { include: true, radiusM: 1000, limit: 5 } },
+      controller.signal,
+    );
+    return () => controller.abort();
+  }, [lat, lon, run]);
 
   useEffect(() => () => inFlight.current?.abort(), []);
 

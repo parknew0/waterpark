@@ -8,6 +8,7 @@ import { FloodLocationDetailView } from "./components/routing/FloodLocationDetai
 import { useParkingSearch } from "./hooks/useParkingSearch";
 import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
+import { useFloodRisk } from "./hooks/useFloodRisk";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
 import { getEnglishParkingLabel } from "./lib/parkingEnglish";
 import type { Coordinate, ParkingPlace } from "./types/parking";
@@ -47,6 +48,28 @@ export default function App() {
     () => places.find((place) => place.id === selected?.id) ?? selected,
     [places, selected],
   );
+
+  /**
+   * The point the risk API is asked about.
+   *
+   * This app exists to protect one specific car, so the parked spot is the
+   * subject whenever it is known. Before the user sets one, their own
+   * position is the closest stand-in, and the map centre is the last resort
+   * so the reading is never blank on first load.
+   *
+   * Coordinates are rounded to ~11 m because the risk grid has 100 m cells:
+   * anything finer cannot change the answer and would only refetch while the
+   * map settles.
+   */
+  const riskPoint = useMemo(() => {
+    const spot = parkedPlace ?? currentPosition ?? center;
+    return {
+      lat: Math.round(spot.latitude * 1e4) / 1e4,
+      lon: Math.round(spot.longitude * 1e4) / 1e4,
+    };
+  }, [center, currentPosition, parkedPlace]);
+
+  const { data: floodRisk } = useFloodRisk(riskPoint);
 
   useEffect(() => {
     const handleHistoryChange = () => setView(getInitialView());
@@ -192,6 +215,7 @@ export default function App() {
       isCarLocationOpen={isCarLocationOpen}
       isLoading={isLoading || locationPending}
       parkedPlace={parkedPlace}
+      rainfall={floodRisk?.rainfall}
       showParkingMarkers={showParkingMarkers}
       onClearSelection={() => setSelected(undefined)}
       onCloseSheet={() => setIsCarLocationOpen(false)}

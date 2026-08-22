@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
+import type { Rainfall } from "../../types/floodRisk";
 import type { Coordinate, ParkingPlace, SearchSource } from "../../types/parking";
 import type { FloodAwareRoute } from "../../types/routing";
 import { ParkingMap } from "../ParkingMap";
@@ -14,6 +15,7 @@ interface ParkingHomeViewProps {
   isCarLocationOpen: boolean;
   isLoading: boolean;
   parkedPlace?: ParkingPlace;
+  rainfall?: Rainfall;
   showParkingMarkers: boolean;
   onClearSelection: () => void;
   onCloseSheet: () => void;
@@ -35,6 +37,19 @@ const thumbnails = [
 
 const numberFormatter = new Intl.NumberFormat("ko-KR");
 
+/**
+ * Most recent hour of rainfall, or the placeholder.
+ *
+ * A failed weather lookup must not render as "0mm". This chip is the one
+ * number a driver glances at, and showing zero because the request failed
+ * states the single thing that would keep someone parked through a downpour.
+ * The dashes stay until a real reading arrives.
+ */
+function formatRainfall(rainfall?: Rainfall) {
+  if (!rainfall?.available || rainfall.mm1h == null) return "--mm";
+  return `${rainfall.mm1h.toFixed(1)}mm`;
+}
+
 function formatDistance(distance?: number) {
   if (distance == null) return "거리 계산 중";
   if (distance < 1_000) return `${numberFormatter.format(Math.round(distance))}m away`;
@@ -51,6 +66,7 @@ export function ParkingHomeView({
   isCarLocationOpen,
   isLoading,
   parkedPlace,
+  rainfall,
   showParkingMarkers,
   onClearSelection,
   onCloseSheet,
@@ -110,14 +126,21 @@ export function ParkingHomeView({
           </button>
         </header>
 
-        <div className="parking-weather-chip" aria-label="강수량 API 연결 대기 중">
+        <div
+          className="parking-weather-chip"
+          aria-label={
+            rainfall?.available
+              ? `최근 1시간 강수량 ${formatRainfall(rainfall)}`
+              : "강수량을 가져오지 못했습니다"
+          }
+        >
           <span className="weather-icon" aria-hidden="true">
             <img className="weather-cloud" src="/assets/parking/rain-cloud.svg" alt="" />
             <img className="weather-line weather-line--one" src="/assets/parking/rain-line.svg" alt="" />
             <img className="weather-line weather-line--two" src="/assets/parking/rain-line.svg" alt="" />
             <img className="weather-line weather-line--three" src="/assets/parking/rain-line.svg" alt="" />
           </span>
-          <span>--mm</span>
+          <span>{formatRainfall(rainfall)}</span>
         </div>
 
         {!parkedPlace ? (
