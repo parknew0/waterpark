@@ -1380,6 +1380,16 @@ h3 { margin: 0; font-size: 14px; }
   .car-location-sheet-header { height: 60px; }
   .parking-detail-image { height: 150px; }
   .parking-risk-preview h3 { margin-bottom: 12px; }
+  .flood-detail-map,
+  .flood-detail-map .map-wrap,
+  .flood-detail-map .fallback-map,
+  .flood-detail-map .kakao-map { height: 240px; min-height: 240px; }
+  .flood-detail-sheet { inset: 240px 0 0; }
+  .flood-detail-header { top: 36px; }
+  .flood-detail-rain-chip { top: 100px; }
+  .flood-location-phone--safe .flood-place-summary { top: 24px; }
+  .flood-location-phone--safe .flood-risk-reason { top: 168px; }
+  .flood-detail-footer { bottom: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

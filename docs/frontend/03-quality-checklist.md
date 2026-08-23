@@ -103,5 +103,6 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-23 | 힌남노 제품 UI 분리 | `Hinnamnor Replay`·`Historical scenario inputs`를 숨기고 정상 `Warning`·`Here’s Why` 화면으로 표시 | 통과 |
 | 2026-08-23 | 동적 침수 회피 API | 일반 664.2m·침수 간선 2개 대비 우회 2,594.8m·침수 간선 0개를 Python 테스트와 localhost API에서 확인 | 통과; 합성 침수 입력임을 명시 |
 | 2026-08-23 | 최종 길찾기 위험 폴리곤 | 백엔드가 차단에 사용한 동일 `CURRENT` Polygon을 상세·최종 Kakao 지도에 표시, 콘솔 오류 0건 | 통과 |
+| 2026-08-23 | 평상시 `P` 마커→Safe 상세 | 저장한 내 차가 있는 지도에서 주변 `P`를 클릭하면 기존 정적 경로 유무와 관계없이 OSRM 실제 도로 경로를 계산하고, Figma `123:1743` Safe 상세로 전환 | 통과 |
 
 초기 브라우저 검사에서 공공 원천의 중복 관리번호 때문에 React key 경고가 발생했다. 기관·관리번호·명칭·주소·좌표의 SHA-256 안정 해시로 ID를 교체했으며 이후 새 경고는 발생하지 않았다.

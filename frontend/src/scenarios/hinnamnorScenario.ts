@@ -11,6 +11,7 @@ export interface HistoricalWaterparkScenario {
   alertDelayMs: number;
   currentParkingName: string;
   currentParkingAddress: string;
+  safeParkingIds: string[];
   parkingOptions: ParkingPlace[];
 }
 
@@ -25,6 +26,7 @@ export const HINNAMNOR_SCENARIO: HistoricalWaterparkScenario = {
   alertDelayMs: 1_800,
   currentParkingName: "Woobang New World Town 1 Underground Parking",
   currentParkingAddress: "7 Indeok-dong, Nam-gu, Pohang-si, Gyeongsangbuk-do",
+  safeParkingIds: ["parking:d14f3c7979a80a1bda68"],
   parkingOptions: [
     {
       id: "hinnamnor:woobang-underground",
