@@ -133,6 +133,43 @@ export function rainfallAriaLabel(rainfall?: Rainfall): string {
 }
 
 /**
+ * The word that fills "<X> risk of flooding in the next 1 hour".
+ *
+ * UNKNOWN becomes "Unknown" rather than its list label, which reads as a
+ * sentence fragment in this slot. It must never resolve to "Low": an
+ * unsurveyed location is not a safe one.
+ */
+export function riskWord(risk?: FloodRiskResponse | null): string | undefined {
+  if (!risk) return undefined;
+  if (risk.terrain.riskLevel === "UNKNOWN") return "Unknown";
+  return RISK_LABELS[risk.terrain.riskLevel];
+}
+
+/**
+ * The two bullets shown under "Here's why".
+ *
+ * The screens pair one terrain reason with one rainfall reason, but
+ * `alert.reasons` is ordered by evidence type -- its second entry is the
+ * river comparison, not rain -- so the pair is assembled here rather than
+ * sliced off the front of that array.
+ *
+ * An unavailable reading says so instead of printing a number, for the same
+ * reason the home chip shows dashes: a failed lookup is not a dry sky.
+ */
+export function riskBullets(
+  risk?: FloodRiskResponse | null,
+): [string, string] | undefined {
+  if (!risk) return undefined;
+  const terrain = risk.alert.reasons[0];
+  if (!terrain) return undefined;
+  const rain =
+    risk.rainfall.available && risk.rainfall.mm6h != null
+      ? `Rainfall over the past 6 hours: ${risk.rainfall.mm6h.toFixed(1)} mm`
+      : "Rainfall over the past 6 hours is unavailable";
+  return [terrain, rain];
+}
+
+/**
  * Map colour per risk level.
  *
  * UNKNOWN is deliberately grey rather than green. An unsurveyed location is

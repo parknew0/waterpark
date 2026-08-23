@@ -82,6 +82,8 @@ export interface Rainfall {
   stationDistanceKm?: number;
   mm1h?: number | null;
   mm3h?: number | null;
+  /** No KMA threshold uses this window; it exists for display only. */
+  mm6h?: number | null;
   mm12h?: number | null;
   /** How many of the 12 hourly observations came back. */
   hoursCollected?: number;

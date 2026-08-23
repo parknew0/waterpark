@@ -29,6 +29,8 @@ interface ParkingHomeViewProps {
   routeError: string | null;
   rainfallLabel?: string;
   rainfallAriaLabel?: string;
+  riskWord?: string;
+  riskReasons?: [string, string];
   assessmentMode?: boolean;
   assessmentPending?: boolean;
 }
@@ -69,6 +71,8 @@ export function ParkingHomeView({
   routeError,
   rainfallLabel = "--mm",
   rainfallAriaLabel = "Rainfall data are unavailable",
+  riskWord,
+  riskReasons,
   assessmentMode = false,
   assessmentPending = false,
 }: ParkingHomeViewProps) {
@@ -161,6 +165,8 @@ export function ParkingHomeView({
                 appKey={appKey}
                 place={selected}
                 onSetCarLocation={onSetCarLocation}
+                riskWord={riskWord}
+                riskReasons={riskReasons}
               />
             ) : (
               <>
@@ -221,10 +227,14 @@ function ParkingDetail({
   appKey,
   place,
   onSetCarLocation,
+  riskWord,
+  riskReasons,
 }: {
   appKey?: string;
   place: ParkingPlace;
   onSetCarLocation: () => void;
+  riskWord?: string;
+  riskReasons?: [string, string];
 }) {
   return (
     <div className="parking-detail">
@@ -241,11 +251,11 @@ function ParkingDetail({
         <span className="parking-detail-distance">{formatDistance(place.distanceMeters)}</span>
       </div>
       <div className="parking-risk-preview">
-        <h3><span>High risk of flooding</span><br />in the next 1 hour</h3>
+        <h3><span>{riskWord ?? "High"} risk of flooding</span><br />in the next 1 hour</h3>
         <p>Here’s Why</p>
         <ul>
-          <li>Building is lower than the surrounding</li>
-          <li>Rainfall over the past 6 hours</li>
+          <li>{riskReasons?.[0] ?? "Building is lower than the surrounding"}</li>
+          <li>{riskReasons?.[1] ?? "Rainfall over the past 6 hours"}</li>
         </ul>
       </div>
       <footer className="parking-detail-footer">

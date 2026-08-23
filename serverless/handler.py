@@ -246,7 +246,7 @@ def nearest_station(lon: float, lat: float, available: set[str]) -> tuple[str, f
 
 
 def rainfall_near(lon: float, lat: float) -> dict[str, Any]:
-    """Rain at the nearest gauge over 1, 3 and 12 hours.
+    """Rain at the nearest gauge over 1, 3, 6 and 12 hours.
 
     Accumulations are summed from hourly readings rather than left null,
     because the KMA thresholds this service acts on are defined over 3 and 12
@@ -301,6 +301,10 @@ def rainfall_near(lon: float, lat: float) -> dict[str, Any]:
         "stationDistanceKm": round(distance_km, 1),
         "mm1h": total(1),
         "mm3h": total(3),
+        # No KMA threshold is defined over six hours; it is reported because
+        # the app shows a six-hour figure, and it is summed from the same
+        # hourly readings rather than estimated.
+        "mm6h": total(6),
         "mm12h": total(12),
         "hoursCollected": len(hours),
     }
@@ -320,8 +324,12 @@ def build_alert(terrain: dict[str, Any], rain: dict[str, Any]) -> dict[str, Any]
     reasons: list[str] = []
     evidence = terrain.get("evidence", {})
     if "relativeElevationM" in evidence:
+        # The metric is height ABOVE the lowest ground within 500 m, so it is
+        # never negative and a small number means low-lying. Phrasing it as
+        # "X m lower than its surroundings" stated the opposite of what was
+        # measured, and stated it to the person deciding whether to move a car.
         reasons.append(
-            f"This location is {evidence['relativeElevationM']} m lower than its surroundings"
+            f"Sits {evidence['relativeElevationM']} m above the lowest ground within 500 m"
         )
     if "elevationAboveNationalRiverM" in evidence:
         reasons.append(

@@ -9,7 +9,13 @@ import { SplashView } from "./components/splash/SplashView";
 import { useParkingSearch } from "./hooks/useParkingSearch";
 import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
-import { formatRainfall, rainfallAriaLabel, useFloodRisk } from "./hooks/useFloodRisk";
+import {
+  formatRainfall,
+  rainfallAriaLabel,
+  riskBullets,
+  riskWord,
+  useFloodRisk,
+} from "./hooks/useFloodRisk";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
 import { fetchLiveDrivingRoute } from "./lib/liveDrivingRoute";
 import { getEnglishParkingLabel } from "./lib/parkingEnglish";
@@ -302,6 +308,8 @@ export default function App() {
           historicalScenario?.rainfallAriaLabel ?? rainfallAriaLabel(floodRisk?.rainfall)
         }
         ctaLabel="Move Your Car Now"
+        riskWord={riskWord(floodRisk)}
+        riskReasons={riskBullets(floodRisk)}
         onContinue={() => {
           setIsRiskSelectionMode(true);
           setShowParkingMarkers(true);
@@ -323,6 +331,8 @@ export default function App() {
           historicalScenario?.rainfallAriaLabel ?? rainfallAriaLabel(floodRisk?.rainfall)
         }
         ctaLabel="Move Your Car Now"
+        riskWord={riskWord(floodRisk)}
+        riskReasons={riskBullets(floodRisk)}
         onContinue={() => {
           setIsRiskSelectionMode(false);
           setShowEvacuationRoute(true);
@@ -367,6 +377,8 @@ export default function App() {
       rainfallAriaLabel={
         historicalScenario?.rainfallAriaLabel ?? rainfallAriaLabel(floodRisk?.rainfall)
       }
+      riskWord={riskWord(floodRisk)}
+      riskReasons={riskBullets(floodRisk)}
       assessmentMode={isRiskSelectionMode}
       assessmentPending={riskAssessmentPending || !lowerRiskParkingPlace}
     />
