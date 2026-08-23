@@ -933,6 +933,9 @@ h3 { margin: 0; font-size: 14px; }
   max-width: none;
 }
 
+.current-map-marker--dot-only { width: 24px; height: 24px; }
+.current-map-marker--dot-only .current-map-marker-dot-frame { inset: 0; }
+
 .parking-dot-marker {
   width: 24px;
   height: 24px;
