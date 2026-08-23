@@ -16,3 +16,18 @@ export async function fetchLiveDrivingRoute(
   }
   return response.json() as Promise<FloodAwareRoute>;
 }
+
+export async function fetchNearestSafeDrivingRoute(
+  origin: Coordinate,
+  candidates: ParkingPlace[],
+): Promise<FloodAwareRoute> {
+  if (candidates.length === 0) throw new Error("No safe parking candidates are available.");
+  const results = await Promise.allSettled(
+    candidates.map((candidate) => fetchLiveDrivingRoute(origin, candidate)),
+  );
+  const routes = results.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
+  if (routes.length === 0) throw new Error("Unable to calculate a route to a safe parking candidate.");
+  return routes.reduce((nearest, route) => (
+    route.distanceMeters < nearest.distanceMeters ? route : nearest
+  ));
+}

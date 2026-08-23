@@ -73,7 +73,7 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-22 | 경로 화면 콘솔 | 브라우저 error·warning 0건 | 통과 |
 | 2026-08-22 | Kakao 경로 레이어 | `Polygon`·`Polyline` 구현 및 TypeScript build 통과 | 등록하지 않은 테스트 도메인 `127.0.0.1:5174`에서는 SVG 폴백 검증; 등록된 `localhost:5173` 실지도 최종 확인 필요 |
 | 2026-08-22 | 가짜 현재 침수 시나리오 | 합성 폴리곤과 교차한 OSM 간선 6개 제거, 목적지 `효곡동 노상8`, 우회 2,121.9m 생성 | 통과; 실제 관측 데이터로 사용 금지 |
-| 2026-08-23 | 긴급→지도 선택→위험/안전 분기 | `emergency → map → risk-detail 또는 safe-detail`, 위험 CTA는 지도 복귀, 안전 CTA는 route 전환 | 통과 |
+| 2026-08-23 | 평상시 상세 분기·긴급 자동 대피 | 홈 마커 선택은 `risk-detail`/`safe-detail` 분기, 긴급 CTA는 후보별 경로 비교 후 최인접 저위험 후보 route로 직접 전환 | 통과 |
 | 2026-08-22 | Figma 신규 3개 뷰 | 402×874에서 Warning·Safe 상세와 길찾기 카드·경로 확인 | 통과 |
 | 2026-08-22 | 긴급 화면 짧은 viewport | 402×720에서도 경고 원 `x=126.5, y=131`, 차 `x=167, y=171`, 뒤로가기 `x=12, y=62` 유지 | 통과 |
 | 2026-08-22 | 긴급 목적지 영문 표기 | `Hyogok-dong Street Parking 8`, `24 Yudong-gil, Nam-gu, Pohang-si, Gyeongsangbuk-do` 확인 | 통과 |

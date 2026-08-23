@@ -83,6 +83,7 @@ interface KakaoMapsApi {
     xAnchor: number;
     yAnchor: number;
     zIndex: number;
+    clickable?: boolean;
   }) => KakaoCustomOverlayInstance;
   Polyline: new (options: {
     map: KakaoMapInstance;
@@ -380,6 +381,7 @@ export function createKakaoMap(
       xAnchor: 0.5,
       yAnchor: 0.5,
       zIndex: 6,
+      clickable: true,
     }));
   });
 
@@ -433,7 +435,8 @@ export function createKakaoMap(
         });
       });
     }
-    if (evacuationRoute) map.setBounds(bounds, 230, 24, 120, 24);
+    if (evacuationRoute && container.clientHeight > 500) map.setBounds(bounds, 230, 24, 120, 24);
+    else if (evacuationRoute) map.setBounds(bounds, 24, 24, 24, 24);
     else map.setBounds(bounds);
   } else {
     map.setCenter(new maps.LatLng(center.latitude, center.longitude));

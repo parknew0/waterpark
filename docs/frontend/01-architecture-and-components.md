@@ -36,7 +36,7 @@
 | `OnboardingProgress` | 2단계 온보딩 진행 상태 |
 | `ParkingHomeView` | 즉시 열린 목록, 선택 상세, 확정된 내 차·주변 주차장 지도 상태를 조율 |
 | `EmergencyView` | 긴급 경고, 예상 안전 시간, 배정 주차장과 지도 이동 CTA를 표시하고 비·진동 모션을 조율 |
-| `liveDrivingRoute` | `/api/flood-route`에 선택 좌표를 전달하고 백엔드의 일반·침수회피 경로와 위험 폴리곤을 수신 |
+| `liveDrivingRoute` | `/api/flood-route`에 선택 좌표를 전달해 침수회피 경로와 위험 폴리곤을 받고, 긴급 상황에서는 안전 후보별 결과 중 도로거리가 가장 짧은 경로를 선택 |
 
 ## 현재 포함하지 않는 것
 

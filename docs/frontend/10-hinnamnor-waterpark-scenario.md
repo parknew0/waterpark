@@ -13,10 +13,10 @@ Splash
 → Onboarding
 → Set My Car’s Location
 → Waterpark home
-→ Move your car right now
-→ Select a parking lot on the live map
-  ├─ High risk → Warning detail → return to parking selection
-  └─ Low risk → Safe detail → OSM road route
+├─ Select a parking lot on the live map
+│  ├─ High risk → Warning detail → nearest lower-risk candidate route
+│  └─ Low risk → Safe detail → selected parking route
+└─ Move your car right now → nearest lower-risk candidate → OSM road route
 ```
 
 ## 실행
@@ -30,16 +30,16 @@ npm run dev
 - 힌남노 재연: `http://localhost:5173/?scenario=hinnamnor`
 - 재연용 긴급 파라미터: `http://localhost:5173/?scenario=hinnamnor&view=emergency` — URL에 `view=emergency`가 있어도 첫 로드는 항상 Splash부터 시작한다.
 
-재연 모드에서도 Splash·온보딩·지도·바텀시트·긴급 경고·상세·길찾기는 기존 Waterpark 컴포넌트를 그대로 사용한다. 차량 위치 확정 CTA를 누르면 홈 화면을 1.8초 보여준 뒤 긴급 경고가 자동으로 열린다. 긴급 CTA를 누르면 상세 화면으로 바로 가지 않고 실제 Kakao 지도에 클릭 가능한 두 주차장 마커가 나타난다. 화면에는 `Hinnamnor Replay`나 과거 시나리오 설명을 노출하지 않고 평상시 제품과 같은 `Warning`·`Here’s Why` 문구를 사용한다. 힌남노는 강우·위험 판정에만 주입되는 데모 입력이다.
+재연 모드에서도 Splash·온보딩·지도·바텀시트·긴급 경고·상세·길찾기는 기존 Waterpark 컴포넌트를 그대로 사용한다. 차량 위치 확정 CTA를 누르면 홈 화면을 1.8초 보여준 뒤 긴급 경고가 자동으로 열린다. 긴급 CTA를 누르면 주차장 선택 화면으로 돌아가지 않고, 안전 후보별 침수 회피 경로를 계산해 도로거리가 가장 짧은 후보로 즉시 안내한다. 화면에는 `Hinnamnor Replay`나 과거 시나리오 설명을 노출하지 않는다.
 
 힌남노 재연 URL은 발표자가 중간 화면 쿼리를 복사해 열더라도 시나리오 맥락을 건너뛰지 않도록 첫 페이지 로드에서 `view`를 무시한다. Splash 페이드아웃이 끝나면 `view`를 제거하고 정상 온보딩 흐름을 시작한다. 앱 내부 history 이동에서는 현재 화면을 유지한다.
 
-- 우방신세계타운 1차 지하주차장 선택 → `Warning` 상세
-- 제철복지회관 임시주차장 선택 → `Safe` 상세
-- `Warning` CTA → 지도 선택으로 복귀
-- `Safe` CTA → 실제 OSM 도로 경로
+- 홈에서 위험 후보 선택 → `Warning` 상세
+- 홈에서 저위험 후보 선택 → `Safe` 상세
+- `Warning` CTA 또는 긴급 CTA → 모든 안전 후보의 경로를 비교한 뒤 최인접 후보 길찾기
+- `Safe` CTA → 사용자가 선택한 후보까지의 실제 OSM 도로 경로
 
-재연 모드는 발표가 힌남노 피해 지역에서 일관되게 이어지도록 오천읍 구정길의 시연 출발점을 사용하며 발표자의 브라우저 GPS로 바꾸지 않는다. 위험 장소를 누르면 `구정길 사용자 위치 → 우방신세계타운 내 차 위치` 경로를, 안전 후보를 누르면 `저장한 내 차 위치 → 제철복지회관 임시주차장` 경로를 각각 백엔드에서 계산한다. 안전 후보 구간은 664.2m 직행 경로가 합성 침수 영역의 도로 2개를 지나므로 해당 간선을 제거하고 2,594.8m 우회 경로를 반환한다.
+재연 모드는 발표가 힌남노 피해 지역에서 일관되게 이어지도록 오천읍 구정길의 시연 출발점을 사용하며 발표자의 브라우저 GPS로 바꾸지 않는다. 긴급 상황에서는 저장한 내 차 위치를 출발점으로 제철복지회관과 청림동 노상1까지의 경로를 각각 계산한다. 현재 데모 입력에서는 제철복지회관 저위험 우회가 `2,594.8m`, 청림동 노상1 경로가 `1,391.0m`이므로 후자를 자동 선택하며 UI에는 `1.4km`, `6 min`으로 표시한다.
 
 위험/안전 분기는 현재 `frontend/src/lib/parkingRisk.ts`의 API 경계 뒤에 있다. 아직 백엔드 계약이 확정되지 않아 HTTP URL이나 응답 스키마를 임의로 만들지 않았고, 힌남노 재연에서는 두 시나리오 후보를 결정적으로 분기한다.
 
@@ -51,9 +51,9 @@ npm run dev
 | 차량 위치 | 우방신세계타운 1차 지하주차장 | 로컬 건축물대장 결합에서 6동 모두 지하주차장 용도 확인 |
 | 지도 강우 칩 | `77mm` | 포항관측소 관측 기반 연구의 최대 1시간 이동누적 강우 |
 | 예측 범위 UI | `1 hour` | Waterpark의 1시간 선행 위험 안내 제품 명세 |
-| 대피 후보 | 제철복지회관 임시주차장 | 경상북도 공영주차장 가공 데이터의 실제 후보, 안전 확정 아님 |
-| 일반 경로 | `664.2m` | OSM 도로 길이 기준 최단경로, 합성 침수 간선 2개 통과 |
-| 저위험 경로 | `2,594.8m`, UI `11 min` | 침수 교차 간선 제거 후 Python 다익스트라 재계산, 침수 간선 0개 통과 |
+| 대피 후보 | 제철복지회관·청림동 노상1 | 경상북도 공영주차장 가공 데이터의 실제 후보, 안전 확정 아님 |
+| 제철복지회관 경로 | `2,594.8m`, UI `11 min` | 일반 최단경로의 침수 교차 간선 제거 후 재계산 |
+| 자동 선택 경로 | 청림동 노상1 `1,391.0m`, UI `6 min` | 후보별 저위험 도로거리 비교 결과 최단 후보 |
 
 시나리오 데이터는 `frontend/src/scenarios/hinnamnorScenario.ts`에 격리했다. 경로는 `scripts/build_flood_aware_route.py`를 인덕동 좌표로 실행해 `frontend/public/data/hinnamnor-waterpark-flow.geojson`에 저장했다. 따라서 기본 앱의 브라우저 GPS나 기본 경로 파일은 변경하지 않는다.
 

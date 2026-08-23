@@ -302,7 +302,7 @@
 - `FACT`: 기본 경로의 도로 일부를 가로지르는 합성 Polygon을 `data/demo/pohang-current-flood-scenario.geojson`으로 추가했다.
 - `FACT`: 합성 폴리곤을 현재 침수 입력으로 사용하면 OSM 간선 6개가 제거되고 목적지는 `효곡동 노상8`, 우회 거리는 2,121.9m가 된다.
 - `FACT`: Figma `119:1140`, `123:1743`, `90:755`를 확인해 위험 상세·안전 상세·길찾기 React 뷰를 구현했다.
-- `FACT`: 2026-08-23 흐름을 교정했다. 긴급 경고 뒤 실제 지도에서 주차장을 선택하며, 판정이 고위험이면 `risk-detail`, 저위험이면 `safe-detail`로 분기한다. 위험 상세 CTA는 지도 선택으로 돌아가고 안전 상세 CTA만 `route`로 이동한다.
+- `SUPERSEDED`: 초기 교정에서는 긴급 경고 뒤 지도에서 주차장을 다시 선택하고 위험/안전 상세로 분기했다. 이후 Figma 흐름을 재확인해 평상시 홈 선택에만 상세 분기를 두고, 긴급 CTA는 최인접 저위험 후보 길찾기로 바로 이동하도록 변경했다.
 - `DECISION`: 위험·안전 상세는 순차 화면이 아니라 주차장별 API 판정의 상호 배타적 결과다. 백엔드 계약 확정 전에는 `frontend/src/lib/parkingRisk.ts`의 어댑터 경계와 두 데모 후보만 사용하고 HTTP 계약은 만들지 않는다.
 - `LIMITATION`: Polygon과 `30mm`, 1시간 위험, 안전시간 30분은 시연 값이다. 실제 침수·강수·안전 보증으로 발표하지 않는다.
 - 상세: [가짜 침수 상황 데모 흐름](./frontend/08-flood-scenario-demo-flow.md)
@@ -380,6 +380,15 @@
 - `DECISION`: 일반 실행과 힌남노 재연이 공유하는 주차장 선택 화면의 검색·정렬·상태·거리 문구를 영어로 통일한다.
 - `DECISION`: 공공데이터의 한국어 원본 이름과 주소는 삭제하거나 변조하지 않고, UI 렌더링 시 `getEnglishParkingLabel()`을 통해 영문 표기를 생성한다.
 - `FACT`: 동일 변환기를 주차장 목록, 선택 상세, 저장된 내 차 카드, 경로 목적지 카드에 적용해 두 시나리오의 표시를 일치시켰다.
+- 확인일: 2026-08-23
+
+### 2026-08-23 — 평상시 상세 분기와 긴급 자동 대피 흐름 분리
+
+- `DECISION`: Figma `123:1958` 평상시 홈에서 주차장 선택 시에만 위험 상세 `119:1140` 또는 안전 상세 `123:1743`으로 분기한다.
+- `DECISION`: 긴급 경고가 발생한 뒤에는 후보를 다시 선택하게 하지 않고, 안전 후보별 `/api/flood-route` 결과 중 도로거리가 가장 짧은 경로를 자동 선택해 Figma `244:3303` 길찾기로 바로 이동한다.
+- `FACT`: 힌남노 데모에서 제철복지회관 경로는 `2,594.8m`, 청림동 노상1 경로는 `1,391.0m`로 계산돼 청림동 노상1이 자동 선택된다.
+- `LIMITATION`: 현재 안전 후보 집합은 데모 시나리오에 지정된 상대적 저위험 후보이며 절대 안전 인증이나 실시간 수용 가능 여부를 뜻하지 않는다.
+- 출처: [Figma 홈 `123:1958`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1958&m=dev), [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 우회 길찾기 `244:3303`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=244-3303&m=dev)
 - 확인일: 2026-08-23
 
 ### 2026-08-23 — 우방신세계타운 1차 실제 이미지 URL 후보
