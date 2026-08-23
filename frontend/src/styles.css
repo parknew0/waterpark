@@ -1380,6 +1380,9 @@ h3 { margin: 0; font-size: 14px; }
   .car-location-sheet-header { height: 60px; }
   .parking-detail-image { height: 150px; }
   .parking-risk-preview h3 { margin-bottom: 12px; }
+}
+
+@media (max-height: 820px) {
   .flood-detail-map,
   .flood-detail-map .map-wrap,
   .flood-detail-map .fallback-map,
