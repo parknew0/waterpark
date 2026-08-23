@@ -7,6 +7,8 @@ interface EmergencyViewProps {
   parkingAddress?: string;
   distanceMeters?: number;
   safeTimeLabel?: string;
+  isRouting?: boolean;
+  routeError?: string | null;
 }
 
 const rainDrops = [
@@ -59,6 +61,8 @@ export function EmergencyView({
   parkingAddress = "Static flood-risk routing prototype",
   distanceMeters,
   safeTimeLabel = "30min",
+  isRouting = false,
+  routeError,
 }: EmergencyViewProps) {
   return (
     <main className="emergency-stage">
@@ -90,10 +94,13 @@ export function EmergencyView({
           <strong>{parkingName}</strong>
           <p>{parkingAddress}</p>
           <em>{distanceMeters == null ? "Calculating…" : `${Math.round(distanceMeters)}m by road`}</em>
+          {routeError ? <small role="alert">{routeError}</small> : null}
         </article>
 
         <footer className="emergency-footer">
-          <button type="button" onClick={onMoveNow}>Move Your Car Now</button>
+          <button type="button" onClick={onMoveNow} disabled={isRouting}>
+            {isRouting ? "Finding the Safest Route…" : "Move Your Car Now"}
+          </button>
         </footer>
       </section>
     </main>

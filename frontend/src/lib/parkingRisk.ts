@@ -4,7 +4,7 @@ export type ParkingRiskBranch = "danger" | "safe";
 
 export interface ParkingRiskSelectionContext {
   dangerParkingId: string;
-  lowerRiskParkingId: string;
+  safeParkingIds: string[];
 }
 
 /**
@@ -16,7 +16,7 @@ export async function resolveParkingRiskBranch(
   place: ParkingPlace,
   context: ParkingRiskSelectionContext,
 ): Promise<ParkingRiskBranch> {
-  if (place.id === context.lowerRiskParkingId) return "safe";
+  if (context.safeParkingIds.includes(place.id)) return "safe";
   if (place.id === context.dangerParkingId) return "danger";
-  throw new Error("선택한 주차장의 침수 위험 판정 결과가 없습니다.");
+  return "danger";
 }

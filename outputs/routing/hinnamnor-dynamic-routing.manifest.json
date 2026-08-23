@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-08-23",
+  "scenario": "hinnamnor",
+  "graphSource": "OpenStreetMap driving network cached in data/raw/osm-routing/pohang-indeok-hinnamnor-drive.graphml",
+  "riskInput": "data/demo/hinnamnor-current-flood-scenario.geojson",
+  "riskInputStatus": "synthetic demo polygon; not an observed 2022 Hinnamnor flood boundary",
+  "runtimeBundle": "serverless/routing/hinnamnor.json",
+  "nodeCount": 1093,
+  "edgeCount": 3096,
+  "blockedEdgeCount": 8,
+  "validation": {
+    "baselineDistanceM": 664.2,
+    "baselineBlockedEdgeCount": 2,
+    "lowerRiskDistanceM": 2594.8,
+    "lowerRiskBlockedEdgeCount": 0,
+    "avoidedCurrentFlood": true
+  }
+}

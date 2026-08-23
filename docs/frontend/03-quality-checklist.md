@@ -73,7 +73,7 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-22 | 경로 화면 콘솔 | 브라우저 error·warning 0건 | 통과 |
 | 2026-08-22 | Kakao 경로 레이어 | `Polygon`·`Polyline` 구현 및 TypeScript build 통과 | 등록하지 않은 테스트 도메인 `127.0.0.1:5174`에서는 SVG 폴백 검증; 등록된 `localhost:5173` 실지도 최종 확인 필요 |
 | 2026-08-22 | 가짜 현재 침수 시나리오 | 합성 폴리곤과 교차한 OSM 간선 6개 제거, 목적지 `효곡동 노상8`, 우회 2,121.9m 생성 | 통과; 실제 관측 데이터로 사용 금지 |
-| 2026-08-23 | 긴급→지도 선택→위험/안전 분기 | `emergency → map → risk-detail 또는 safe-detail`, 위험 CTA는 지도 복귀, 안전 CTA는 route 전환 | 통과 |
+| 2026-08-23 | 평상시 상세 분기·긴급 자동 대피 | 홈 마커 선택은 `risk-detail`/`safe-detail` 분기, 긴급 CTA는 후보별 경로 비교 후 최인접 저위험 후보 route로 직접 전환 | 통과 |
 | 2026-08-22 | Figma 신규 3개 뷰 | 402×874에서 Warning·Safe 상세와 길찾기 카드·경로 확인 | 통과 |
 | 2026-08-22 | 긴급 화면 짧은 viewport | 402×720에서도 경고 원 `x=126.5, y=131`, 차 `x=167, y=171`, 뒤로가기 `x=12, y=62` 유지 | 통과 |
 | 2026-08-22 | 긴급 목적지 영문 표기 | `Hyogok-dong Street Parking 8`, `24 Yudong-gil, Nam-gu, Pohang-si, Gyeongsangbuk-do` 확인 | 통과 |
@@ -101,6 +101,7 @@ UI 변경 시 최신 [Web Interface Guidelines](https://raw.githubusercontent.co
 | 2026-08-23 | 주차장 목록·상세 실제 이미지 | 침수 당시 보도 사진 제거, 모든 장소를 좌표 반경 120m Kakao 실제 로드뷰로 표시 | 통과 |
 | 2026-08-23 | 경로 끝점 연결 | OSM 스냅 경로에 실제 origin·destination 좌표를 연결해 현재 위치 원과 P 마커의 틈 제거 | 통과 |
 | 2026-08-23 | 힌남노 제품 UI 분리 | `Hinnamnor Replay`·`Historical scenario inputs`를 숨기고 정상 `Warning`·`Here’s Why` 화면으로 표시 | 통과 |
-| 2026-08-23 | 2구간 선택 기반 길찾기 | 구정길 사용자→위험한 내 차 약 480m, 저장한 내 차→안전 후보 약 670m를 각각 OSRM으로 재계산 | 통과; 공개 라우터는 데모 전용 |
+| 2026-08-23 | 동적 침수 회피 API | 일반 664.2m·침수 간선 2개 대비 우회 2,594.8m·침수 간선 0개를 Python 테스트와 localhost API에서 확인 | 통과; 합성 침수 입력임을 명시 |
+| 2026-08-23 | 최종 길찾기 위험 폴리곤 | 백엔드가 차단에 사용한 동일 `CURRENT` Polygon을 상세·최종 Kakao 지도에 표시, 콘솔 오류 0건 | 통과 |
 
 초기 브라우저 검사에서 공공 원천의 중복 관리번호 때문에 React key 경고가 발생했다. 기관·관리번호·명칭·주소·좌표의 SHA-256 안정 해시로 ID를 교체했으며 이후 새 경고는 발생하지 않았다.

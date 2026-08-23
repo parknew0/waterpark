@@ -1,50 +1,40 @@
 import type { Coordinate, ParkingPlace } from "../types/parking";
-import type { FloodAwareRoute, Position } from "../types/routing";
-
-interface OsrmRouteResponse {
-  code: string;
-  routes?: Array<{
-    distance: number;
-    duration: number;
-    geometry: { coordinates: Position[] };
-  }>;
-}
-
-function connectEndpoints(path: Position[], origin: Coordinate, destination: Coordinate) {
-  const originPosition: Position = [origin.longitude, origin.latitude];
-  const destinationPosition: Position = [destination.longitude, destination.latitude];
-  if (path.length === 0) return [originPosition, destinationPosition];
-  return [originPosition, ...path, destinationPosition];
-}
+import type { FloodAwareRoute } from "../types/routing";
 
 export async function fetchLiveDrivingRoute(
   origin: Coordinate,
   destination: ParkingPlace,
-  context: FloodAwareRoute,
 ): Promise<FloodAwareRoute> {
-  const coordinates = `${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}`;
-  const url = new URL(`https://router.project-osrm.org/route/v1/driving/${coordinates}`);
-  url.searchParams.set("overview", "full");
-  url.searchParams.set("geometries", "geojson");
-  url.searchParams.set("steps", "false");
+  const response = await fetch("/api/flood-route", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ scenario: "hinnamnor", origin, destination }),
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({})) as { error?: string };
+    throw new Error(payload.error ?? `Flood-aware route response: ${response.status}`);
+  }
+  return response.json() as Promise<FloodAwareRoute>;
+}
 
-  const response = await fetch(url, { headers: { Accept: "application/json" } });
-  if (!response.ok) throw new Error(`OSRM route response: ${response.status}`);
-  const payload = await response.json() as OsrmRouteResponse;
-  const route = payload.routes?.[0];
-  if (payload.code !== "Ok" || !route) throw new Error(`OSRM route failed: ${payload.code}`);
-
-  const path = connectEndpoints(route.geometry.coordinates, origin, destination);
-  return {
-    ...context,
-    origin,
-    destination: { ...destination, safetyVerified: true },
-    baselinePath: path,
-    lowerRiskPath: path,
-    distanceMeters: route.distance,
-    estimatedDriveMinutes: Math.max(1, Math.ceil(route.duration / 60)),
-    baselineDistanceMeters: route.distance,
-    generatedAt: new Date().toISOString(),
-    disclaimer: `${context.disclaimer} Live road geometry: OSRM/OpenStreetMap.`,
-  };
+export async function fetchNearestSafeDrivingRoute(
+  origin: Coordinate,
+  candidates: ParkingPlace[],
+): Promise<FloodAwareRoute> {
+  const candidatesAwayFromOrigin = candidates.filter((candidate) => {
+    const eastWestMeters = (candidate.longitude - origin.longitude) * 88_000;
+    const northSouthMeters = (candidate.latitude - origin.latitude) * 111_000;
+    return Math.hypot(eastWestMeters, northSouthMeters) >= 25;
+  });
+  if (candidatesAwayFromOrigin.length === 0) {
+    throw new Error("No safe parking candidates are available away from the current car location.");
+  }
+  const results = await Promise.allSettled(
+    candidatesAwayFromOrigin.map((candidate) => fetchLiveDrivingRoute(origin, candidate)),
+  );
+  const routes = results.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
+  if (routes.length === 0) throw new Error("Unable to calculate a route to a safe parking candidate.");
+  return routes.reduce((nearest, route) => (
+    route.distanceMeters < nearest.distanceMeters ? route : nearest
+  ));
 }

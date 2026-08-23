@@ -302,7 +302,7 @@
 - `FACT`: 기본 경로의 도로 일부를 가로지르는 합성 Polygon을 `data/demo/pohang-current-flood-scenario.geojson`으로 추가했다.
 - `FACT`: 합성 폴리곤을 현재 침수 입력으로 사용하면 OSM 간선 6개가 제거되고 목적지는 `효곡동 노상8`, 우회 거리는 2,121.9m가 된다.
 - `FACT`: Figma `119:1140`, `123:1743`, `90:755`를 확인해 위험 상세·안전 상세·길찾기 React 뷰를 구현했다.
-- `FACT`: 2026-08-23 흐름을 교정했다. 긴급 경고 뒤 실제 지도에서 주차장을 선택하며, 판정이 고위험이면 `risk-detail`, 저위험이면 `safe-detail`로 분기한다. 위험 상세 CTA는 지도 선택으로 돌아가고 안전 상세 CTA만 `route`로 이동한다.
+- `SUPERSEDED`: 초기 교정에서는 긴급 경고 뒤 지도에서 주차장을 다시 선택하고 위험/안전 상세로 분기했다. 이후 Figma 흐름을 재확인해 평상시 홈 선택에만 상세 분기를 두고, 긴급 CTA는 최인접 저위험 후보 길찾기로 바로 이동하도록 변경했다.
 - `DECISION`: 위험·안전 상세는 순차 화면이 아니라 주차장별 API 판정의 상호 배타적 결과다. 백엔드 계약 확정 전에는 `frontend/src/lib/parkingRisk.ts`의 어댑터 경계와 두 데모 후보만 사용하고 HTTP 계약은 만들지 않는다.
 - `LIMITATION`: Polygon과 `30mm`, 1시간 위험, 안전시간 30분은 시연 값이다. 실제 침수·강수·안전 보증으로 발표하지 않는다.
 - 상세: [가짜 침수 상황 데모 흐름](./frontend/08-flood-scenario-demo-flow.md)
@@ -364,6 +364,48 @@
 - 출처: [카카오맵 REST API 장소 검색](https://developers.kakao.com/docs/ko/kakaomap/rest-api), [Daum 이미지 검색 REST API](https://developers.kakao.com/docs/ko/daum-search/dev-guide)
 - 확인일: 2026-08-23
 
+### 2026-08-23 — 동적 침수 회피 라우팅 API
+
+- `FACT`: 힌남노 안전 후보 구간의 OSM 거리 최단경로는 `664.2m`이며 합성 `CURRENT` 침수 영역과 교차하는 간선 2개를 통과한다.
+- `FACT`: 교차 간선 8개를 런타임 그래프에서 제외한 뒤 다익스트라를 실행하면 `2,594.8m` 우회 경로가 선택되고 침수 간선 통과 수는 0개다.
+- `DECISION`: 프론트의 OSRM 직접 호출을 제거하고 `/api/flood-route`만 호출한다. API 오류 시 일반 경로를 저위험 경로처럼 폴백 표시하지 않는다.
+- `DECISION`: 오프라인에서 OSM GraphML과 합성 침수 Polygon을 616KB JSON으로 만들고, Lambda에서는 외부 GIS 패키지 없이 Python 표준 라이브러리로 최근접 노드 탐색과 다익스트라를 실행한다.
+- `DECISION`: 백엔드 계산에 사용된 동일 위험 Polygon을 위험·안전 상세와 최종 길찾기 Kakao 지도에 렌더링한다.
+- `LIMITATION`: 현재 `CURRENT` Polygon은 회피 동작 검증용 합성 힌남노 재연 입력이며 2022년 실측 침수 경계가 아니다.
+- 출처: [OpenStreetMap 저작권](https://www.openstreetmap.org/copyright), [NetworkX 최단경로 문서](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html)
+- 확인일: 2026-08-23
+
+### 2026-08-23 — 주차장 선택 화면 영문 통일
+
+- `DECISION`: 일반 실행과 힌남노 재연이 공유하는 주차장 선택 화면의 검색·정렬·상태·거리 문구를 영어로 통일한다.
+- `DECISION`: 공공데이터의 한국어 원본 이름과 주소는 삭제하거나 변조하지 않고, UI 렌더링 시 `getEnglishParkingLabel()`을 통해 영문 표기를 생성한다.
+- `FACT`: 동일 변환기를 주차장 목록, 선택 상세, 저장된 내 차 카드, 경로 목적지 카드에 적용해 두 시나리오의 표시를 일치시켰다.
+- 확인일: 2026-08-23
+
+### 2026-08-23 — 평상시 상세 분기와 긴급 자동 대피 흐름 분리
+
+- `DECISION`: Figma `123:1958` 평상시 홈에서 주차장 선택 시에만 위험 상세 `119:1140` 또는 안전 상세 `123:1743`으로 분기한다.
+- `DECISION`: 긴급 경고가 발생한 뒤에는 후보를 다시 선택하게 하지 않고, 안전 후보별 `/api/flood-route` 결과 중 도로거리가 가장 짧은 경로를 자동 선택해 Figma `244:3303` 길찾기로 바로 이동한다.
+- `FACT`: 힌남노 데모에서 제철복지회관 경로는 `2,594.8m`, 청림동 노상1 경로는 `1,391.0m`로 계산돼 청림동 노상1이 자동 선택된다.
+- `LIMITATION`: 현재 안전 후보 집합은 데모 시나리오에 지정된 상대적 저위험 후보이며 절대 안전 인증이나 실시간 수용 가능 여부를 뜻하지 않는다.
+- 출처: [Figma 홈 `123:1958`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1958&m=dev), [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 우회 길찾기 `244:3303`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=244-3303&m=dev)
+- 확인일: 2026-08-23
+
+### 2026-08-23 — 주차장 미디어 로딩과 사전 안내 문구
+
+- `DECISION`: 주차장 목록·상세에서 Kakao 로드뷰가 준비되기 전에 기존 로컬 임시 사진을 노출하지 않고 `#474747` 회색 플레이스홀더를 표시한다.
+- `DECISION`: 로드뷰 `init` 또는 이미지 `load`가 완료된 뒤 실제 미디어를 240ms 동안 페이드인해 서로 다른 사진이 순간적으로 교체되는 인상을 제거한다.
+- `DECISION`: Figma `123:2360`에 추가된 `We’ll immediately guide you to a safer route immediately` 안내와 원형 경고 아이콘을 차량 위치 설정 CTA 바로 위에 적용한다.
+- 출처: [Figma 차량 위치 설정 상세 `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev)
+- 확인일: 2026-08-23
+
+### 2026-08-23 — 긴급 경로 출발지와 동일한 후보 제외
+
+- `FACT`: 사용자가 저위험 후보 중 하나를 내 차 위치로 저장하면 해당 장소가 긴급 목적지 후보에도 남아 `출발지 = 목적지`, 거리 `0m` 경로가 선택될 수 있었다.
+- `DECISION`: 후보 ID가 저장된 내 차 위치와 같거나 좌표상 출발지에서 25m 미만인 후보는 최인접 안전 경로 비교에서 제외한다.
+- `FACT`: 같은 장소를 제외한 나머지 후보만 `/api/flood-route`로 계산하므로 최종 길찾기에는 실제 도로 경로가 반드시 포함된다.
+- 확인일: 2026-08-23
+
 ### 2026-08-23 — 우방신세계타운 1차 실제 이미지 URL 후보
 
 - `FACT`: 단지명과 주소가 일치하는 우방신세계타운 1차 106동 전경 이미지 URL을 확인했다. 원본은 2048×1536 JPEG이며 현재 HTTP 200으로 응답한다.
@@ -387,13 +429,21 @@
 
 - `DECISION`: 힌남노 시나리오는 과거 강우·위험 판정 입력으로만 사용하며 화면에는 `Hinnamnor Replay`, `Historical scenario inputs`, 침수 당시 보도 사진을 노출하지 않는다.
 - `DECISION`: 힌남노 재연은 발표자의 현재 GPS가 아니라 오천읍 구정길 `35.9816, 129.4103`을 사용자 시연 위치로 사용한다. 위험 상세는 이 위치에서 저장한 내 차까지, 안전 상세는 저장한 내 차에서 선택한 안전 후보까지의 서로 다른 두 경로를 계산한다.
-- `FACT`: OSRM Route Service는 전달한 좌표 순서대로 자동차 도로 경로를 계산하며 GeoJSON 형상·거리·시간을 반환한다.
-- `DECISION`: 위험·안전 주차장 선택 시 저장한 내 차 위치와 선택 장소를 OSRM에 전달해 경로를 다시 계산한다. 공개 라우터 장애 시 운영 품질을 보장할 수 없으므로 현재 구현은 시연용이다.
+- `SUPERSEDED`: 초기 구현은 위험·안전 주차장 선택 시 저장한 내 차 위치와 선택 장소를 공개 OSRM에 전달했으나, 이 경로는 지도에 표시한 침수 Polygon을 회피하지 못했다.
+- `DECISION`: 공개 OSRM 직접 호출은 제거했다. 현재 구현은 `/api/flood-route`가 합성 `CURRENT` 침수 영역과 교차하는 도로 간선을 제외한 뒤 경로를 다시 계산한다.
 - `DECISION`: 목적지 마커의 검은 테두리를 제거하고 경로의 마지막 좌표를 정확한 목적지로 연결해 선이 `P` 아래까지 이어지게 한다.
 - 출처: [OSRM Route API](https://project-osrm.org/docs/v26.4.0/http/#route-service), [OpenStreetMap 저작권](https://www.openstreetmap.org/copyright)
 - 확인일: 2026-08-23
 
 ## 결정 로그
+
+### 2026-08-23 — 일반 주차 위치 상세의 안전 상태 분리
+
+- `DECISION`: 일반 `?view=map`에서 주차장을 선택한 시점은 침수 위험이 감지되지 않은 정상 상태이므로 상세 화면을 `Safe`와 `Low risk of flooding in the next 1 hour`로 표시한다.
+- `DECISION`: 일반 안전 상태의 근거 문구는 `Building is higher than the surrounding`, `Rainfall over the past 6 hours`로 표시하고 위험 상황 전용 즉시 우회 안내는 숨긴다.
+- `DECISION`: 힌남노 재연은 과거 위험 입력이 주입된 시나리오이므로 동일한 공용 상세 컴포넌트에 명시적인 `warning` 상태를 전달해 기존 경고 화면을 유지한다.
+- 출처: [Figma 차량 위치 설정 안전 상세 `332:4205`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=332-4205&m=dev)
+- 확인일: 2026-08-23
 
 | ID | 날짜 | 결정 | 상태 |
 | --- | --- | --- | --- |

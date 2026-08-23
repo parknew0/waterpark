@@ -9,6 +9,8 @@ npm install
 npm run dev
 ```
 
+`npm run dev`는 Vite와 로컬 Python 침수 회피 라우팅 API를 함께 실행한다. `Ctrl+C` 한 번으로 두 프로세스를 종료한다. 운영 배포에서는 `/api/flood-route`가 Pages Function을 거쳐 Lambda의 동일 핸들러로 전달된다.
+
 Kakao 지도를 사용하려면 Kakao Developers의 JavaScript 키를 `VITE_KAKAO_MAP_APP_KEY`에 넣고 `http://localhost:5173`을 JavaScript SDK 도메인으로 등록한다. 키가 없거나 API가 실패하면 `전국주차장정보표준데이터`에서 추출한 경북 좌표 보유 주차장으로 자동 전환한다.
 
 화면별 직접 확인 주소:

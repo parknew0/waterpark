@@ -24,4 +24,12 @@ export interface FloodAwareRoute {
   baselineDistanceMeters: number;
   disclaimer: string;
   generatedAt: string;
+  routeDecision?: {
+    avoidedCurrentFlood: boolean;
+    baselineBlockedEdgeCount: number;
+    lowerRiskBlockedEdgeCount: number;
+    scenarioBlockedEdgeCount: number;
+    originSnapDistanceM: number;
+    destinationSnapDistanceM: number;
+  };
 }

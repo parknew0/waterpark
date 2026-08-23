@@ -6,7 +6,7 @@ let parkingRequest: Promise<ParkingPlace[]> | undefined;
 export async function loadLocalParking(): Promise<ParkingPlace[]> {
   parkingRequest ??= fetch(DATA_URL).then((response) => {
     if (!response.ok) {
-      throw new Error("경북 공영주차장 데이터를 불러오지 못했습니다. 페이지를 새로고침해 주세요.");
+      throw new Error("Unable to load Gyeongsangbuk-do public parking data. Please refresh the page.");
     }
     return response.json() as Promise<ParkingPlace[]>;
   });

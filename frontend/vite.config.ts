@@ -33,9 +33,14 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    server: lambdaUrl
-      ? {
-          proxy: {
+    server: {
+      proxy: {
+        "/api/flood-route": {
+          target: "http://127.0.0.1:8788",
+          changeOrigin: true,
+        },
+        ...(lambdaUrl
+          ? {
             "/api": {
               target: lambdaUrl,
               changeOrigin: true,
@@ -43,8 +48,9 @@ export default defineConfig(({ mode }) => {
               // Pages Function's rewrite so both environments agree.
               rewrite: (path) => path.replace(/^\/api/, ""),
             },
-          },
-        }
-      : undefined,
+          }
+          : {}),
+      },
+    },
   };
 });

@@ -1,4 +1,5 @@
 import type { ParkingPlace } from "../types/parking";
+import { getEnglishParkingLabel } from "../lib/parkingEnglish";
 
 interface ParkingCardProps {
   place: ParkingPlace;
@@ -6,15 +7,16 @@ interface ParkingCardProps {
   onSelect: (place: ParkingPlace) => void;
 }
 
-const numberFormatter = new Intl.NumberFormat("ko-KR");
+const numberFormatter = new Intl.NumberFormat("en-US");
 
 function formatDistance(distance?: number) {
-  if (distance == null) return "거리 정보 없음";
+  if (distance == null) return "Distance unavailable";
   if (distance < 1_000) return `${numberFormatter.format(distance)}m`;
   return `${(distance / 1_000).toFixed(1)}km`;
 }
 
 export function ParkingCard({ place, selected, onSelect }: ParkingCardProps) {
+  const label = getEnglishParkingLabel(place);
   return (
     <li className="parking-card-item">
       <button
@@ -25,11 +27,11 @@ export function ParkingCard({ place, selected, onSelect }: ParkingCardProps) {
       >
         <span className="parking-thumbnail" aria-hidden="true">P</span>
         <span className="parking-card-copy">
-          <strong>{place.name}</strong>
-          <span className="parking-address">{place.address || "주소 정보 없음"}</span>
+          <strong>{label.name}</strong>
+          <span className="parking-address">{label.address}</span>
           <span className="parking-meta">
             {place.parkingType ? `${place.parkingType} · ` : ""}
-            {place.capacity != null ? `${numberFormatter.format(place.capacity)}면 · ` : ""}
+            {place.capacity != null ? `${numberFormatter.format(place.capacity)} spaces · ` : ""}
             {formatDistance(place.distanceMeters)}
           </span>
         </span>

@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { loadKakaoMaps } from "../../lib/kakaoMaps";
+import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
 import type { ParkingPlace } from "../../types/parking";
 
 interface ParkingMediaProps {
   appKey?: string;
   className?: string;
-  fallbackSrc: string;
   mode?: "thumbnail" | "detail";
   place: ParkingPlace;
 }
 
-export function ParkingMedia({ appKey, className = "", fallbackSrc, mode = "detail", place }: ParkingMediaProps) {
+export function ParkingMedia({ appKey, className = "", mode = "detail", place }: ParkingMediaProps) {
   const liveMediaRef = useRef<HTMLDivElement>(null);
   const [hasLiveMedia, setHasLiveMedia] = useState(false);
+  const label = getEnglishParkingLabel(place);
 
   useEffect(() => {
     if (place.imageUrl || !appKey || !liveMediaRef.current) return;
@@ -29,13 +30,13 @@ export function ParkingMedia({ appKey, className = "", fallbackSrc, mode = "deta
         const frameStreetLevel = () => {
           const viewpoint = roadview.getViewpoint();
           roadview.setViewpoint({ ...viewpoint, tilt: 8, zoom: 0 });
+          setHasLiveMedia(true);
         };
         maps.event.addListener(roadview, "init", frameStreetLevel);
         detachRoadviewListener = () => maps.event.removeListener(roadview, "init", frameStreetLevel);
         client.getNearestPanoId(position, 120, (panoId) => {
           if (disposed || panoId == null) return;
           roadview.setPanoId(panoId, position);
-          setHasLiveMedia(true);
         });
       })
       .catch(() => undefined);
@@ -47,21 +48,25 @@ export function ParkingMedia({ appKey, className = "", fallbackSrc, mode = "deta
     };
   }, [appKey, mode, place.imageUrl, place.latitude, place.longitude]);
 
-  if (place.imageUrl) {
-    return <img className={className} src={place.imageUrl} alt={`${place.name} 실제 전경`} />;
-  }
-
   return (
     <div
       className={`parking-media ${className}`}
       role="img"
-      aria-label={`${place.name} 인근 실제 로드뷰`}
+      aria-label={place.imageUrl ? `${label.name} exterior` : `Street view near ${label.name}`}
     >
-      <img className="parking-media-fallback" src={fallbackSrc} alt="" />
-      <div
-        className={`parking-media-live parking-media-live--${mode}${hasLiveMedia ? " parking-media-live--ready" : ""}`}
-        ref={liveMediaRef}
-      />
+      {place.imageUrl ? (
+        <img
+          className={`parking-media-source${hasLiveMedia ? " parking-media-source--ready" : ""}`}
+          src={place.imageUrl}
+          alt=""
+          onLoad={() => setHasLiveMedia(true)}
+        />
+      ) : (
+        <div
+          className={`parking-media-live parking-media-live--${mode}${hasLiveMedia ? " parking-media-live--ready" : ""}`}
+          ref={liveMediaRef}
+        />
+      )}
     </div>
   );
 }

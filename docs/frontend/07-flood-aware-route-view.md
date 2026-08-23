@@ -19,13 +19,20 @@
 
 GeoJSON의 도로망 LineString은 OSM 노드에 스냅돼 실제 출발·도착 Point와 떨어질 수 있다. 프론트 파서는 경로 방향을 출발점 기준으로 정렬한 뒤 정확한 origin을 맨 앞에, destination을 맨 뒤에 연결한다. 이 짧은 연결 구간으로 청록색 선이 현재 위치 원과 목적지 `P` 마커에서 끊겨 보이던 문제를 없앴다. 도로거리·예상시간 원본 수치는 변경하지 않는다.
 
-힌남노 시연에서 주차장을 선택한 뒤에는 저장 GeoJSON 경로를 그대로 재생하지 않는다. 앞 단계에서 사용자가 저장한 내 차 위치와 다음 단계에서 누른 주차장을 OSRM Route API로 다시 조회해 도로 형상·거리·시간을 갱신한다. 응답 도로 좌표 앞뒤에도 정확한 출발지와 목적지 좌표를 연결하고, `P` 마커의 검은 테두리를 제거해 청록 선이 마커 중심 아래까지 자연스럽게 이어지도록 했다.
+힌남노 시연에서 주차장을 선택한 뒤에는 저장 GeoJSON 경로나 외부 OSRM 최단경로를 그대로 재생하지 않는다. 프론트가 `/api/flood-route`로 저장한 내 차 위치와 선택 주차장을 보내면 Python 백엔드가 캐시된 OSM 방향 그래프에서 두 경로를 매번 계산한다. 회색 점선은 침수 간선을 허용한 거리 최단경로이고, 청록 실선은 `CURRENT` 폴리곤과 교차하는 간선 8개를 그래프에서 제거한 뒤 다시 실행한 다익스트라 경로다.
+
+현재 힌남노 안전 후보 구간의 검증 결과는 일반 최단경로 `664.2m`·침수 간선 2개 통과, 저위험 우회경로 `2,594.8m`·침수 간선 0개 통과다. 백엔드가 계산에 사용한 동일한 `CURRENT` 폴리곤을 응답의 `riskZones`에 넣고 위험·안전 상세와 최종 길찾기 지도 모두에 렌더링한다. 지도 카메라에도 위험 폴리곤 좌표를 bounds로 포함하고 상단 카드용 여백을 적용해 최종 뷰에서 가리지 않게 했다.
+
+응답 도로 좌표 앞뒤에는 정확한 출발지와 목적지 좌표를 연결하고, `P` 마커의 검은 테두리를 제거해 청록 선이 마커 중심 아래까지 자연스럽게 이어지도록 했다. API가 실패하면 일반 경로로 조용히 폴백하지 않고 선택 지도에 오류를 표시하며 상세·길찾기 화면으로 전환하지 않는다.
 
 ## 데이터 연결
 
 - 원본 산출물: `outputs/routing/pohang-postech-flood-aware-route.geojson`
 - 프론트 복사본: `frontend/public/data/pohang-flood-aware-route.geojson`
 - 로더: `frontend/src/hooks/useFloodAwareRoute.ts`
+- 동적 라우팅 클라이언트: `frontend/src/lib/liveDrivingRoute.ts`
+- 동적 라우팅 백엔드: `serverless/routing.py`
+- 런타임 그래프 번들: `serverless/routing/hinnamnor.json`
 - 타입: `frontend/src/types/routing.ts`
 - 렌더러: `frontend/src/components/ParkingMap.tsx`, `frontend/src/lib/kakaoMaps.ts`
 
@@ -61,6 +68,7 @@ GeoJSON의 도로망 LineString은 OSM 노드에 스냅돼 실제 출발·도착
 - 목적 주차장의 `safety_verified`는 `false`다.
 - 위험 영향 반경 `120m`는 공식 침수 경계가 아니라 시연용 파라미터다.
 - 실시간 도로 통제, 주차 여석과 현장 상태는 아직 연결하지 않았다.
+- 힌남노 `CURRENT` 폴리곤은 회피 로직을 검증하기 위한 합성 재연 입력이며 2022년 실측 침수 경계가 아니다.
 - 실제 재난 시 재난문자·공식 도로 통제·현장 안내를 우선해야 한다.
 
 ## 검증
