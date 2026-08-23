@@ -33,12 +33,6 @@ interface ParkingHomeViewProps {
   assessmentPending?: boolean;
 }
 
-const thumbnails = [
-  "/assets/parking/nearby-1.png",
-  "/assets/parking/nearby-2.png",
-  "/assets/parking/nearby-3.png",
-];
-
 const numberFormatter = new Intl.NumberFormat("en-US");
 
 function formatDistance(distance?: number) {
@@ -189,7 +183,7 @@ export function ParkingHomeView({
                 {!isLoading && nearbyPlaces.length === 0 ? <p className="sheet-state">No nearby parking lots found.</p> : null}
 
                 <ul className="nearby-parking-list">
-                  {nearbyPlaces.map((place, index) => {
+                  {nearbyPlaces.map((place) => {
                     const label = getEnglishParkingLabel(place);
                     return (
                       <li key={place.id}>
@@ -197,7 +191,6 @@ export function ParkingHomeView({
                           <ParkingMedia
                             appKey={appKey}
                             className="nearby-parking-image"
-                            fallbackSrc={thumbnails[index]}
                             mode="thumbnail"
                             place={place}
                           />
@@ -235,7 +228,6 @@ function ParkingDetail({
       <ParkingMedia
         appKey={appKey}
         className="parking-detail-image"
-        fallbackSrc="/assets/parking/parking-detail.png"
         place={place}
       />
       <div className="parking-detail-copy">
@@ -253,6 +245,14 @@ function ParkingDetail({
         </ul>
       </div>
       <footer className="parking-detail-footer">
+        <p className="parking-detail-guidance">
+          <span className="parking-detail-guidance-icon" aria-hidden="true">
+            <img className="parking-detail-guidance-outline" src="/assets/parking/danger-circle-outline.svg" alt="" />
+            <img className="parking-detail-guidance-line" src="/assets/parking/danger-circle-line.svg" alt="" />
+            <img className="parking-detail-guidance-dot" src="/assets/parking/danger-circle-dot.svg" alt="" />
+          </span>
+          <span>We’ll immediately guide you to a safer route immediately</span>
+        </p>
         <button type="button" onClick={onSetCarLocation}>Set My Car’s Location</button>
       </footer>
     </div>

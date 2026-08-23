@@ -1279,14 +1279,15 @@ h3 { margin: 0; font-size: 14px; }
 .nearby-parking-copy strong { min-height: 50px; font: 600 18px/1.4 "Plus Jakarta Sans", "Noto Sans KR", sans-serif; letter-spacing: -.18px; }
 .nearby-parking-distance { align-self: flex-end; color: #00e8ec; font-size: 14px; }
 
-.parking-detail { min-height: calc(100% - 72px); padding-bottom: 88px; }
+.parking-detail { min-height: calc(100% - 72px); padding-bottom: 126px; }
 .parking-detail-image { width: 100%; height: 200px; display: block; object-fit: cover; }
-.parking-media { position: relative; overflow: hidden; background: #161b1a; }
-.parking-media-fallback,
-.parking-media-live { position: absolute; inset: 0; width: 100%; height: 100%; }
-.parking-media-fallback { display: block; object-fit: cover; }
-.parking-media-live { opacity: 0; pointer-events: none; transition: opacity 180ms ease; }
+.parking-media { position: relative; overflow: hidden; background: #474747; }
+.parking-media-source,
+.parking-media-live { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 240ms ease; }
+.parking-media-source { display: block; object-fit: cover; }
+.parking-media-source--ready,
 .parking-media-live--ready { opacity: 1; }
+.parking-media-live { pointer-events: none; }
 .parking-media-live > div { width: 100% !important; height: 100% !important; }
 .parking-media-live--thumbnail {
   width: 200%;
@@ -1330,6 +1331,22 @@ h3 { margin: 0; font-size: 14px; }
   padding: 12px 16px;
   background: linear-gradient(180deg, rgb(42 44 44 / 0%), #2a2c2c 20%);
 }
+.parking-detail-guidance {
+  width: 100%;
+  margin: 0 0 8px;
+  display: flex;
+  gap: 4px;
+  align-items: flex-start;
+  color: #adadad;
+  font: 500 12px/1.4 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -.12px;
+  white-space: nowrap;
+}
+.parking-detail-guidance-icon { position: relative; flex: 0 0 17px; width: 17px; height: 17px; }
+.parking-detail-guidance-icon img { position: absolute; display: block; max-width: none; }
+.parking-detail-guidance-outline { inset: 1.95px; width: 14.1px; height: 14.1px; }
+.parking-detail-guidance-line { left: 8.15px; top: 5.81px; width: .71px; height: 3.13px; }
+.parking-detail-guidance-dot { left: 8.15px; top: 10.83px; width: .71px; height: .71px; }
 .parking-detail-footer button {
   width: 100%;
   height: 50px;

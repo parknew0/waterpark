@@ -391,6 +391,14 @@
 - 출처: [Figma 홈 `123:1958`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1958&m=dev), [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 우회 길찾기 `244:3303`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=244-3303&m=dev)
 - 확인일: 2026-08-23
 
+### 2026-08-23 — 주차장 미디어 로딩과 사전 안내 문구
+
+- `DECISION`: 주차장 목록·상세에서 Kakao 로드뷰가 준비되기 전에 기존 로컬 임시 사진을 노출하지 않고 `#474747` 회색 플레이스홀더를 표시한다.
+- `DECISION`: 로드뷰 `init` 또는 이미지 `load`가 완료된 뒤 실제 미디어를 240ms 동안 페이드인해 서로 다른 사진이 순간적으로 교체되는 인상을 제거한다.
+- `DECISION`: Figma `123:2360`에 추가된 `We’ll immediately guide you to a safer route immediately` 안내와 원형 경고 아이콘을 차량 위치 설정 CTA 바로 위에 적용한다.
+- 출처: [Figma 차량 위치 설정 상세 `123:2360`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2360&m=dev)
+- 확인일: 2026-08-23
+
 ### 2026-08-23 — 우방신세계타운 1차 실제 이미지 URL 후보
 
 - `FACT`: 단지명과 주소가 일치하는 우방신세계타운 1차 106동 전경 이미지 URL을 확인했다. 원본은 2048×1536 JPEG이며 현재 HTTP 200으로 응답한다.
