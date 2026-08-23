@@ -94,9 +94,11 @@ export default function App() {
     };
   }, [evacuationRoute]);
   const safeParkingCandidates = useMemo<ParkingPlace[]>(() => {
-    if (historicalScenario) return historicalScenario.parkingOptions.slice(1);
-    return lowerRiskParkingPlace ? [lowerRiskParkingPlace] : [];
-  }, [lowerRiskParkingPlace]);
+    const candidates = historicalScenario
+      ? historicalScenario.parkingOptions.slice(1)
+      : (lowerRiskParkingPlace ? [lowerRiskParkingPlace] : []);
+    return candidates.filter((candidate) => candidate.id !== parkedPlace?.id);
+  }, [lowerRiskParkingPlace, parkedPlace?.id]);
   const selectedPlace = useMemo(
     () => visiblePlaces.find((place) => place.id === selected?.id) ?? selected,
     [selected, visiblePlaces],

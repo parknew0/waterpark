@@ -21,9 +21,16 @@ export async function fetchNearestSafeDrivingRoute(
   origin: Coordinate,
   candidates: ParkingPlace[],
 ): Promise<FloodAwareRoute> {
-  if (candidates.length === 0) throw new Error("No safe parking candidates are available.");
+  const candidatesAwayFromOrigin = candidates.filter((candidate) => {
+    const eastWestMeters = (candidate.longitude - origin.longitude) * 88_000;
+    const northSouthMeters = (candidate.latitude - origin.latitude) * 111_000;
+    return Math.hypot(eastWestMeters, northSouthMeters) >= 25;
+  });
+  if (candidatesAwayFromOrigin.length === 0) {
+    throw new Error("No safe parking candidates are available away from the current car location.");
+  }
   const results = await Promise.allSettled(
-    candidates.map((candidate) => fetchLiveDrivingRoute(origin, candidate)),
+    candidatesAwayFromOrigin.map((candidate) => fetchLiveDrivingRoute(origin, candidate)),
   );
   const routes = results.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
   if (routes.length === 0) throw new Error("Unable to calculate a route to a safe parking candidate.");
