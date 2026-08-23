@@ -30,7 +30,7 @@ interface ParkingHomeViewProps {
   rainfallLabel?: string;
   rainfallAriaLabel?: string;
   riskWord?: string;
-  riskReasons?: [string, string];
+  riskReasons?: string[];
   assessmentMode?: boolean;
   assessmentPending?: boolean;
   parkingRiskState?: "safe" | "warning";
@@ -235,7 +235,7 @@ function ParkingDetail({
   riskState: "safe" | "warning";
   onSetCarLocation: () => void;
   riskWord?: string;
-  riskReasons?: [string, string];
+  riskReasons?: string[];
 }) {
   const label = getEnglishParkingLabel(place);
   const isSafe = riskState === "safe";
@@ -261,11 +261,14 @@ function ParkingDetail({
         </h3>
         <p>Here’s why</p>
         <ul>
-          <li>
-            {riskReasons?.[0] ??
-              `Building is ${isSafe ? "higher" : "lower"} than the surrounding`}
-          </li>
-          <li>{riskReasons?.[1] ?? "Rainfall over the past 6 hours"}</li>
+          {(
+            riskReasons ?? [
+              `Building is ${isSafe ? "higher" : "lower"} than the surrounding`,
+              "Rainfall over the past 6 hours",
+            ]
+          ).map((reason) => (
+            <li key={reason}>{reason}</li>
+          ))}
         </ul>
       </div>
       <footer className="parking-detail-footer">

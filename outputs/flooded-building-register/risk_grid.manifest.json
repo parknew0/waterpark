@@ -6,24 +6,24 @@
     "risk_score": "float32, XGBoost 출력. 순위 점수이며 확률이 아니다."
   },
   "coverage": {
-    "cells_filled": 1132170,
-    "cells_total": 17324019,
-    "fill_ratio": 0.0654,
-    "rule": "침수 Polygon 합집합 + 1000m 버퍼"
+    "cells_filled": 3429144,
+    "cells_total": 17674579,
+    "fill_ratio": 0.194,
+    "rule": "침수 Polygon 합집합 + 3000m 버퍼"
   },
-  "elapsed_minutes": 3.0,
+  "elapsed_minutes": 4.8,
   "grid": {
     "cell_m": 100.0,
-    "cols": 3057,
+    "cols": 3097,
     "epsg": 5179,
-    "origin_x": 874300.0,
-    "origin_y_top": 2033700.0,
-    "rows": 5667
+    "origin_x": 872300.0,
+    "origin_y_top": 2035700.0,
+    "rows": 5707
   },
   "notes": [
     "셀 100m는 침수 Polygon 짧은 폭 중앙값 106m에 맞춘 값이다.",
     "버퍼 밖은 전 밴드 nodata이며 서비스는 UNKNOWN을 반환해야 한다. 안전이 아니다.",
     "risk_score는 지표면 침수 순위 점수다. 지하주차장 침수 확률이 아니다."
   ],
-  "output_bytes": 14098804
+  "output_bytes": 38748392
 }

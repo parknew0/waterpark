@@ -15,7 +15,7 @@ interface FloodLocationDetailViewProps {
   currentParkingName?: string;
   currentParkingAddress?: string;
   comparisonMetric?: string;
-  riskReasons?: [string, string];
+  riskReasons?: string[];
   riskWord?: string;
   riskBadge?: "warning" | "safe";
   place?: ParkingPlace;
@@ -103,8 +103,14 @@ export function FloodLocationDetailView({
             <h2><em>{riskWord ?? (isDanger ? "High" : "Low")}</em> risk of flooding<br />in the next <em>1 hour</em></h2>
             <span>Here’s Why</span>
             <ul>
-              <li>{riskReasons?.[0] ?? `Building is ${isDanger ? "lower" : "higher"} than the surrounding`}</li>
-              <li>{riskReasons?.[1] ?? "Rainfall over the past 6 hours"}</li>
+              {(
+                riskReasons ?? [
+                  `Building is ${isDanger ? "lower" : "higher"} than the surrounding`,
+                  "Rainfall over the past 6 hours",
+                ]
+              ).map((reason) => (
+                <li key={reason}>{reason}</li>
+              ))}
             </ul>
           </article>
 

@@ -185,31 +185,45 @@ export function riskBadge(
  */
 export function riskBullets(
   risk?: FloodRiskResponse | null,
-): [string, string] | undefined {
+): string[] | undefined {
   if (!risk) return undefined;
 
   // Unsurveyed places still get a rain reading -- the gauge network covers the
-  // country even where the flood survey does not -- so the second bullet is
-  // real everywhere. Prefer the six-hour window the design asks for, and fall
-  // back to windows the API has always sent rather than printing "unavailable"
+  // country even where the flood survey does not -- so this line is real
+  // everywhere. Prefer the six-hour window the design asks for, and fall back
+  // to windows the API has always sent rather than printing "unavailable"
   // over data we hold.
-  const { available, mm6h, mm3h, mm1h } = risk.rainfall;
+  const { available, mm6h, mm3h, mm1h, stationDistanceKm } = risk.rainfall;
   let rain = "Rainfall could not be read from the nearest gauge";
   if (available) {
     if (mm6h != null) rain = `Rainfall over the past 6 hours: ${mm6h.toFixed(1)} mm`;
     else if (mm3h != null) rain = `Rainfall over the past 3 hours: ${mm3h.toFixed(1)} mm`;
     else if (mm1h != null) rain = `Rainfall over the past hour: ${mm1h.toFixed(1)} mm`;
+    // A gauge several kilometres off can be under a different cell of the same
+    // storm, so the distance is part of the reading rather than a footnote.
+    if (stationDistanceKm != null && stationDistanceKm >= 3) {
+      rain += ` (nearest gauge ${stationDistanceKm.toFixed(1)} km away)`;
+    }
   }
 
-  // Where the grid has no cell there is no elevation to quote, so say what is
-  // missing and what still applies instead of leaving the reader with a blank
-  // where a measurement should be.
-  const terrain =
-    risk.terrain.surveyStatus === "NOT_SURVEYED"
-      ? "No past flood survey covers this spot, so terrain risk is unmeasured here"
-      : risk.alert.reasons[0];
-  if (!terrain) return undefined;
-  return [terrain, rain];
+  // Outside the grid there is no elevation to quote, so say what is missing
+  // rather than leaving a blank where a measurement should be.
+  if (risk.terrain.surveyStatus === "NOT_SURVEYED") {
+    return [
+      "No past flood survey covers this spot, so terrain risk is unmeasured here",
+      rain,
+    ];
+  }
+
+  // Every terrain reason is shown. The response carries three measurements --
+  // height above the local low point, height above the nearest national river,
+  // and distance to the nearest recorded flood -- and showing only the first
+  // threw away two thirds of the explanation the model actually rests on.
+  const terrain = risk.alert.reasons.filter(
+    (line) => !line.startsWith("Current rainfall"),
+  );
+  if (terrain.length === 0) return undefined;
+  return [...terrain, rain];
 }
 
 /**
