@@ -12,6 +12,7 @@ import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
 import {
   formatRainfall,
   rainfallAriaLabel,
+  riskBadge,
   riskBullets,
   riskWord,
   useFloodRisk,
@@ -343,6 +344,7 @@ export default function App() {
       <FloodLocationDetailView
         appKey={kakaoAppKey}
         variant="danger"
+        riskBadge={riskBadge(floodRisk)}
         route={assessedRoute}
         place={assessedPlace ?? dangerParkingPlace}
         rainfallLabel={historicalScenario?.rainfallLabel ?? formatRainfall(floodRisk?.rainfall)}
@@ -418,7 +420,9 @@ export default function App() {
       riskReasons={riskBullets(floodRisk)}
       assessmentMode={riskAssessmentPending}
       assessmentPending={riskAssessmentPending}
-      parkingRiskState={historicalScenario ? "warning" : "safe"}
+      parkingRiskState={
+        historicalScenario ? "warning" : (riskBadge(floodRisk) ?? "safe")
+      }
     />
   );
 }

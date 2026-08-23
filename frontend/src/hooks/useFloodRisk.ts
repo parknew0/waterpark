@@ -146,6 +146,33 @@ export function riskWord(risk?: FloodRiskResponse | null): string | undefined {
 }
 
 /**
+ * Which of the two badges the design has -- Warning or Safe -- fits a place.
+ *
+ * It reads `terrain.riskLevel`, the same field as the headline word, so the
+ * badge and the sentence under it can never disagree. `alert.level` would be
+ * the wrong source: it folds in today's weather, so every location reads
+ * "Safe" whenever it is not raining, including ones the model ranks in the
+ * top 5%.
+ *
+ * The split follows `rainTrigger`, which already encodes this judgement:
+ * VERY_HIGH and HIGH act at the lowest rain threshold, the rest wait. Reusing
+ * it keeps one decision in one place instead of inventing a second cutoff.
+ *
+ * UNKNOWN returns "warning". The design has no third badge, and of the two
+ * available errors -- worrying someone about an unsurveyed place, or telling
+ * them it is safe when nobody ever checked -- only the first is recoverable.
+ */
+export function riskBadge(
+  risk?: FloodRiskResponse | null,
+): "warning" | "safe" | undefined {
+  const level = risk?.terrain.riskLevel;
+  if (!level) return undefined;
+  return level === "VERY_HIGH" || level === "HIGH" || level === "UNKNOWN"
+    ? "warning"
+    : "safe";
+}
+
+/**
  * The two bullets shown under "Here's why".
  *
  * The screens pair one terrain reason with one rainfall reason, but
@@ -160,12 +187,28 @@ export function riskBullets(
   risk?: FloodRiskResponse | null,
 ): [string, string] | undefined {
   if (!risk) return undefined;
-  const terrain = risk.alert.reasons[0];
+
+  // Unsurveyed places still get a rain reading -- the gauge network covers the
+  // country even where the flood survey does not -- so the second bullet is
+  // real everywhere. Prefer the six-hour window the design asks for, and fall
+  // back to windows the API has always sent rather than printing "unavailable"
+  // over data we hold.
+  const { available, mm6h, mm3h, mm1h } = risk.rainfall;
+  let rain = "Rainfall could not be read from the nearest gauge";
+  if (available) {
+    if (mm6h != null) rain = `Rainfall over the past 6 hours: ${mm6h.toFixed(1)} mm`;
+    else if (mm3h != null) rain = `Rainfall over the past 3 hours: ${mm3h.toFixed(1)} mm`;
+    else if (mm1h != null) rain = `Rainfall over the past hour: ${mm1h.toFixed(1)} mm`;
+  }
+
+  // Where the grid has no cell there is no elevation to quote, so say what is
+  // missing and what still applies instead of leaving the reader with a blank
+  // where a measurement should be.
+  const terrain =
+    risk.terrain.surveyStatus === "NOT_SURVEYED"
+      ? "No past flood survey covers this spot, so terrain risk is unmeasured here"
+      : risk.alert.reasons[0];
   if (!terrain) return undefined;
-  const rain =
-    risk.rainfall.available && risk.rainfall.mm6h != null
-      ? `Rainfall over the past 6 hours: ${risk.rainfall.mm6h.toFixed(1)} mm`
-      : "Rainfall over the past 6 hours is unavailable";
   return [terrain, rain];
 }
 

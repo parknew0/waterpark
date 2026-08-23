@@ -17,6 +17,7 @@ interface FloodLocationDetailViewProps {
   comparisonMetric?: string;
   riskReasons?: [string, string];
   riskWord?: string;
+  riskBadge?: "warning" | "safe";
   place?: ParkingPlace;
   ctaLabel?: string;
 }
@@ -38,6 +39,7 @@ export function FloodLocationDetailView({
   comparisonMetric,
   riskReasons,
   riskWord,
+  riskBadge,
   place,
   ctaLabel,
 }: FloodLocationDetailViewProps) {
@@ -77,7 +79,16 @@ export function FloodLocationDetailView({
 
         <section className="flood-detail-sheet">
           <div className="flood-place-summary">
-            <span className={`flood-risk-chip flood-risk-chip--${variant}`}>{isDanger ? "Warning" : "Safe"}</span>
+            {/* `variant` says which place this screen is about; the badge
+                says how risky it is. They are usually the same, but the
+                current parking is not automatically dangerous. */}
+            <span
+              className={`flood-risk-chip flood-risk-chip--${
+                (riskBadge ?? (isDanger ? "warning" : "safe")) === "warning" ? "danger" : "safe"
+              }`}
+            >
+              {(riskBadge ?? (isDanger ? "warning" : "safe")) === "warning" ? "Warning" : "Safe"}
+            </span>
             <h1 id="flood-location-name">{name}</h1>
             <p>{address}</p>
             <div>
