@@ -100,6 +100,12 @@
 
 ## 4. 런타임 동작
 
+### 동적 침수 회피 경로
+
+`POST /flood-route`는 출발지·선택 주차장·시나리오 ID를 받아 616KB OSM 그래프 번들에서 두 번의 다익스트라를 실행한다. 일반 경로는 모든 간선을 허용하고, 저위험 경로는 `CURRENT` 침수 폴리곤과 교차해 사전 표시된 간선을 제외한다. 응답에는 일반·저위험 LineString 좌표열, 계산에 사용한 위험 Polygon, 거리·시간과 실제 차단 간선 수를 함께 담는다. Lambda 요청 시에는 `handler.py`가 경로를 보고 `routing.py`로 분기한다.
+
+로컬 `npm run dev`는 `serverless/dev_server.py`와 Vite를 함께 실행하며 Vite가 `/api/flood-route`만 `127.0.0.1:8788`로 프록시한다. 다른 `/api/*`는 기존 `LAMBDA_URL` 설정을 유지한다.
+
 `FACT` 로컬에서 핸들러를 실제로 호출한 결과다.
 
 | 지점 | 응답 | 조사상태 | 위험도 | 근거 |

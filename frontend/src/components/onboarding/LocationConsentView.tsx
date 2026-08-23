@@ -10,7 +10,7 @@ export function LocationConsentView({ onAgree }: LocationConsentViewProps) {
       <section className="onboarding-phone onboarding-phone--consent" aria-labelledby="location-consent-title">
         <OnboardingProgress step={2} />
         <header className="onboarding-copy onboarding-copy--consent">
-          <h1 id="location-consent-title">Agree with term<br />to use our app</h1>
+          <h1 id="location-consent-title">Agree with term<br />to use our service</h1>
         </header>
         <section className="permission-section" aria-labelledby="required-permission-title">
           <h2 id="required-permission-title">Required</h2>

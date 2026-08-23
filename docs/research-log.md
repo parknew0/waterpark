@@ -364,6 +364,17 @@
 - 출처: [카카오맵 REST API 장소 검색](https://developers.kakao.com/docs/ko/kakaomap/rest-api), [Daum 이미지 검색 REST API](https://developers.kakao.com/docs/ko/daum-search/dev-guide)
 - 확인일: 2026-08-23
 
+### 2026-08-23 — 동적 침수 회피 라우팅 API
+
+- `FACT`: 힌남노 안전 후보 구간의 OSM 거리 최단경로는 `664.2m`이며 합성 `CURRENT` 침수 영역과 교차하는 간선 2개를 통과한다.
+- `FACT`: 교차 간선 8개를 런타임 그래프에서 제외한 뒤 다익스트라를 실행하면 `2,594.8m` 우회 경로가 선택되고 침수 간선 통과 수는 0개다.
+- `DECISION`: 프론트의 OSRM 직접 호출을 제거하고 `/api/flood-route`만 호출한다. API 오류 시 일반 경로를 저위험 경로처럼 폴백 표시하지 않는다.
+- `DECISION`: 오프라인에서 OSM GraphML과 합성 침수 Polygon을 616KB JSON으로 만들고, Lambda에서는 외부 GIS 패키지 없이 Python 표준 라이브러리로 최근접 노드 탐색과 다익스트라를 실행한다.
+- `DECISION`: 백엔드 계산에 사용된 동일 위험 Polygon을 위험·안전 상세와 최종 길찾기 Kakao 지도에 렌더링한다.
+- `LIMITATION`: 현재 `CURRENT` Polygon은 회피 동작 검증용 합성 힌남노 재연 입력이며 2022년 실측 침수 경계가 아니다.
+- 출처: [OpenStreetMap 저작권](https://www.openstreetmap.org/copyright), [NetworkX 최단경로 문서](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html)
+- 확인일: 2026-08-23
+
 ### 2026-08-23 — 우방신세계타운 1차 실제 이미지 URL 후보
 
 - `FACT`: 단지명과 주소가 일치하는 우방신세계타운 1차 106동 전경 이미지 URL을 확인했다. 원본은 2048×1536 JPEG이며 현재 HTTP 200으로 응답한다.
@@ -387,8 +398,8 @@
 
 - `DECISION`: 힌남노 시나리오는 과거 강우·위험 판정 입력으로만 사용하며 화면에는 `Hinnamnor Replay`, `Historical scenario inputs`, 침수 당시 보도 사진을 노출하지 않는다.
 - `DECISION`: 힌남노 재연은 발표자의 현재 GPS가 아니라 오천읍 구정길 `35.9816, 129.4103`을 사용자 시연 위치로 사용한다. 위험 상세는 이 위치에서 저장한 내 차까지, 안전 상세는 저장한 내 차에서 선택한 안전 후보까지의 서로 다른 두 경로를 계산한다.
-- `FACT`: OSRM Route Service는 전달한 좌표 순서대로 자동차 도로 경로를 계산하며 GeoJSON 형상·거리·시간을 반환한다.
-- `DECISION`: 위험·안전 주차장 선택 시 저장한 내 차 위치와 선택 장소를 OSRM에 전달해 경로를 다시 계산한다. 공개 라우터 장애 시 운영 품질을 보장할 수 없으므로 현재 구현은 시연용이다.
+- `SUPERSEDED`: 초기 구현은 위험·안전 주차장 선택 시 저장한 내 차 위치와 선택 장소를 공개 OSRM에 전달했으나, 이 경로는 지도에 표시한 침수 Polygon을 회피하지 못했다.
+- `DECISION`: 공개 OSRM 직접 호출은 제거했다. 현재 구현은 `/api/flood-route`가 합성 `CURRENT` 침수 영역과 교차하는 도로 간선을 제외한 뒤 경로를 다시 계산한다.
 - `DECISION`: 목적지 마커의 검은 테두리를 제거하고 경로의 마지막 좌표를 정확한 목적지로 연결해 선이 `P` 아래까지 이어지게 한다.
 - 출처: [OSRM Route API](https://project-osrm.org/docs/v26.4.0/http/#route-service), [OpenStreetMap 저작권](https://www.openstreetmap.org/copyright)
 - 확인일: 2026-08-23

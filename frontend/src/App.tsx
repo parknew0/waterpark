@@ -47,6 +47,8 @@ export default function App() {
   const [riskAssessmentPending, setRiskAssessmentPending] = useState(false);
   const [assessedPlace, setAssessedPlace] = useState<ParkingPlace>();
   const [assessedRoute, setAssessedRoute] = useState<FloodAwareRoute>();
+  const [suggestedSafeRoute, setSuggestedSafeRoute] = useState<FloodAwareRoute>();
+  const [liveRouteError, setLiveRouteError] = useState<string | null>(null);
   const hasRequestedLocation = useRef(false);
   const historicalAlertTimer = useRef<number | undefined>(undefined);
   const requestHeadingPermission = useDeviceHeading();
@@ -64,9 +66,10 @@ export default function App() {
       `${place.name} ${place.address}`.toLocaleLowerCase("ko-KR").includes(normalizedQuery),
     );
   }, [historicalQuery, places]);
+  const emergencyRoute = suggestedSafeRoute ?? evacuationRoute;
   const evacuationParkingLabel = useMemo(
-    () => evacuationRoute ? getEnglishParkingLabel(evacuationRoute.destination) : undefined,
-    [evacuationRoute],
+    () => emergencyRoute ? getEnglishParkingLabel(emergencyRoute.destination) : undefined,
+    [emergencyRoute],
   );
   const dangerParkingPlace = useMemo<ParkingPlace>(() => {
     if (parkedPlace) return parkedPlace;
@@ -229,6 +232,7 @@ export default function App() {
       }
       setRiskAssessmentPending(true);
       setAssessedPlace(place);
+      setLiveRouteError(null);
       try {
         const branch = await resolveParkingRiskBranch(place, {
           dangerParkingId: dangerParkingPlace.id,
@@ -237,11 +241,16 @@ export default function App() {
         const routeOrigin = branch === "danger"
           ? (currentPosition ?? historicalScenario?.origin ?? center)
           : (parkedPlace ?? currentPosition ?? historicalScenario?.origin ?? center);
-        const liveRoute = evacuationRoute
-          ? await fetchLiveDrivingRoute(routeOrigin, place, evacuationRoute).catch(() => undefined)
-          : undefined;
+        const canReuseSuggestion = branch === "safe"
+          && suggestedSafeRoute?.destination.id === place.id
+          && parkedPlace?.id === dangerParkingPlace.id;
+        const liveRoute = canReuseSuggestion
+          ? suggestedSafeRoute
+          : (evacuationRoute ? await fetchLiveDrivingRoute(routeOrigin, place) : undefined);
         setAssessedRoute(liveRoute);
         navigateToView(branch === "danger" ? "risk-detail" : "safe-detail");
+      } catch (caught: unknown) {
+        setLiveRouteError(caught instanceof Error ? caught.message : "침수 회피 경로를 계산하지 못했습니다.");
       } finally {
         setRiskAssessmentPending(false);
       }
@@ -250,7 +259,7 @@ export default function App() {
     setSelected(place);
     setCenter({ latitude: place.latitude, longitude: place.longitude });
     setIsCarLocationOpen(true);
-  }, [center, currentPosition, dangerParkingPlace.id, evacuationRoute, isRiskSelectionMode, lowerRiskParkingPlace, navigateToView, parkedPlace]);
+  }, [center, currentPosition, dangerParkingPlace.id, evacuationRoute, isRiskSelectionMode, lowerRiskParkingPlace, navigateToView, parkedPlace, suggestedSafeRoute]);
 
   const handleSetCarLocation = useCallback(() => {
     if (selectedPlace) setParkedPlace(selectedPlace);
@@ -259,13 +268,21 @@ export default function App() {
     setSelected(undefined);
     if (currentPosition) setCenter(currentPosition);
     if (historicalScenario) {
+      if (selectedPlace && lowerRiskParkingPlace) {
+        void fetchLiveDrivingRoute(selectedPlace, lowerRiskParkingPlace)
+          .then(setSuggestedSafeRoute)
+          .catch((caught: unknown) => {
+            setSuggestedSafeRoute(undefined);
+            setLiveRouteError(caught instanceof Error ? caught.message : "침수 회피 경로를 계산하지 못했습니다.");
+          });
+      }
       if (historicalAlertTimer.current) window.clearTimeout(historicalAlertTimer.current);
       historicalAlertTimer.current = window.setTimeout(
         () => navigateToView("emergency"),
         historicalScenario.alertDelayMs,
       );
     }
-  }, [currentPosition, navigateToView, selectedPlace]);
+  }, [currentPosition, lowerRiskParkingPlace, navigateToView, selectedPlace]);
 
   if (view === "splash") return <SplashView onComplete={handleSplashComplete} />;
   if (view === "car") return <OnboardingCarView onNext={() => navigateToView("consent")} />;
@@ -276,12 +293,13 @@ export default function App() {
         onBack={() => navigateToView("map")}
         parkingName={evacuationParkingLabel?.name}
         parkingAddress={evacuationParkingLabel?.address}
-        distanceMeters={evacuationRoute?.distanceMeters}
+        distanceMeters={emergencyRoute?.distanceMeters}
         safeTimeLabel={historicalScenario?.safeTimeLabel}
         onMoveNow={() => {
           setIsRiskSelectionMode(true);
           setAssessedPlace(undefined);
           setAssessedRoute(undefined);
+          setLiveRouteError(null);
           setShowParkingMarkers(true);
           setIsCarLocationOpen(false);
           setCenter(parkedPlace ?? currentPosition ?? historicalScenario?.origin ?? { latitude: 36.014, longitude: 129.325 });
@@ -362,7 +380,7 @@ export default function App() {
       onSetCarLocation={handleSetCarLocation}
       places={isRiskSelectionMode ? riskSelectionPlaces : visiblePlaces}
       selected={selectedPlace}
-      routeError={routeError}
+      routeError={liveRouteError ?? routeError}
       rainfallLabel={historicalScenario?.rainfallLabel ?? formatRainfall(floodRisk?.rainfall)}
       rainfallAriaLabel={
         historicalScenario?.rainfallAriaLabel ?? rainfallAriaLabel(floodRisk?.rainfall)

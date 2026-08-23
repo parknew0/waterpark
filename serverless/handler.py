@@ -45,6 +45,7 @@ from typing import Any
 
 from npzreader import load_npz
 from projection import wgs84_to_grid
+from routing import handler as routing_handler
 
 BUNDLE = Path(os.environ.get("BUNDLE_DIR", Path(__file__).parent / "bundle"))
 KMA_KEY = os.environ.get("KMA_APIHUB_AUTH_KEY", "")
@@ -358,6 +359,10 @@ def respond(status: int, payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def handler(event: dict[str, Any], context: Any = None) -> dict[str, Any]:
+    path = str(event.get("rawPath") or event.get("path") or "")
+    if path.rstrip("/").endswith("/flood-route"):
+        return routing_handler(event, context)
+
     try:
         body = event.get("body") or "{}"
         if event.get("isBase64Encoded"):

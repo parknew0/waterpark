@@ -23,7 +23,13 @@ interface KakaoLatLng {
 }
 
 interface KakaoMapInstance {
-  setBounds(bounds: KakaoLatLngBounds): void;
+  setBounds(
+    bounds: KakaoLatLngBounds,
+    paddingTop?: number,
+    paddingRight?: number,
+    paddingBottom?: number,
+    paddingLeft?: number,
+  ): void;
   setCenter(position: KakaoLatLng): void;
 }
 
@@ -257,14 +263,15 @@ export function createKakaoMap(
     evacuationRoute.riskZones.forEach((zone) => {
       zone.polygons.forEach((polygon) => {
         const path = toPath(polygon);
+        const isCurrentFlood = zone.level === "CURRENT";
         routeLayers.push(new maps.Polygon({
           map,
           path,
-          strokeWeight: 14,
+          strokeWeight: isCurrentFlood ? 24 : 14,
           strokeColor: "#00e8ec",
-          strokeOpacity: 0.12,
+          strokeOpacity: isCurrentFlood ? 0.24 : 0.12,
           fillColor: "#00e8ec",
-          fillOpacity: 0.06,
+          fillOpacity: isCurrentFlood ? 0.14 : 0.06,
           zIndex: 2,
         }));
         routeLayers.push(new maps.Polygon({
@@ -272,9 +279,9 @@ export function createKakaoMap(
           path,
           strokeWeight: 2,
           strokeColor: "#00e8ec",
-          strokeOpacity: 0.5,
+          strokeOpacity: isCurrentFlood ? 0.9 : 0.5,
           fillColor: "#00e8ec",
-          fillOpacity: zone.level === "CURRENT" ? 0.22 : 0.14,
+          fillOpacity: isCurrentFlood ? 0.4 : 0.14,
           zIndex: 2,
         }));
       });
@@ -417,8 +424,16 @@ export function createKakaoMap(
       evacuationRoute.lowerRiskPath.forEach(([longitude, latitude]) => {
         bounds.extend(new maps.LatLng(latitude, longitude));
       });
+      evacuationRoute.riskZones.forEach((zone) => {
+        zone.polygons.forEach((polygon) => {
+          polygon.forEach(([longitude, latitude]) => {
+            bounds.extend(new maps.LatLng(latitude, longitude));
+          });
+        });
+      });
     }
-    map.setBounds(bounds);
+    if (evacuationRoute) map.setBounds(bounds, 230, 24, 120, 24);
+    else map.setBounds(bounds);
   } else {
     map.setCenter(new maps.LatLng(center.latitude, center.longitude));
   }
