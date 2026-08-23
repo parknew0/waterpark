@@ -12,7 +12,7 @@ import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
 import { formatRainfall, rainfallAriaLabel, useFloodRisk } from "./hooks/useFloodRisk";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
 import { fetchLiveDrivingRoute } from "./lib/liveDrivingRoute";
-import { getEnglishParkingLabel } from "./lib/parkingEnglish";
+import { getEnglishAddressLabel, getEnglishParkingLabel } from "./lib/parkingEnglish";
 import { resolveParkingRiskBranch } from "./lib/parkingRisk";
 import { getHistoricalScenario } from "./scenarios/hinnamnorScenario";
 import type { Coordinate, ParkingPlace } from "./types/parking";
@@ -41,7 +41,7 @@ export default function App() {
   const [isCarLocationOpen, setIsCarLocationOpen] = useState(view === "map");
   const [showEvacuationRoute, setShowEvacuationRoute] = useState(false);
   const [locationPending, setLocationPending] = useState(false);
-  const [currentLocationLabel, setCurrentLocationLabel] = useState(historicalScenario?.locationLabel ?? "현재 위치 확인 중…");
+  const [currentLocationLabel, setCurrentLocationLabel] = useState(historicalScenario?.locationLabel ?? "Checking your location…");
   const [historicalQuery, setHistoricalQuery] = useState("");
   const [isRiskSelectionMode, setIsRiskSelectionMode] = useState(false);
   const [riskAssessmentPending, setRiskAssessmentPending] = useState(false);
@@ -158,12 +158,12 @@ export default function App() {
       return;
     }
     if (!navigator.geolocation) {
-      setCurrentLocationLabel("현재 위치를 확인하지 못했어요");
+      setCurrentLocationLabel("Location unavailable");
       return;
     }
 
     setLocationPending(true);
-    setCurrentLocationLabel("현재 위치 확인 중…");
+    setCurrentLocationLabel("Checking your location…");
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const nextCenter = {
@@ -180,14 +180,14 @@ export default function App() {
         if (kakaoAppKey) {
           void reverseGeocodeKakao(kakaoAppKey, nextCenter)
             .then((address) => {
-              if (address) setCurrentLocationLabel(address);
+              if (address) setCurrentLocationLabel(getEnglishAddressLabel(address, nextCenter));
             })
             .catch(() => undefined);
         }
       },
       () => {
         setLocationPending(false);
-        setCurrentLocationLabel("현재 위치를 확인하지 못했어요");
+        setCurrentLocationLabel("Location unavailable");
       },
       { enableHighAccuracy: false, timeout: 8_000, maximumAge: 300_000 },
     );
@@ -250,7 +250,7 @@ export default function App() {
         setAssessedRoute(liveRoute);
         navigateToView(branch === "danger" ? "risk-detail" : "safe-detail");
       } catch (caught: unknown) {
-        setLiveRouteError(caught instanceof Error ? caught.message : "침수 회피 경로를 계산하지 못했습니다.");
+        setLiveRouteError(caught instanceof Error ? caught.message : "Unable to calculate a flood-aware route.");
       } finally {
         setRiskAssessmentPending(false);
       }
@@ -273,7 +273,7 @@ export default function App() {
           .then(setSuggestedSafeRoute)
           .catch((caught: unknown) => {
             setSuggestedSafeRoute(undefined);
-            setLiveRouteError(caught instanceof Error ? caught.message : "침수 회피 경로를 계산하지 못했습니다.");
+            setLiveRouteError(caught instanceof Error ? caught.message : "Unable to calculate a flood-aware route.");
           });
       }
       if (historicalAlertTimer.current) window.clearTimeout(historicalAlertTimer.current);

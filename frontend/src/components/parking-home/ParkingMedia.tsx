@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { loadKakaoMaps } from "../../lib/kakaoMaps";
+import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
 import type { ParkingPlace } from "../../types/parking";
 
 interface ParkingMediaProps {
@@ -13,6 +14,7 @@ interface ParkingMediaProps {
 export function ParkingMedia({ appKey, className = "", fallbackSrc, mode = "detail", place }: ParkingMediaProps) {
   const liveMediaRef = useRef<HTMLDivElement>(null);
   const [hasLiveMedia, setHasLiveMedia] = useState(false);
+  const label = getEnglishParkingLabel(place);
 
   useEffect(() => {
     if (place.imageUrl || !appKey || !liveMediaRef.current) return;
@@ -48,14 +50,14 @@ export function ParkingMedia({ appKey, className = "", fallbackSrc, mode = "deta
   }, [appKey, mode, place.imageUrl, place.latitude, place.longitude]);
 
   if (place.imageUrl) {
-    return <img className={className} src={place.imageUrl} alt={`${place.name} 실제 전경`} />;
+    return <img className={className} src={place.imageUrl} alt={`${label.name} exterior`} />;
   }
 
   return (
     <div
       className={`parking-media ${className}`}
       role="img"
-      aria-label={`${place.name} 인근 실제 로드뷰`}
+      aria-label={`Street view near ${label.name}`}
     >
       <img className="parking-media-fallback" src={fallbackSrc} alt="" />
       <div

@@ -375,6 +375,13 @@
 - 출처: [OpenStreetMap 저작권](https://www.openstreetmap.org/copyright), [NetworkX 최단경로 문서](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.shortest_path.html)
 - 확인일: 2026-08-23
 
+### 2026-08-23 — 주차장 선택 화면 영문 통일
+
+- `DECISION`: 일반 실행과 힌남노 재연이 공유하는 주차장 선택 화면의 검색·정렬·상태·거리 문구를 영어로 통일한다.
+- `DECISION`: 공공데이터의 한국어 원본 이름과 주소는 삭제하거나 변조하지 않고, UI 렌더링 시 `getEnglishParkingLabel()`을 통해 영문 표기를 생성한다.
+- `FACT`: 동일 변환기를 주차장 목록, 선택 상세, 저장된 내 차 카드, 경로 목적지 카드에 적용해 두 시나리오의 표시를 일치시켰다.
+- 확인일: 2026-08-23
+
 ### 2026-08-23 — 우방신세계타운 1차 실제 이미지 URL 후보
 
 - `FACT`: 단지명과 주소가 일치하는 우방신세계타운 1차 106동 전경 이미지 URL을 확인했다. 원본은 2048×1536 JPEG이며 현재 HTTP 200으로 응답한다.

@@ -18,5 +18,5 @@ export async function resolveParkingRiskBranch(
 ): Promise<ParkingRiskBranch> {
   if (place.id === context.lowerRiskParkingId) return "safe";
   if (place.id === context.dangerParkingId) return "danger";
-  throw new Error("선택한 주차장의 침수 위험 판정 결과가 없습니다.");
+  throw new Error("No flood-risk assessment is available for the selected parking lot.");
 }

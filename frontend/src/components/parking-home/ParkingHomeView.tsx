@@ -39,10 +39,10 @@ const thumbnails = [
   "/assets/parking/nearby-3.png",
 ];
 
-const numberFormatter = new Intl.NumberFormat("ko-KR");
+const numberFormatter = new Intl.NumberFormat("en-US");
 
 function formatDistance(distance?: number) {
-  if (distance == null) return "거리 계산 중";
+  if (distance == null) return "Calculating distance";
   if (distance < 1_000) return `${numberFormatter.format(Math.round(distance))}m away`;
   return `${(distance / 1_000).toFixed(1)}km away`;
 }
@@ -68,7 +68,7 @@ export function ParkingHomeView({
   selected,
   routeError,
   rainfallLabel = "--mm",
-  rainfallAriaLabel = "강수량 API 연결 대기 중",
+  rainfallAriaLabel = "Waiting for rainfall data",
   assessmentMode = false,
   assessmentPending = false,
 }: ParkingHomeViewProps) {
@@ -83,7 +83,7 @@ export function ParkingHomeView({
 
   return (
     <main className="parking-home-stage">
-      <section className="parking-home-phone" aria-label="내 차 위치와 가까운 주차장">
+      <section className="parking-home-phone" aria-label="Parking lots near my car">
         <div className="parking-home-map">
           <ParkingMap
             appKey={appKey}
@@ -102,7 +102,7 @@ export function ParkingHomeView({
         {evacuationRoute ? (
           <article className="evacuation-route-card" aria-live="polite">
             <span>LOWER-RISK ROUTE · PROTOTYPE</span>
-            <strong>{evacuationRoute.destination.name}</strong>
+            <strong>{getEnglishParkingLabel(evacuationRoute.destination).name}</strong>
             <p>{Math.round(evacuationRoute.distanceMeters)}m · Safety not verified</p>
             <small>Route: © OpenStreetMap contributors</small>
           </article>
@@ -134,7 +134,7 @@ export function ParkingHomeView({
           </p>
         ) : null}
         {parkedPlace && !isCarLocationOpen && !assessmentMode ? (
-          <article className="parked-car-card" aria-label="저장된 내 차 위치">
+          <article className="parked-car-card" aria-label="Saved car location">
             <span>My Location</span>
             <strong>{parkedLabel?.name}</strong>
             <p>{parkedLabel?.address}</p>
@@ -148,7 +148,7 @@ export function ParkingHomeView({
               <button
                 className="sheet-back-button"
                 type="button"
-                aria-label={selected ? "가까운 주차장 목록으로 돌아가기" : "지도 화면으로 돌아가기"}
+                aria-label={selected ? "Back to nearby parking lots" : "Back to map"}
                 onClick={selected ? onClearSelection : onCloseSheet}
               >
                 <img src="/assets/parking/back-arrow.svg" alt="" />
@@ -165,7 +165,7 @@ export function ParkingHomeView({
             ) : (
               <>
                 <form className="car-location-search" role="search" onSubmit={handleSubmit}>
-                  <label className="visually-hidden" htmlFor="car-location-query">주차장 검색</label>
+                  <label className="visually-hidden" htmlFor="car-location-query">Search Parking Lot</label>
                   <input
                     id="car-location-query"
                     value={query}
@@ -175,38 +175,41 @@ export function ParkingHomeView({
                       event.preventDefault();
                       onSearch(query);
                     }}
-                    placeholder="주차장 검색"
+                    placeholder="Search Parking Lot"
                     autoComplete="off"
                   />
                 </form>
 
                 <div className="nearby-heading">
-                  <span>가까운 순</span>
+                  <span>Nearest</span>
                 </div>
 
-                {isLoading ? <p className="sheet-state" role="status">현재 위치 주변 주차장을 찾고 있어요…</p> : null}
+                {isLoading ? <p className="sheet-state" role="status">Finding parking lots near your location…</p> : null}
                 {error ? <p className="sheet-state sheet-state--error" role="status">{error}</p> : null}
-                {!isLoading && nearbyPlaces.length === 0 ? <p className="sheet-state">가까운 주차장을 찾지 못했어요.</p> : null}
+                {!isLoading && nearbyPlaces.length === 0 ? <p className="sheet-state">No nearby parking lots found.</p> : null}
 
                 <ul className="nearby-parking-list">
-                  {nearbyPlaces.map((place, index) => (
-                    <li key={place.id}>
-                      <button type="button" className="nearby-parking-card" onClick={() => onSelect(place)}>
-                        <ParkingMedia
-                          appKey={appKey}
-                          className="nearby-parking-image"
-                          fallbackSrc={thumbnails[index]}
-                          mode="thumbnail"
-                          place={place}
-                        />
-                        <span className="nearby-parking-copy">
-                          <span className="nearby-parking-address">{place.address || "주소 정보 없음"}</span>
-                          <strong>{place.name}</strong>
-                          <span className="nearby-parking-distance">{formatDistance(place.distanceMeters)}</span>
-                        </span>
-                      </button>
-                    </li>
-                  ))}
+                  {nearbyPlaces.map((place, index) => {
+                    const label = getEnglishParkingLabel(place);
+                    return (
+                      <li key={place.id}>
+                        <button type="button" className="nearby-parking-card" onClick={() => onSelect(place)} aria-label={`Select ${label.name}`}>
+                          <ParkingMedia
+                            appKey={appKey}
+                            className="nearby-parking-image"
+                            fallbackSrc={thumbnails[index]}
+                            mode="thumbnail"
+                            place={place}
+                          />
+                          <span className="nearby-parking-copy">
+                            <span className="nearby-parking-address">{label.address}</span>
+                            <strong>{label.name}</strong>
+                            <span className="nearby-parking-distance">{formatDistance(place.distanceMeters)}</span>
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               </>
             )}
@@ -226,6 +229,7 @@ function ParkingDetail({
   place: ParkingPlace;
   onSetCarLocation: () => void;
 }) {
+  const label = getEnglishParkingLabel(place);
   return (
     <div className="parking-detail">
       <ParkingMedia
@@ -236,8 +240,8 @@ function ParkingDetail({
       />
       <div className="parking-detail-copy">
         <span className="prototype-warning">Warning</span>
-        <h2>{place.name}</h2>
-        <p>{place.address || "주소 정보 없음"}</p>
+        <h2>{label.name}</h2>
+        <p>{label.address}</p>
         <span className="parking-detail-distance">{formatDistance(place.distanceMeters)}</span>
       </div>
       <div className="parking-risk-preview">

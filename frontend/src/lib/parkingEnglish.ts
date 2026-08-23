@@ -64,7 +64,7 @@ function fallbackName(name: string) {
   return capitalize(romanizeHangul(normalized).replace(/\s+/g, " ").trim());
 }
 
-function fallbackAddress(address: string, place: Pick<ParkingPlace, "latitude" | "longitude">) {
+export function getEnglishAddressLabel(address: string, place: Pick<ParkingPlace, "latitude" | "longitude">) {
   if (!address) return `Lat ${place.latitude.toFixed(5)}, Lng ${place.longitude.toFixed(5)}`;
   const normalized = address
     .replace("경상북도", "Gyeongsangbuk-do,")
@@ -79,6 +79,6 @@ function fallbackAddress(address: string, place: Pick<ParkingPlace, "latitude" |
 export function getEnglishParkingLabel(place: Pick<ParkingPlace, "name" | "address" | "latitude" | "longitude">): EnglishParkingLabel {
   return knownLabels[place.name] ?? {
     name: fallbackName(place.name),
-    address: fallbackAddress(place.address, place),
+    address: getEnglishAddressLabel(place.address, place),
   };
 }

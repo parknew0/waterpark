@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createKakaoMap, loadKakaoMaps } from "../lib/kakaoMaps";
+import { getEnglishParkingLabel } from "../lib/parkingEnglish";
 import type { Coordinate, ParkingPlace } from "../types/parking";
 import type { FloodAwareRoute, Position } from "../types/routing";
 
@@ -16,7 +17,7 @@ interface ParkingMapProps {
 
 function CurrentLocationMarker() {
   return (
-    <span className="current-map-marker" role="img" aria-label="현재 위치">
+    <span className="current-map-marker" role="img" aria-label="Current location">
       <span className="current-map-marker-direction-frame" aria-hidden="true">
         <span className="current-map-marker-direction-rotator">
           <span className="current-map-marker-direction-canvas">
@@ -33,7 +34,7 @@ function CurrentLocationMarker() {
 
 function ParkedCarMarker() {
   return (
-    <span className="parked-car-marker" aria-label="주차된 내 차 위치">
+    <span className="parked-car-marker" aria-label="Parked car location">
       <img className="parked-car-body" src="/assets/parking/car-body.svg" alt="" />
       <img className="parked-car-wheel parked-car-wheel--back-left" src="/assets/parking/car-wheel-back-left.svg" alt="" />
       <img className="parked-car-wheel parked-car-wheel--front-left" src="/assets/parking/car-wheel-front-left.svg" alt="" />
@@ -72,7 +73,7 @@ function RoutePreview({ route }: { route: FloodAwareRoute }) {
 function FallbackMap({ places, selected, onSelect, currentPosition, parkedPlace, evacuationRoute }: Omit<ParkingMapProps, "appKey" | "center">) {
   const visiblePlaces = places.slice(0, 8);
   return (
-    <div className="fallback-map" role="region" aria-label="주차장 위치 미리보기">
+    <div className="fallback-map" role="region" aria-label="Parking location preview">
       <div className="map-grid" aria-hidden="true" />
       {evacuationRoute ? <RoutePreview route={evacuationRoute} /> : null}
       {visiblePlaces.map((place, index) => {
@@ -84,7 +85,7 @@ function FallbackMap({ places, selected, onSelect, currentPosition, parkedPlace,
             style={{ left: `${14 + column * 23}%`, top: `${38 + row * 28}%` }}
             key={place.id}
             type="button"
-            aria-label={`${place.name} 선택`}
+            aria-label={`Select ${getEnglishParkingLabel(place).name}`}
             aria-pressed={selected?.id === place.id}
             onClick={() => onSelect(place)}
           >
@@ -127,7 +128,7 @@ export function ParkingMap({ appKey, center, currentPosition, evacuationRoute, p
       })
       .catch((caught: unknown) => {
         if (!disposed) {
-          setMapError(caught instanceof Error ? caught.message : "지도를 불러오지 못했습니다.");
+          setMapError(caught instanceof Error ? caught.message : "Unable to load the map.");
         }
       });
 
@@ -158,5 +159,5 @@ export function ParkingMap({ appKey, center, currentPosition, evacuationRoute, p
     );
   }
 
-  return <div className="kakao-map" ref={mapRef} role="region" aria-label="Kakao 지도 주차장 검색 결과" />;
+  return <div className="kakao-map" ref={mapRef} role="region" aria-label="Kakao Map parking search results" />;
 }

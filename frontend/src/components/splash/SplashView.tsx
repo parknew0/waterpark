@@ -22,7 +22,7 @@ export function SplashView({ onComplete }: SplashViewProps) {
   }, [onComplete]);
 
   return (
-    <main className={`splash-stage${isExiting ? " splash-stage--exiting" : ""}`} aria-label="Waterpark 시작 화면">
+    <main className={`splash-stage${isExiting ? " splash-stage--exiting" : ""}`} aria-label="Waterpark splash screen">
       <section className="splash-phone">
         <img className="splash-background" src="/assets/splash/control-panel.png" alt="" />
         <img className="splash-button" src="/assets/splash/waterpark-button.png" alt="" />

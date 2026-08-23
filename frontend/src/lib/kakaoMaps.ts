@@ -1,5 +1,6 @@
 import type { Coordinate, ParkingPlace } from "../types/parking";
 import type { FloodAwareRoute, Position } from "../types/routing";
+import { getEnglishParkingLabel } from "./parkingEnglish";
 
 export interface KakaoPlaceResult {
   id: string;
@@ -152,13 +153,13 @@ export function loadKakaoMaps(appKey: string): Promise<KakaoMapsApi> {
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(appKey)}&autoload=false&libraries=services`;
     script.addEventListener("load", () => {
       if (!window.kakao?.maps) {
-        reject(new Error("Kakao 지도 SDK가 초기화되지 않았습니다."));
+        reject(new Error("The Kakao Maps SDK has not initialized."));
         return;
       }
       window.kakao.maps.load(() => resolve(window.kakao!.maps));
     });
     script.addEventListener("error", () => reject(new Error(
-      `Kakao 지도 SDK를 불러오지 못했습니다. Kakao Developers에서 카카오맵 사용 설정과 JavaScript 키 활성 상태를 확인하고, JavaScript SDK 도메인에 ${window.location.origin}을 등록했는지 확인해 주세요.`,
+      `Unable to load the Kakao Maps SDK. Check that Kakao Maps and the JavaScript key are enabled, and register ${window.location.origin} as a JavaScript SDK domain in Kakao Developers.`,
     )));
     document.head.append(script);
   });
@@ -209,14 +210,14 @@ export async function searchKakaoParking(appKey: string, address: string): Promi
       : { size: 15 };
 
     places.keywordSearch(
-      geocoded ? "주차장" : `${address} 주차장`,
+      geocoded ? "Parking Lot" : `${address} Parking Lot`,
       (result, status) => {
         if (status === maps.services.Status.ZERO_RESULT) {
           resolve([]);
           return;
         }
         if (status !== maps.services.Status.OK) {
-          reject(new Error("Kakao 장소 검색이 실패했습니다. 잠시 후 다시 시도해 주세요."));
+          reject(new Error("Kakao place search failed. Please try again shortly."));
           return;
         }
         resolve(result.map((place) => ({
@@ -308,7 +309,7 @@ export function createKakaoMap(
     destinationMarker.className = "evacuation-destination-marker";
     destinationMarker.textContent = "P";
     destinationMarker.setAttribute("role", "img");
-    destinationMarker.setAttribute("aria-label", `경로 목적지: ${evacuationRoute.destination.name}`);
+    destinationMarker.setAttribute("aria-label", `Route destination: ${getEnglishParkingLabel(evacuationRoute.destination).name}`);
     overlays.push(new maps.CustomOverlay({
       map,
       position: new maps.LatLng(evacuationRoute.destination.latitude, evacuationRoute.destination.longitude),
@@ -323,7 +324,7 @@ export function createKakaoMap(
     const marker = document.createElement("span");
     marker.className = "current-map-marker";
     marker.setAttribute("role", "img");
-    marker.setAttribute("aria-label", "현재 위치");
+    marker.setAttribute("aria-label", "Current location");
 
     const directionFrame = document.createElement("span");
     directionFrame.className = "current-map-marker-direction-frame";
@@ -364,7 +365,7 @@ export function createKakaoMap(
     const marker = document.createElement("button");
     marker.type = "button";
     marker.className = "parking-dot-marker";
-    marker.setAttribute("aria-label", `${place.name} 선택`);
+    marker.setAttribute("aria-label", `Select ${getEnglishParkingLabel(place).name}`);
     const icon = document.createElement("img");
     icon.src = "/assets/parking/parking-dot.svg";
     icon.alt = "";
@@ -386,7 +387,7 @@ export function createKakaoMap(
     const marker = document.createElement("div");
     marker.className = "parked-car-marker";
     marker.setAttribute("role", "img");
-    marker.setAttribute("aria-label", `주차된 내 차 위치: ${parkedPlace.name}`);
+    marker.setAttribute("aria-label", `Parked car location: ${getEnglishParkingLabel(parkedPlace).name}`);
     const carParts = [
       ["parked-car-body", "/assets/parking/car-body.svg"],
       ["parked-car-wheel parked-car-wheel--back-left", "/assets/parking/car-wheel-back-left.svg"],
