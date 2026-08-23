@@ -4,38 +4,38 @@
       "level": "VERY_HIGH",
       "min_score": 0.818808,
       "percentile": 95.0,
-      "rain_trigger": "호우주의보"
+      "rain_trigger": "HEAVY_RAIN_ADVISORY"
     },
     {
       "level": "HIGH",
       "min_score": 0.694751,
       "percentile": 85.0,
-      "rain_trigger": "호우주의보"
+      "rain_trigger": "HEAVY_RAIN_ADVISORY"
     },
     {
       "level": "MODERATE",
       "min_score": 0.281222,
       "percentile": 60.0,
-      "rain_trigger": "호우경보"
+      "rain_trigger": "HEAVY_RAIN_WARNING"
     },
     {
       "level": "LOW",
       "min_score": 0.095816,
       "percentile": 30.0,
-      "rain_trigger": "극한호우"
+      "rain_trigger": "EXTREME_RAIN"
     },
     {
       "level": "VERY_LOW",
       "min_score": 0.0,
       "percentile": 0.0,
-      "rain_trigger": "극한호우"
+      "rain_trigger": "EXTREME_RAIN"
     }
   ],
   "bundle_dir": "data/processed/serving-bundle",
   "files": {
     "grid_meta.json": 979,
-    "parking.json": 150516,
-    "risk_bands.json": 851,
+    "parking.json": 156738,
+    "risk_bands.json": 861,
     "risk_grid.npz": 6869375,
     "stations.json": 297768
   },
@@ -46,5 +46,5 @@
   ],
   "parking_count": 1233,
   "station_count": 11914,
-  "total_bytes": 7319489
+  "total_bytes": 7325721
 }

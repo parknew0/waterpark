@@ -39,14 +39,14 @@ POINTS = {
 
 DRY = {"available": True, "stationId": "138", "stationDistanceKm": 1.8,
        "mm1h": 0.0, "mm3h": 0.0, "mm12h": 0.0, "hoursCollected": 12,
-       "observedHourKst": "202608230200", "warningLevel": "없음"}
+       "observedHourKst": "202608230200", "warningLevel": "NONE"}
 
 # Rain at each official threshold. Values sit just over the line in RAIN_LEVELS
 # so the level each one produces is checked rather than asserted.
 RAIN = {
-    "호우주의보": {"mm1h": 22.0, "mm3h": 62.0, "mm12h": 88.0},
-    "호우경보": {"mm1h": 34.0, "mm3h": 92.0, "mm12h": 140.0},
-    "극한호우": {"mm1h": 74.0, "mm3h": 118.0, "mm12h": 165.0},
+    "HEAVY_RAIN_ADVISORY": {"mm1h": 22.0, "mm3h": 62.0, "mm12h": 88.0},
+    "HEAVY_RAIN_WARNING": {"mm1h": 34.0, "mm3h": 92.0, "mm12h": 140.0},
+    "EXTREME_RAIN": {"mm1h": 74.0, "mm3h": 118.0, "mm12h": 165.0},
 }
 
 
@@ -54,7 +54,7 @@ def rain_payload(name: str) -> dict:
     body = {**DRY, **RAIN[name]}
     measured = handler.warning_level(body)
     if measured != name:
-        raise SystemExit(f"{name} 픽스처가 {measured}로 판정된다. RAIN 값을 고쳐라.")
+        raise SystemExit(f"{name} fixture measured as {measured}. Fix the RAIN values.")
     body["warningLevel"] = measured
     return body
 
@@ -67,14 +67,7 @@ def response(lat: float, lon: float, rain: dict) -> dict:
         "rainfall": rain,
         "alert": handler.build_alert(terrain, rain),
         "nearbyUndergroundParking": handler.nearby_parking(lon, lat, 2000.0, 3),
-        "dataQuality": {
-            "labelMeaning": "SURFACE_FLOOD_TRACE",
-            "floodSurveyPeriod": "2002-2022",
-            "disclaimer": (
-                "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 "
-                "측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
-            ),
-        },
+        "dataQuality": handler.DATA_QUALITY,
     }
 
 
@@ -83,24 +76,27 @@ def main() -> None:
                                      ("pohang", "seoulGwanak", "jeju", "unsurveyed"))
 
     fixtures = {
-        # Terrain HIGH fires at 호우주의보, so each step up the rain scale moves
-        # the alert one step: WATCH -> PREPARE -> EVACUATE.
-        "evacuate": response(*pohang, rain_payload("극한호우")),
-        "prepare": response(*pohang, rain_payload("호우경보")),
-        "watch": response(*pohang, rain_payload("호우주의보")),
+        # Terrain HIGH fires at the advisory level, so each step up the rain
+        # scale moves the alert one step: WATCH -> PREPARE -> EVACUATE.
+        "evacuate": response(*pohang, rain_payload("EXTREME_RAIN")),
+        "prepare": response(*pohang, rain_payload("HEAVY_RAIN_WARNING")),
+        "watch": response(*pohang, rain_payload("HEAVY_RAIN_ADVISORY")),
         "calm": response(*pohang, DRY),
-        # Same rain, gentler terrain: 호우경보 only reaches WATCH here. Useful
+        # Same rain, gentler terrain: a warning only reaches WATCH here. Useful
         # for checking the UI keys off `alert.level`, not off the rain level.
-        "moderateTerrainHeavyRain": response(*gwanak, rain_payload("호우경보")),
-        "lowTerrainHeavyRain": response(*jeju, rain_payload("호우경보")),
+        "moderateTerrainHeavyRain": response(*gwanak, rain_payload("HEAVY_RAIN_WARNING")),
+        "lowTerrainHeavyRain": response(*jeju, rain_payload("HEAVY_RAIN_WARNING")),
         # Must never render as safe.
         "unknown": response(*unknown, DRY),
         # KMA unreachable. Terrain still answers; the rain half degrades alone.
         "rainfallUnavailable": response(
             *pohang, {"available": False, "reason": "FETCH_FAILED"}
         ),
-        "errorBadRequest": {"error": "lat과 lon이 필요합니다", "code": "BAD_REQUEST"},
-        "errorOutOfRange": {"error": "대한민국 범위 밖 좌표입니다", "code": "OUT_OF_RANGE"},
+        "errorBadRequest": {"error": "Both lat and lon are required", "code": "BAD_REQUEST"},
+        "errorOutOfRange": {
+            "error": "The coordinates are outside South Korea",
+            "code": "OUT_OF_RANGE",
+        },
     }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)

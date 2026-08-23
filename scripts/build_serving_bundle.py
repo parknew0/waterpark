@@ -50,11 +50,38 @@ BAND_QUANTILES = [
 # Terrain risk decides how little rain it takes to act, following the levels
 # already fixed in docs/06. These are KMA's official thresholds, not fitted.
 TRIGGER_BY_LEVEL = {
-    "VERY_HIGH": "호우주의보",
-    "HIGH": "호우주의보",
-    "MODERATE": "호우경보",
-    "LOW": "극한호우",
-    "VERY_LOW": "극한호우",
+    "VERY_HIGH": "HEAVY_RAIN_ADVISORY",
+    "HIGH": "HEAVY_RAIN_ADVISORY",
+    "MODERATE": "HEAVY_RAIN_WARNING",
+    "LOW": "EXTREME_RAIN",
+    "VERY_LOW": "EXTREME_RAIN",
+}
+
+
+# 건축법 시행령 별표1 use classes, as they appear in the 건축HUB source.
+# The service is English-language, so the bundle carries the translation and
+# the runtime carries no lookup table. Anything unmapped passes through
+# unchanged rather than being dropped, so a new source value stays visible
+# instead of silently becoming blank.
+BUILDING_USE_EN = {
+    "공동주택": "Multi-family housing",
+    "단독주택": "Detached house",
+    "제1종근린생활시설": "Class 1 neighborhood facility",
+    "제2종근린생활시설": "Class 2 neighborhood facility",
+    "근린생활시설": "Neighborhood facility",
+    "업무시설": "Office building",
+    "숙박시설": "Lodging facility",
+    "공장": "Factory",
+    "의료시설": "Medical facility",
+    "위락시설": "Amusement facility",
+    "교육연구시설": "Education and research facility",
+    "판매시설": "Retail facility",
+    "자동차관련시설": "Automobile-related facility",
+    "노유자시설": "Elderly and childcare facility",
+    "문화및집회시설": "Culture and assembly facility",
+    "종교시설": "Religious facility",
+    "방송통신시설": "Broadcasting and telecommunications facility",
+    "운동시설": "Sports facility",
 }
 
 
@@ -117,8 +144,8 @@ def build_bands(scores: np.ndarray) -> dict[str, Any]:
         "bands": cutoffs,
         "scored_cells": int(finite.size),
         "note": (
-            "구간은 조사영역 격자 점수의 분위수다. 절대 확률이 아니며 "
-            "모델을 다시 학습하면 다시 계산해야 한다."
+            "Bands are quantiles of scores within the surveyed grid. They are not "
+            "absolute probabilities and must be recalculated after retraining."
         ),
     }
 
@@ -164,7 +191,10 @@ def build_parking() -> list[dict[str, Any]]:
                     "pnu": row.get("pnu", ""),
                     "lon": round(lon, 6),
                     "lat": round(lat, 6),
-                    "use": row.get("building_use_name", ""),
+                    "use": BUILDING_USE_EN.get(
+                        (row.get("building_use_name") or "").strip(),
+                        (row.get("building_use_name") or "").strip(),
+                    ),
                     "ugFloors": int(row.get("underground_floor_count") or 0),
                     "approvalYear": row.get("approval_year", ""),
                 }
