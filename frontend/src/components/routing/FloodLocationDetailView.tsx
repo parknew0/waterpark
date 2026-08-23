@@ -16,6 +16,7 @@ interface FloodLocationDetailViewProps {
   currentParkingAddress?: string;
   comparisonMetric?: string;
   riskReasons?: [string, string];
+  riskWord?: string;
   place?: ParkingPlace;
   ctaLabel?: string;
 }
@@ -36,6 +37,7 @@ export function FloodLocationDetailView({
   currentParkingAddress = "POSTECH, Nam-gu, Pohang-si, Gyeongsangbuk-do",
   comparisonMetric,
   riskReasons,
+  riskWord,
   place,
   ctaLabel,
 }: FloodLocationDetailViewProps) {
@@ -86,7 +88,7 @@ export function FloodLocationDetailView({
           </div>
 
           <article className={`flood-risk-reason flood-risk-reason--${variant}`}>
-            <h2><em>{isDanger ? "High" : "Low"}</em> risk of flooding<br />in the next <em>1 hour</em></h2>
+            <h2><em>{riskWord ?? (isDanger ? "High" : "Low")}</em> risk of flooding<br />in the next <em>1 hour</em></h2>
             <span>Here’s Why</span>
             <ul>
               <li>{riskReasons?.[0] ?? `Building is ${isDanger ? "lower" : "higher"} than the surrounding`}</li>

@@ -29,6 +29,8 @@ interface ParkingHomeViewProps {
   routeError: string | null;
   rainfallLabel?: string;
   rainfallAriaLabel?: string;
+  riskWord?: string;
+  riskReasons?: [string, string];
   assessmentMode?: boolean;
   assessmentPending?: boolean;
   parkingRiskState?: "safe" | "warning";
@@ -64,6 +66,8 @@ export function ParkingHomeView({
   routeError,
   rainfallLabel = "--mm",
   rainfallAriaLabel = "Rainfall data are unavailable",
+  riskWord,
+  riskReasons,
   assessmentMode = false,
   assessmentPending = false,
   parkingRiskState = "safe",
@@ -158,6 +162,8 @@ export function ParkingHomeView({
                 place={selected}
                 riskState={parkingRiskState}
                 onSetCarLocation={onSetCarLocation}
+                riskWord={riskWord}
+                riskReasons={riskReasons}
               />
             ) : (
               <>
@@ -221,11 +227,15 @@ function ParkingDetail({
   place,
   riskState,
   onSetCarLocation,
+  riskWord,
+  riskReasons,
 }: {
   appKey?: string;
   place: ParkingPlace;
   riskState: "safe" | "warning";
   onSetCarLocation: () => void;
+  riskWord?: string;
+  riskReasons?: [string, string];
 }) {
   const label = getEnglishParkingLabel(place);
   const isSafe = riskState === "safe";
@@ -246,13 +256,16 @@ function ParkingDetail({
       </div>
       <div className={`parking-risk-preview parking-risk-preview--${riskState}`}>
         <h3>
-          <span>{isSafe ? "Low" : "High"}</span> risk of flooding<br />
+          <span>{riskWord ?? (isSafe ? "Low" : "High")}</span> risk of flooding<br />
           in the next <span>1 hour</span>
         </h3>
         <p>Here’s why</p>
         <ul>
-          <li>Building is {isSafe ? "higher" : "lower"} than the surrounding</li>
-          <li>Rainfall over the past 6 hours</li>
+          <li>
+            {riskReasons?.[0] ??
+              `Building is ${isSafe ? "higher" : "lower"} than the surrounding`}
+          </li>
+          <li>{riskReasons?.[1] ?? "Rainfall over the past 6 hours"}</li>
         </ul>
       </div>
       <footer className="parking-detail-footer">

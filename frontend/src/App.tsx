@@ -9,7 +9,13 @@ import { SplashView } from "./components/splash/SplashView";
 import { useParkingSearch } from "./hooks/useParkingSearch";
 import { useDeviceHeading } from "./hooks/useDeviceHeading";
 import { useFloodAwareRoute } from "./hooks/useFloodAwareRoute";
-import { formatRainfall, rainfallAriaLabel, useFloodRisk } from "./hooks/useFloodRisk";
+import {
+  formatRainfall,
+  rainfallAriaLabel,
+  riskBullets,
+  riskWord,
+  useFloodRisk,
+} from "./hooks/useFloodRisk";
 import { reverseGeocodeKakao } from "./lib/kakaoMaps";
 import { fetchLiveDrivingRoute, fetchNearestSafeDrivingRoute } from "./lib/liveDrivingRoute";
 import { getEnglishAddressLabel, getEnglishParkingLabel } from "./lib/parkingEnglish";
@@ -351,6 +357,8 @@ export default function App() {
           historicalScenario?.rainfallAriaLabel ?? rainfallAriaLabel(floodRisk?.rainfall)
         }
         ctaLabel="Move Your Car Now"
+        riskWord={riskWord(floodRisk)}
+        riskReasons={riskBullets(floodRisk)}
         onContinue={() => void handleMoveToNearestSafeParking()}
       />
     );
@@ -367,6 +375,8 @@ export default function App() {
           historicalScenario?.rainfallAriaLabel ?? rainfallAriaLabel(floodRisk?.rainfall)
         }
         ctaLabel="Move Your Car Now"
+        riskWord={riskWord(floodRisk)}
+        riskReasons={riskBullets(floodRisk)}
         onContinue={() => {
           setShowEvacuationRoute(true);
           setRouteBackView("safe-detail");
@@ -411,6 +421,8 @@ export default function App() {
       rainfallAriaLabel={
         historicalScenario?.rainfallAriaLabel ?? rainfallAriaLabel(floodRisk?.rainfall)
       }
+      riskWord={riskWord(floodRisk)}
+      riskReasons={riskBullets(floodRisk)}
       assessmentMode={riskAssessmentPending}
       assessmentPending={riskAssessmentPending}
       parkingRiskState={historicalScenario ? "warning" : "safe"}
