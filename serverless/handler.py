@@ -59,16 +59,40 @@ NODATA_UINT16 = 65535
 # fitted: the 06 analysis measured a non-monotonic flood rate against
 # rainfall and concluded the event count cannot support learning them.
 RAIN_LEVELS = [
-    ("극한호우", lambda r: (r["mm1h"] >= 72) or (r["mm1h"] >= 50 and r["mm3h"] >= 90)),
-    ("호우경보", lambda r: r["mm3h"] >= 90 or r["mm12h"] >= 180),
-    ("호우주의보", lambda r: r["mm3h"] >= 60 or r["mm12h"] >= 110),
+    ("EXTREME_RAIN", lambda r: (r["mm1h"] >= 72) or (r["mm1h"] >= 50 and r["mm3h"] >= 90)),
+    ("HEAVY_RAIN_WARNING", lambda r: r["mm3h"] >= 90 or r["mm12h"] >= 180),
+    ("HEAVY_RAIN_ADVISORY", lambda r: r["mm3h"] >= 60 or r["mm12h"] >= 110),
 ]
-RAIN_SEVERITY = {"없음": 0, "호우주의보": 1, "호우경보": 2, "극한호우": 3}
+RAIN_SEVERITY = {
+    "NONE": 0,
+    "HEAVY_RAIN_ADVISORY": 1,
+    "HEAVY_RAIN_WARNING": 2,
+    "EXTREME_RAIN": 3,
+}
+RAIN_LABELS = {
+    "NONE": "no rain warning",
+    "HEAVY_RAIN_ADVISORY": "heavy rain advisory",
+    "HEAVY_RAIN_WARNING": "heavy rain warning",
+    "EXTREME_RAIN": "extreme rainfall",
+}
 
 ALERT_BY_GAP = {
-    2: ("EVACUATE", "지금 차를 빼세요"),
-    1: ("PREPARE", "차량 이동을 준비하세요"),
-    0: ("WATCH", "상황을 지켜보세요"),
+    2: ("EVACUATE", "Move your car now"),
+    1: ("PREPARE", "Prepare to move your car"),
+    0: ("WATCH", "Monitor the situation"),
+}
+
+# Travels with every response so a client cannot separate the numbers from
+# what they mean. Defined once here because the fixture generator emits the
+# same block, and a second copy is how it silently drifted out of sync.
+DATA_QUALITY = {
+    "labelMeaning": "SURFACE_FLOOD_TRACE",
+    "floodSurveyPeriod": "2002-2022",
+    "disclaimer": (
+        "This is terrain risk measured from historical surface flood records, "
+        "not an underground parking flood prediction. riskScore is a ranking "
+        "score, not a probability."
+    ),
 }
 
 _STATE: dict[str, Any] = {}
@@ -124,9 +148,12 @@ def terrain_at(lon: float, lat: float) -> dict[str, Any]:
         "surveyStatus": "NOT_SURVEYED",
         "riskLevel": "UNKNOWN",
         "riskScore": None,
-        "rainTrigger": "호우경보",
+        "rainTrigger": "HEAVY_RAIN_WARNING",
         "evidence": {},
-        "note": "이 지역은 침수 조사 기록이 없습니다. 안전하다는 뜻이 아닙니다.",
+        "note": (
+            "No flood survey records are available for this area. "
+            "This does not mean the area is safe."
+        ),
     }
     if cell is None:
         return unknown
@@ -286,26 +313,32 @@ def warning_level(rain: dict[str, Any]) -> str:
     for name, test in RAIN_LEVELS:
         if test(usable):
             return name
-    return "없음"
+    return "NONE"
 
 
 def build_alert(terrain: dict[str, Any], rain: dict[str, Any]) -> dict[str, Any]:
     reasons: list[str] = []
     evidence = terrain.get("evidence", {})
     if "relativeElevationM" in evidence:
-        reasons.append(f"이 위치는 주변보다 {evidence['relativeElevationM']}m 낮습니다")
+        reasons.append(
+            f"This location is {evidence['relativeElevationM']} m lower than its surroundings"
+        )
     if "elevationAboveNationalRiverM" in evidence:
         reasons.append(
-            f"가장 가까운 국가하천 수면보다 {evidence['elevationAboveNationalRiverM']}m 높습니다"
+            "This location is "
+            f"{evidence['elevationAboveNationalRiverM']} m above the nearest national river surface"
         )
     if "distanceToFloodTraceM" in evidence:
-        reasons.append(f"과거 침수 구역까지 {evidence['distanceToFloodTraceM']}m입니다")
+        reasons.append(
+            f"The nearest past flood area is {evidence['distanceToFloodTraceM']} m away"
+        )
 
     if terrain["riskLevel"] == "UNKNOWN":
         return {
             "level": "UNKNOWN",
-            "headline": "이 지역은 침수 조사 기록이 없습니다",
-            "reasons": reasons + ["안전하다는 뜻이 아니라 확인된 자료가 없다는 뜻입니다"],
+            "headline": "No flood survey records are available for this area",
+            "reasons": reasons
+            + ["No verified data are available; this does not mean the area is safe"],
         }
 
     # An unreachable weather API is not a dry sky. Reporting "비는 오지 않습니다"
@@ -315,20 +348,26 @@ def build_alert(terrain: dict[str, Any], rain: dict[str, Any]) -> dict[str, Any]
     if not rain.get("available"):
         return {
             "level": "UNKNOWN",
-            "headline": f"강수 정보를 가져오지 못했습니다 (상시 위험도 {terrain['riskLevel']})",
+            "headline": (
+                "Rainfall data are unavailable "
+                f"(baseline terrain risk: {terrain['riskLevel']})"
+            ),
             "reasons": reasons
-            + ["비가 오지 않는다는 뜻이 아니라 기상청 조회에 실패했다는 뜻입니다"],
+            + ["This does not mean there is no rain; the KMA lookup failed"],
         }
 
-    observed = rain.get("warningLevel", "없음")
-    if observed != "없음":
-        reasons.append(f"현재 강수는 {observed} 기준을 넘었습니다")
+    observed = rain.get("warningLevel", "NONE")
+    if observed != "NONE":
+        reasons.append(f"Current rainfall meets the {RAIN_LABELS[observed]} threshold")
 
     gap = RAIN_SEVERITY[observed] - RAIN_SEVERITY[terrain["rainTrigger"]]
-    if observed == "없음":
+    if observed == "NONE":
         return {
             "level": "CALM",
-            "headline": f"현재 비는 오지 않습니다 (상시 위험도 {terrain['riskLevel']})",
+            "headline": (
+                "No rain is currently observed "
+                f"(baseline terrain risk: {terrain['riskLevel']})"
+            ),
             "reasons": reasons,
         }
     level, headline = ALERT_BY_GAP.get(max(min(gap, 2), 0), ALERT_BY_GAP[0])
@@ -368,11 +407,17 @@ def handler(event: dict[str, Any], context: Any = None) -> dict[str, Any]:
         lon = float(request["lon"])
         lat = float(request["lat"])
     except (KeyError, TypeError, ValueError):
-        return respond(400, {"error": "lat과 lon이 필요합니다", "code": "BAD_REQUEST"})
+        return respond(
+            400, {"error": "Both lat and lon are required", "code": "BAD_REQUEST"}
+        )
 
     if not (124.0 <= lon <= 132.0 and 33.0 <= lat <= 39.0):
         return respond(
-            422, {"error": "대한민국 범위 밖 좌표입니다", "code": "OUT_OF_RANGE"}
+            422,
+            {
+                "error": "The coordinates are outside South Korea",
+                "code": "OUT_OF_RANGE",
+            },
         )
 
     options = request.get("nearbyParking") or {}
@@ -394,13 +439,6 @@ def handler(event: dict[str, Any], context: Any = None) -> dict[str, Any]:
             )
             if options.get("include", True)
             else [],
-            "dataQuality": {
-                "labelMeaning": "SURFACE_FLOOD_TRACE",
-                "floodSurveyPeriod": "2002-2022",
-                "disclaimer": (
-                    "지하주차장 침수 예측이 아니라, 과거 지표면 침수 기록에서 "
-                    "측정한 지형 위험도입니다. riskScore는 순위 점수이며 확률이 아닙니다."
-                ),
-            },
+            "dataQuality": DATA_QUALITY,
         },
     )

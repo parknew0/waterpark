@@ -18,7 +18,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
   if (!env.LAMBDA_URL) {
     return Response.json(
-      { error: "LAMBDA_URL이 설정되지 않았습니다", code: "NOT_CONFIGURED" },
+      { error: "LAMBDA_URL is not configured", code: "NOT_CONFIGURED" },
       { status: 503 },
     );
   }

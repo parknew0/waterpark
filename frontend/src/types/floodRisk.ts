@@ -24,8 +24,12 @@ export type RiskLevel =
   | "VERY_LOW"
   | "UNKNOWN";
 
-/** Official KMA 호우특보 levels. Not learned from our data — see docs/06. */
-export type RainWarningLevel = "극한호우" | "호우경보" | "호우주의보" | "없음";
+/** English API tokens for the official KMA rain thresholds. Not learned from our data. */
+export type RainWarningLevel =
+  | "EXTREME_RAIN"
+  | "HEAVY_RAIN_WARNING"
+  | "HEAVY_RAIN_ADVISORY"
+  | "NONE";
 
 export type AlertLevel =
   | "EVACUATE"

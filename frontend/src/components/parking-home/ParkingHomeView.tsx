@@ -68,7 +68,7 @@ export function ParkingHomeView({
   selected,
   routeError,
   rainfallLabel = "--mm",
-  rainfallAriaLabel = "강수량 API 연결 대기 중",
+  rainfallAriaLabel = "Rainfall data are unavailable",
   assessmentMode = false,
   assessmentPending = false,
 }: ParkingHomeViewProps) {

@@ -59,7 +59,7 @@ export function useFloodRisk(point: { lat: number; lon: number } | null) {
           setState({
             data: null,
             loading: false,
-            error: payload?.error ?? "위험도를 불러오지 못했습니다",
+            error: payload?.error ?? "Unable to load flood risk",
           });
           return null;
         }
@@ -69,7 +69,7 @@ export function useFloodRisk(point: { lat: number; lon: number } | null) {
       .catch((caught: unknown) => {
         // An abort is this hook superseding itself, not a failure to report.
         if (caught instanceof DOMException && caught.name === "AbortError") return null;
-        setState({ data: null, loading: false, error: "위험도를 불러오지 못했습니다" });
+        setState({ data: null, loading: false, error: "Unable to load flood risk" });
         return null;
       });
   }, []);
@@ -127,9 +127,9 @@ export function formatRainfall(rainfall?: Rainfall): string {
 
 export function rainfallAriaLabel(rainfall?: Rainfall): string {
   if (!rainfall?.available || rainfall.mm1h == null) {
-    return "강수량을 가져오지 못했습니다";
+    return "Rainfall data are unavailable";
   }
-  return `최근 1시간 강수량 ${formatRainfall(rainfall)}`;
+  return `Rainfall over the last hour: ${formatRainfall(rainfall)}`;
 }
 
 /**
@@ -149,10 +149,10 @@ export const RISK_COLORS: Record<RiskLevel, string> = {
 };
 
 export const RISK_LABELS: Record<RiskLevel, string> = {
-  VERY_HIGH: "매우 높음",
-  HIGH: "높음",
-  MODERATE: "보통",
-  LOW: "낮음",
-  VERY_LOW: "매우 낮음",
-  UNKNOWN: "조사 기록 없음",
+  VERY_HIGH: "Very high",
+  HIGH: "High",
+  MODERATE: "Moderate",
+  LOW: "Low",
+  VERY_LOW: "Very low",
+  UNKNOWN: "No survey records",
 };

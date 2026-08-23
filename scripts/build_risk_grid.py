@@ -54,6 +54,12 @@ OUT_DIR = ROOT / "data/processed/risk-grid"
 MANIFEST = ROOT / "outputs/flooded-building-register/risk_grid.manifest.json"
 
 CELL_M = 100.0
+# Default influence radius around a surveyed flood polygon. It matches the
+# negative-label rule the model was trained under, so it is the widest radius
+# whose scores rest on the same footing as the training data. --buffer-m
+# trades that footing for coverage: Gyeongbuk's flood survey is the country's
+# thinnest, and at 1 km only 19% of its public car parks fall inside any
+# surveyed area at all.
 BUFFER_M = 1000.0
 # EPSG:5179 (UTM-K) covers the whole country in metres, so a grid indexed in
 # this projection has square cells everywhere.
@@ -67,7 +73,7 @@ NODATA_U16 = np.uint16(65535)
 _WORKER: dict[str, Any] = {}
 
 
-def worker_init(model_path: str) -> None:
+def worker_init(model_path: str, buffer_m: float) -> None:
     """Load the heavy indexes once per process, not once per cell."""
     import rasterio  # noqa: F401  (imported for the DemReader dependency)
     from pyproj import Transformer
@@ -92,6 +98,9 @@ def worker_init(model_path: str) -> None:
     model = XGBClassifier()
     model.load_model(model_path)
     _WORKER["model"] = model
+    # Passed rather than read from the module global: workers are spawned,
+    # so a value set in main() would not reach them.
+    _WORKER["buffer_m"] = buffer_m
 
 
 def compute_chunk(bounds: tuple[float, float, int, int]) -> dict[str, Any]:
@@ -103,6 +112,7 @@ def compute_chunk(bounds: tuple[float, float, int, int]) -> dict[str, Any]:
     rivers = _WORKER["rivers"]
     to4326 = _WORKER["to4326"]
     flood_tree, flood_geoms = _WORKER["flood"]
+    buffer_m = _WORKER["buffer_m"]
 
     risk = np.full((rows, cols), NODATA_F32, dtype="float32")
     rel = np.full((rows, cols), NODATA_F32, dtype="float32")
@@ -123,7 +133,7 @@ def compute_chunk(bounds: tuple[float, float, int, int]) -> dict[str, Any]:
             if nearest is None:
                 continue
             flood_distance = point.distance(flood_geoms[nearest])
-            if flood_distance > BUFFER_M:
+            if flood_distance > buffer_m:
                 # Outside the surveyed influence: leave every band nodata so
                 # the service answers UNKNOWN rather than a low number.
                 continue
@@ -183,11 +193,11 @@ def compute_chunk(bounds: tuple[float, float, int, int]) -> dict[str, Any]:
     }
 
 
-def build_extent() -> tuple[float, float, int, int]:
+def build_extent(buffer_m: float) -> tuple[float, float, int, int]:
     """Grid bounds covering the surveyed area plus its buffer."""
     from flood_trace_index import surveyed_bounds
 
-    minx, miny, maxx, maxy = surveyed_bounds(BUFFER_M)
+    minx, miny, maxx, maxy = surveyed_bounds(buffer_m)
     x0 = math.floor(minx / CELL_M) * CELL_M
     y1 = math.ceil(maxy / CELL_M) * CELL_M
     cols = int(math.ceil((maxx - x0) / CELL_M))
@@ -200,12 +210,19 @@ def main() -> None:
     parser.add_argument("--model", type=Path, required=True)
     parser.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 4) - 2))
     parser.add_argument("--limit-chunks", type=int, default=0, help="smoke test only")
+    parser.add_argument(
+        "--buffer-m",
+        type=float,
+        default=BUFFER_M,
+        help="침수 Polygon 주변 몇 m까지 채울지. 넓힐수록 커버리지는 늘지만 "
+        "학습 시 음성 라벨 규칙(1000m)에서 멀어진다.",
+    )
     args = parser.parse_args()
 
     if not args.model.exists():
         raise SystemExit(f"모델 파일이 없다: {args.model}")
 
-    x0, y1, cols, rows = build_extent()
+    x0, y1, cols, rows = build_extent(args.buffer_m)
     print(f"[extent] {cols:,} × {rows:,} 셀 = {cols * rows / 1e6:.2f}백만 칸", flush=True)
     print(f"[extent] 원점 EPSG:{GRID_EPSG} ({x0:,.0f}, {y1:,.0f}), 셀 {CELL_M:.0f}m", flush=True)
 
@@ -232,7 +249,9 @@ def main() -> None:
     started = time.time()
     done = filled = 0
     with ProcessPoolExecutor(
-        max_workers=args.workers, initializer=worker_init, initargs=(str(args.model),)
+        max_workers=args.workers,
+        initializer=worker_init,
+        initargs=(str(args.model), args.buffer_m),
     ) as pool:
         futures = {pool.submit(compute_chunk, chunk): chunk for chunk in chunks}
         for future in as_completed(futures):
@@ -275,7 +294,7 @@ def main() -> None:
             "rows": rows,
         },
         "coverage": {
-            "rule": f"침수 Polygon 합집합 + {BUFFER_M:.0f}m 버퍼",
+            "rule": f"침수 Polygon 합집합 + {args.buffer_m:.0f}m 버퍼",
             "cells_total": cols * rows,
             "cells_filled": filled,
             "fill_ratio": round(filled / (cols * rows), 4),
