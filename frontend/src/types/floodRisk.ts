@@ -55,14 +55,32 @@ export interface Terrain {
   note?: string;
 }
 
+/** Why a reading is missing. Present only when `available` is false. */
+export type RainfallUnavailableReason =
+  | "NO_API_KEY"
+  | "FETCH_FAILED"
+  | "NO_DATA"
+  | "NO_STATION";
+
+/**
+ * Observed rainfall at the nearest gauge.
+ *
+ * `available: false` means the reading is unknown, never that it is dry. The
+ * alert degrades to UNKNOWN in that case rather than CALM, and any UI showing
+ * a number must show a placeholder rather than a zero.
+ */
 export interface Rainfall {
   available: boolean;
-  reason?: string;
+  reason?: RainfallUnavailableReason;
+  /** Hour the reading covers, KST, `YYYYMMDDHH00`. */
+  observedHourKst?: string;
   stationId?: string;
   stationDistanceKm?: number;
   mm1h?: number | null;
   mm3h?: number | null;
   mm12h?: number | null;
+  /** How many of the 12 hourly observations came back. */
+  hoursCollected?: number;
   warningLevel?: RainWarningLevel;
 }
 
@@ -98,9 +116,19 @@ export interface FloodRiskResponse {
   dataQuality: DataQuality;
 }
 
+/**
+ * Request body.
+ *
+ * `lat` and `lon` are the whole contract; the app sends nothing else. Every
+ * other field has a server-side default, so omitting them asks for the same
+ * thing while leaving the choice with the side that owns it. `nearbyParking`
+ * stays declared because the endpoint still honours it if a caller ever needs
+ * a different radius.
+ */
 export interface FloodRiskRequest {
   lat: number;
   lon: number;
+  /** Defaults to `{ include: true, radiusM: 1000, limit: 5 }` when omitted. */
   nearbyParking?: {
     include?: boolean;
     radiusM?: number;
