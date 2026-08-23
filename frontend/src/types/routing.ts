@@ -19,6 +19,8 @@ export interface FloodAwareRoute {
   lowerRiskPath: Position[];
   riskZones: RiskZone[];
   distanceMeters: number;
+  estimatedDriveMinutes: number;
+  forecastHorizonMinutes: number;
   baselineDistanceMeters: number;
   disclaimer: string;
   generatedAt: string;

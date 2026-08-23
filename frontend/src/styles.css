@@ -27,6 +27,90 @@ button:focus-visible, input:focus-visible, a:focus-visible {
   outline-offset: 3px;
 }
 
+.brand-logo {
+  width: 149px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo > img { width: 149px; height: 15px; display: block; }
+
+.rain-icon { position: relative; width: 24px; height: 24px; flex: 0 0 24px; display: block; }
+.rain-icon-cloud { position: absolute; top: 0; left: 0; width: 24px; height: 17.58px; }
+.rain-icon-drop { position: absolute; top: 12px; width: 2px; height: 10px; }
+.rain-icon-drop--left { left: 7px; }
+.rain-icon-drop--middle { left: 11px; }
+.rain-icon-drop--right { left: 15px; }
+
+/* Splash: Figma 50:84. The iOS example status bar is intentionally omitted. */
+.splash-stage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #03070a;
+  opacity: 1;
+  transition: opacity 1.1s cubic-bezier(.4, 0, .2, 1);
+}
+
+.splash-stage--exiting { opacity: 0; }
+
+.splash-phone {
+  position: relative;
+  width: min(402px, 100vw);
+  height: min(874px, 100svh);
+  min-height: 720px;
+  overflow: hidden;
+  background: #03070a;
+}
+
+.splash-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 402px;
+  height: auto;
+  max-width: none;
+  opacity: .2;
+  transform: translate(-50%, -50%);
+}
+
+.splash-button {
+  position: absolute;
+  top: 308px;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 61px;
+  object-fit: cover;
+  transform: translateX(-50%);
+  box-shadow: 2px 2px 50px rgb(0 251 255 / 22%);
+  animation: splash-button-arrive 900ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.splash-logo {
+  position: absolute;
+  top: 507px;
+  left: 50%;
+  width: 397px;
+  height: 129px;
+  transform: translateX(-50%);
+  animation: splash-logo-arrive 700ms 280ms ease-out both;
+}
+
+.splash-logo > img { width: 397px; height: 129px; }
+
+@keyframes splash-button-arrive {
+  from { opacity: 0; transform: translateX(-50%) scale(.88); }
+  to { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+@keyframes splash-logo-arrive {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
 .skip-link {
   position: fixed;
   z-index: 100;
@@ -249,9 +333,11 @@ h3 { margin: 0; font-size: 14px; }
 .onboarding-footer {
   position: absolute;
   z-index: 6;
-  inset: auto 0 0;
-  height: calc(74px + env(safe-area-inset-bottom));
-  padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+  right: 0;
+  bottom: max(34px, env(safe-area-inset-bottom));
+  left: 0;
+  height: 74px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -281,7 +367,7 @@ h3 { margin: 0; font-size: 14px; }
 .permission-copy { min-width: 0; display: flex; flex-direction: column; color: #e0e0e0; font-family: "Noto Sans KR", sans-serif; line-height: 1.4; }
 .permission-copy strong { font-size: 18px; font-weight: 600; letter-spacing: -.18px; }
 .permission-copy span { font-size: 16px; font-weight: 500; letter-spacing: -.16px; white-space: nowrap; }
-.permission-detail { position: absolute; left: 24px; right: 20px; bottom: calc(80px + env(safe-area-inset-bottom)); margin: 0; color: #7a7a7a; font: 500 12px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.12px; }
+.permission-detail { position: absolute; left: 24px; right: 20px; bottom: max(114px, calc(80px + env(safe-area-inset-bottom))); margin: 0; color: #7a7a7a; font: 500 12px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.12px; }
 
 .emergency-stage {
   min-height: 100svh;
@@ -558,12 +644,13 @@ h3 { margin: 0; font-size: 14px; }
 .flood-detail-map .map-wrap,
 .flood-detail-map .fallback-map,
 .flood-detail-map .kakao-map { position: absolute; inset: 0 0 auto; width: 100%; height: 304px; min-height: 304px; }
+.flood-detail-map .kakao-map { overflow: hidden; background: #071412; touch-action: none; }
 
 .flood-detail-map .fallback-map,
 .evacuation-directions-map .fallback-map { background: #000 url("/assets/routing/flood-route-map.png") center / cover no-repeat; }
 .flood-detail-map .fallback-route-layer { inset: 35% 8% 2%; width: 84%; height: 63%; }
-.flood-detail-map .route-risk-zone,
 .flood-detail-map .route-line--baseline { display: none; }
+.flood-detail-map .route-risk-zone { fill: rgb(0 232 236 / 14%); stroke: #00e8ec; stroke-width: .8; filter: drop-shadow(0 0 4px #00e8ec); }
 .flood-detail-map .route-line--lower-risk { stroke-width: 4; }
 
 .flood-route-map-loading {
@@ -577,9 +664,9 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 .flood-detail-header { position: absolute; z-index: 6; top: 62px; left: 16px; display: flex; flex-direction: column; }
-.flood-detail-header strong { font-size: 24px; font-weight: 600; line-height: 1.4; letter-spacing: -.24px; }
-.flood-detail-header span { display: flex; align-items: center; gap: 4px; color: #ededed; font-family: "Noto Sans KR", sans-serif; font-size: 14px; line-height: 20px; }
-.flood-detail-header span img { width: 24px; height: 24px; padding: 5px; border-radius: 50%; background: #474747; }
+.flood-detail-header .brand-logo { width: 149px; }
+.flood-detail-location { display: flex; align-items: center; gap: 4px; color: #ededed; font-family: "Noto Sans KR", sans-serif; font-size: 14px; line-height: 20px; }
+.flood-detail-location img { width: 24px; height: 24px; padding: 5px; border-radius: 50%; background: #474747; }
 
 .flood-detail-rain-chip {
   position: absolute;
@@ -597,7 +684,6 @@ h3 { margin: 0; font-size: 14px; }
   font-size: 16px;
   font-weight: 500;
 }
-.flood-detail-rain-chip img { width: 24px; height: 24px; }
 
 .flood-detail-sheet { position: absolute; z-index: 5; inset: 304px 0 0; border-radius: 24px 24px 0 0; background: #2a2c2c; }
 .flood-place-summary { position: absolute; top: 29px; left: 16px; right: 16px; }
@@ -626,17 +712,22 @@ h3 { margin: 0; font-size: 14px; }
 .evacuation-directions-map .map-wrap,
 .evacuation-directions-map .fallback-map,
 .evacuation-directions-map .kakao-map { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 100%; }
+.evacuation-directions-map .kakao-map { overflow: hidden; background: #071412; touch-action: none; }
 .evacuation-directions-map .fallback-route-layer { inset: 24% 7% 21%; width: 86%; height: 55%; }
 .evacuation-directions-map .route-line--baseline { display: none; }
 .evacuation-directions-map .route-line--lower-risk { stroke-width: 5; }
 .evacuation-directions-map .route-risk-zone { opacity: .68; }
 
-.evacuation-directions-back { position: absolute; z-index: 8; top: 62px; left: 16px; width: 48px; height: 48px; padding: 0; border: 0; display: grid; place-items: center; background: transparent; cursor: pointer; }
-.evacuation-directions-back img { width: 16px; height: 16px; transform: rotate(90deg); }
+.evacuation-directions-back { position: absolute; z-index: 8; top: 62px; left: 12px; width: 48px; height: 48px; padding: 0; border: 0; display: grid; place-items: center; background: transparent; cursor: pointer; }
+.evacuation-directions-back span { width: 24px; height: 24px; display: grid; place-items: center; transform: rotate(90deg); }
+.evacuation-directions-back img { width: 15.5px; height: 8.5px; display: block; }
 
-.evacuation-waypoints { position: absolute; z-index: 7; top: 115px; right: 16px; left: 16px; display: grid; gap: 9px; }
-.evacuation-waypoints::before { content: ""; position: absolute; z-index: 2; top: 34px; left: 20px; height: 52px; border-left: 1px dashed #fbfbfb; }
-.evacuation-waypoints article { position: relative; min-height: 66px; padding: 12px 18px 12px 38px; display: flex; flex-direction: column; border-radius: 12px; color: #fefefe; background: #2e2e2e; }
+.evacuation-waypoints { position: absolute; z-index: 7; top: 115px; right: 16px; left: 16px; min-width: 0; display: grid; gap: 9px; }
+.evacuation-waypoints::before { content: ""; position: absolute; z-index: 2; top: 38px; left: 20px; height: 61px; border-left: 1px dashed #fbfbfb; }
+.evacuation-waypoints::after { content: ""; position: absolute; z-index: 3; top: 92px; left: 17px; width: 7px; height: 7px; border-right: 1px solid #fbfbfb; border-bottom: 1px solid #fbfbfb; transform: rotate(45deg); }
+.evacuation-waypoints article { position: relative; width: 100%; max-width: 100%; min-width: 0; min-height: 66px; padding: 12px 18px 12px 38px; display: flex; flex-direction: column; overflow: hidden; border-radius: 12px; color: #fefefe; background: #2e2e2e; }
+.evacuation-waypoints article span,
+.evacuation-waypoints article strong { display: block; width: 100%; max-width: 100%; min-width: 0; }
 .evacuation-waypoints article span { font-size: 12px; font-weight: 500; line-height: 1.4; }
 .evacuation-waypoints article strong { overflow: hidden; font-size: 18px; font-weight: 600; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
 .evacuation-waypoint { position: absolute; z-index: 3; top: 29px; left: 16px; width: 9px; height: 9px; border-radius: 50%; }
@@ -652,7 +743,6 @@ h3 { margin: 0; font-size: 14px; }
 .evacuation-route-metrics { right: 16px; width: 192px; height: 65px; padding: 10px; display: flex; justify-content: center; gap: 10px; }
 .evacuation-route-metrics > span { width: 64px; display: flex; flex-direction: column; }
 .evacuation-route-metrics strong { color: #fff; font-size: 18px; font-weight: 600; }
-.evacuation-route-label { position: absolute; z-index: 7; right: 19px; bottom: 116px; margin: 0; color: #00e8ec; font-size: 9px; font-weight: 700; letter-spacing: .05em; }
 
 @media (min-width: 481px) {
   .onboarding-stage { background: radial-gradient(circle at 50% 25%, #0b3331, #001817 54%); }
@@ -665,7 +755,7 @@ h3 { margin: 0; font-size: 14px; }
   .onboarding-phone { min-height: 100svh; }
   .onboarding-car-image { top: 290px; width: 450px; height: 361px; }
   .onboarding-rain { transform: translateY(-41px) scale(.9); transform-origin: top left; }
-  .permission-detail { bottom: calc(80px + env(safe-area-inset-bottom)); }
+  .permission-detail { bottom: max(114px, calc(80px + env(safe-area-inset-bottom))); }
 }
 
 @media (max-width: 480px) {
@@ -737,7 +827,9 @@ h3 { margin: 0; font-size: 14px; }
   touch-action: none;
 }
 
-.parking-home-map .kakao-map div:has(> img[src*="/tile/"]) {
+.parking-home-map .kakao-map div:has(> img[src*="/tile/"]),
+.flood-detail-map .kakao-map div:has(> img[src*="/tile/"]),
+.evacuation-directions-map .kakao-map div:has(> img[src*="/tile/"]) {
   filter: grayscale(1) invert(.88) sepia(.2) saturate(.76) hue-rotate(112deg) brightness(.82) contrast(1.24);
 }
 
@@ -754,9 +846,9 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 .route-risk-zone { stroke-width: .3; vector-effect: non-scaling-stroke; }
-.route-risk-zone--high { fill: rgb(255 139 103 / 18%); stroke: #ff8b67; }
-.route-risk-zone--very_high { fill: rgb(255 79 103 / 30%); stroke: #ff4f67; }
-.route-risk-zone--current { fill: rgb(255 36 79 / 48%); stroke: #ff244f; }
+.route-risk-zone--high,
+.route-risk-zone--very_high { fill: rgb(0 232 236 / 14%); stroke: rgb(0 232 236 / 52%); filter: drop-shadow(0 0 4px #00e8ec); }
+.route-risk-zone--current { fill: rgb(0 232 236 / 22%); stroke: rgb(0 232 236 / 64%); filter: drop-shadow(0 0 5px #00e8ec); }
 .route-line { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .route-line--baseline { stroke: #a7b1b0; stroke-width: 3; stroke-dasharray: 5 5; opacity: .7; }
 .route-line--lower-risk { stroke: #00e8ec; stroke-width: 5; }
@@ -768,12 +860,12 @@ h3 { margin: 0; font-size: 14px; }
   height: 32px;
   display: grid;
   place-items: center;
-  border: 2px solid #001817;
+  border: 0;
   border-radius: 50%;
   color: #001817;
   background: #43ff76;
   font: 700 17px/1 "Plus Jakarta Sans", sans-serif;
-  box-shadow: 0 4px 14px rgb(0 0 0 / 45%);
+  box-shadow: 0 0 0 1px rgb(0 24 23 / 45%), 0 4px 14px rgb(0 0 0 / 45%);
 }
 .parking-home-map .map-pulse {
   width: 24px;
@@ -902,9 +994,13 @@ h3 { margin: 0; font-size: 14px; }
   align-items: flex-start;
 }
 
-.parking-home-header > strong {
-  font: 600 24px/1.4 "Plus Jakarta Sans", sans-serif;
-  letter-spacing: -.24px;
+.parking-home-header > .brand-logo { width: 149px; }
+
+.historical-replay-label {
+  margin: 4px 0 3px;
+  color: #f97575;
+  font: 700 9px/1.4 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: .08em;
 }
 
 .current-location-button {
@@ -958,6 +1054,24 @@ h3 { margin: 0; font-size: 14px; }
   font: 500 16px/1.4 "Plus Jakarta Sans", sans-serif;
 }
 
+.parking-assessment-prompt {
+  position: absolute;
+  z-index: 7;
+  right: 16px;
+  bottom: max(28px, env(safe-area-inset-bottom));
+  left: 16px;
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid rgb(0 232 236 / 30%);
+  border-radius: 14px;
+  color: #fefefe;
+  background: rgb(42 44 44 / 94%);
+  box-shadow: 0 12px 30px rgb(0 0 0 / 34%);
+  font: 500 14px/1.4 "Plus Jakarta Sans", sans-serif;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+
 .evacuation-route-card {
   position: absolute;
   z-index: 7;
@@ -994,12 +1108,7 @@ h3 { margin: 0; font-size: 14px; }
   font-size: 12px;
 }
 
-.weather-icon { position: relative; width: 24px; height: 24px; flex: 0 0 24px; }
-.weather-cloud { position: absolute; top: 1px; left: 0; width: 24px; height: 18px; }
-.weather-line { position: absolute; top: 13px; width: 2px; height: 10px; }
-.weather-line--one { left: 8px; }
-.weather-line--two { left: 12px; }
-.weather-line--three { left: 16px; }
+.weather-icon { flex: 0 0 24px; }
 
 .parking-home-disclaimer {
   position: absolute;
@@ -1132,7 +1241,6 @@ h3 { margin: 0; font-size: 14px; }
   color: #fefefe;
   font-size: 12px;
 }
-.nearby-heading span:last-child { color: #7a7a7a; }
 
 .sheet-state { margin: -8px 16px 18px; color: #adadad; font-size: 13px; }
 .sheet-state--error { color: #f97575; }
@@ -1159,7 +1267,7 @@ h3 { margin: 0; font-size: 14px; }
   cursor: pointer;
 }
 
-.nearby-parking-card > img {
+.nearby-parking-image {
   width: 101px;
   height: 101px;
   border-radius: 4px;
@@ -1173,6 +1281,19 @@ h3 { margin: 0; font-size: 14px; }
 
 .parking-detail { min-height: calc(100% - 72px); padding-bottom: 88px; }
 .parking-detail-image { width: 100%; height: 200px; display: block; object-fit: cover; }
+.parking-media { position: relative; overflow: hidden; background: #161b1a; }
+.parking-media-fallback,
+.parking-media-live { position: absolute; inset: 0; width: 100%; height: 100%; }
+.parking-media-fallback { display: block; object-fit: cover; }
+.parking-media-live { opacity: 0; pointer-events: none; transition: opacity 180ms ease; }
+.parking-media-live--ready { opacity: 1; }
+.parking-media-live > div { width: 100% !important; height: 100% !important; }
+.parking-media-live--thumbnail {
+  width: 200%;
+  height: 200%;
+  transform: scale(.5);
+  transform-origin: left top;
+}
 .parking-detail-copy { position: relative; padding: 24px 16px 18px; }
 .prototype-warning {
   display: inline-flex;
@@ -1226,6 +1347,7 @@ h3 { margin: 0; font-size: 14px; }
 }
 
 @media (max-width: 480px) {
+  .splash-phone,
   .parking-home-phone,
   .flood-location-phone,
   .evacuation-directions-phone {

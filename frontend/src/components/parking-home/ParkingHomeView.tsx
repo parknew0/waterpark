@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { getEnglishParkingLabel } from "../../lib/parkingEnglish";
-import type { Rainfall } from "../../types/floodRisk";
-import type { Coordinate, ParkingPlace, SearchSource } from "../../types/parking";
+import type { Coordinate, ParkingPlace } from "../../types/parking";
 import type { FloodAwareRoute } from "../../types/routing";
 import { ParkingMap } from "../ParkingMap";
+import { BrandLogo } from "../brand/BrandLogo";
+import { RainIcon } from "../icons/RainIcon";
+import { ParkingMedia } from "./ParkingMedia";
 
 interface ParkingHomeViewProps {
   appKey?: string;
@@ -15,7 +17,6 @@ interface ParkingHomeViewProps {
   isCarLocationOpen: boolean;
   isLoading: boolean;
   parkedPlace?: ParkingPlace;
-  rainfall?: Rainfall;
   showParkingMarkers: boolean;
   onClearSelection: () => void;
   onCloseSheet: () => void;
@@ -25,8 +26,11 @@ interface ParkingHomeViewProps {
   onSetCarLocation: () => void;
   places: ParkingPlace[];
   selected?: ParkingPlace;
-  source: SearchSource;
   routeError: string | null;
+  rainfallLabel?: string;
+  rainfallAriaLabel?: string;
+  assessmentMode?: boolean;
+  assessmentPending?: boolean;
 }
 
 const thumbnails = [
@@ -36,19 +40,6 @@ const thumbnails = [
 ];
 
 const numberFormatter = new Intl.NumberFormat("ko-KR");
-
-/**
- * Most recent hour of rainfall, or the placeholder.
- *
- * A failed weather lookup must not render as "0mm". This chip is the one
- * number a driver glances at, and showing zero because the request failed
- * states the single thing that would keep someone parked through a downpour.
- * The dashes stay until a real reading arrives.
- */
-function formatRainfall(rainfall?: Rainfall) {
-  if (!rainfall?.available || rainfall.mm1h == null) return "--mm";
-  return `${rainfall.mm1h.toFixed(1)}mm`;
-}
 
 function formatDistance(distance?: number) {
   if (distance == null) return "거리 계산 중";
@@ -66,7 +57,6 @@ export function ParkingHomeView({
   isCarLocationOpen,
   isLoading,
   parkedPlace,
-  rainfall,
   showParkingMarkers,
   onClearSelection,
   onCloseSheet,
@@ -76,8 +66,11 @@ export function ParkingHomeView({
   onSetCarLocation,
   places,
   selected,
-  source,
   routeError,
+  rainfallLabel = "--mm",
+  rainfallAriaLabel = "강수량 API 연결 대기 중",
+  assessmentMode = false,
+  assessmentPending = false,
 }: ParkingHomeViewProps) {
   const [query, setQuery] = useState("");
   const nearbyPlaces = places.slice(0, 3);
@@ -97,9 +90,9 @@ export function ParkingHomeView({
             center={center}
             currentPosition={evacuationRoute?.origin ?? currentPosition}
             evacuationRoute={evacuationRoute}
-            parkedPlace={parkedPlace}
+            parkedPlace={assessmentMode ? undefined : parkedPlace}
             places={showParkingMarkers
-              ? places.filter((place) => place.id !== parkedPlace?.id).slice(0, 8)
+              ? (assessmentMode ? places : places.filter((place) => place.id !== parkedPlace?.id)).slice(0, 8)
               : []}
             selected={selected}
             onSelect={onSelect}
@@ -117,7 +110,7 @@ export function ParkingHomeView({
         {routeError ? <p className="evacuation-route-error" role="status">{routeError}</p> : null}
 
         <header className="parking-home-header">
-          <strong>APP</strong>
+          <BrandLogo />
           <button className="current-location-button" type="button" onClick={onOpenSheet}>
             <span className="current-location-icon" aria-hidden="true">
               <img src="/assets/parking/location.svg" alt="" />
@@ -126,29 +119,21 @@ export function ParkingHomeView({
           </button>
         </header>
 
-        <div
-          className="parking-weather-chip"
-          aria-label={
-            rainfall?.available
-              ? `최근 1시간 강수량 ${formatRainfall(rainfall)}`
-              : "강수량을 가져오지 못했습니다"
-          }
-        >
-          <span className="weather-icon" aria-hidden="true">
-            <img className="weather-cloud" src="/assets/parking/rain-cloud.svg" alt="" />
-            <img className="weather-line weather-line--one" src="/assets/parking/rain-line.svg" alt="" />
-            <img className="weather-line weather-line--two" src="/assets/parking/rain-line.svg" alt="" />
-            <img className="weather-line weather-line--three" src="/assets/parking/rain-line.svg" alt="" />
-          </span>
-          <span>{formatRainfall(rainfall)}</span>
+        <div className="parking-weather-chip" aria-label={rainfallAriaLabel}>
+          <RainIcon className="weather-icon" />
+          <span>{rainfallLabel}</span>
         </div>
 
-        {!parkedPlace ? (
+        {assessmentMode ? (
+          <p className="parking-assessment-prompt" aria-live="polite">
+            {assessmentPending ? "Checking flood risk…" : "Select a parking lot to check its flood risk."}
+          </p>
+        ) : !parkedPlace ? (
           <p className="parking-home-disclaimer">
             Please also refer to emergency alerts and notices from the property management office.
           </p>
         ) : null}
-        {parkedPlace && !isCarLocationOpen ? (
+        {parkedPlace && !isCarLocationOpen && !assessmentMode ? (
           <article className="parked-car-card" aria-label="저장된 내 차 위치">
             <span>My Location</span>
             <strong>{parkedLabel?.name}</strong>
@@ -172,7 +157,11 @@ export function ParkingHomeView({
             </header>
 
             {selected ? (
-              <ParkingDetail place={selected} onSetCarLocation={onSetCarLocation} />
+              <ParkingDetail
+                appKey={appKey}
+                place={selected}
+                onSetCarLocation={onSetCarLocation}
+              />
             ) : (
               <>
                 <form className="car-location-search" role="search" onSubmit={handleSubmit}>
@@ -193,7 +182,6 @@ export function ParkingHomeView({
 
                 <div className="nearby-heading">
                   <span>가까운 순</span>
-                  <span>{source === "kakao" ? "Kakao" : "공공데이터"}</span>
                 </div>
 
                 {isLoading ? <p className="sheet-state" role="status">현재 위치 주변 주차장을 찾고 있어요…</p> : null}
@@ -204,7 +192,13 @@ export function ParkingHomeView({
                   {nearbyPlaces.map((place, index) => (
                     <li key={place.id}>
                       <button type="button" className="nearby-parking-card" onClick={() => onSelect(place)}>
-                        <img src={thumbnails[index]} alt="" />
+                        <ParkingMedia
+                          appKey={appKey}
+                          className="nearby-parking-image"
+                          fallbackSrc={thumbnails[index]}
+                          mode="thumbnail"
+                          place={place}
+                        />
                         <span className="nearby-parking-copy">
                           <span className="nearby-parking-address">{place.address || "주소 정보 없음"}</span>
                           <strong>{place.name}</strong>
@@ -223,22 +217,35 @@ export function ParkingHomeView({
   );
 }
 
-function ParkingDetail({ place, onSetCarLocation }: { place: ParkingPlace; onSetCarLocation: () => void }) {
+function ParkingDetail({
+  appKey,
+  place,
+  onSetCarLocation,
+}: {
+  appKey?: string;
+  place: ParkingPlace;
+  onSetCarLocation: () => void;
+}) {
   return (
     <div className="parking-detail">
-      <img className="parking-detail-image" src="/assets/parking/parking-detail.png" alt="선택한 주차장 예시 전경" />
+      <ParkingMedia
+        appKey={appKey}
+        className="parking-detail-image"
+        fallbackSrc="/assets/parking/parking-detail.png"
+        place={place}
+      />
       <div className="parking-detail-copy">
-        <span className="prototype-warning">Prototype</span>
+        <span className="prototype-warning">Warning</span>
         <h2>{place.name}</h2>
         <p>{place.address || "주소 정보 없음"}</p>
         <span className="parking-detail-distance">{formatDistance(place.distanceMeters)}</span>
       </div>
       <div className="parking-risk-preview">
-        <h3><span>Risk assessment</span><br />is not connected yet</h3>
-        <p>Prediction API 연결 후 표시할 정보</p>
+        <h3><span>High risk of flooding</span><br />in the next 1 hour</h3>
+        <p>Here’s Why</p>
         <ul>
-          <li>건물의 주변 대비 고도</li>
-          <li>최근 강수량과 침수 위험도</li>
+          <li>Building is lower than the surrounding</li>
+          <li>Rainfall over the past 6 hours</li>
         </ul>
       </div>
       <footer className="parking-detail-footer">

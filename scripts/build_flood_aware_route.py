@@ -47,6 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--high-penalty", type=float, default=5.0)
     parser.add_argument("--very-high-penalty", type=float, default=12.0)
     parser.add_argument("--candidate-limit", type=int, default=25)
+    parser.add_argument("--forecast-horizon-minutes", type=int, default=60)
     parser.add_argument("--risk-csv", type=Path, default=DEFAULT_RISK)
     parser.add_argument("--parking-csv", type=Path, default=DEFAULT_PARKING)
     parser.add_argument("--graphml", type=Path, default=DEFAULT_GRAPH)
@@ -109,11 +110,20 @@ def route_geometry(graph: nx.MultiDiGraph, nodes: list[int], weight: str) -> Lin
 
 
 def route_metrics(graph: nx.MultiDiGraph, nodes: list[int], weight: str) -> dict[str, float]:
-    metrics = {"distance_m": 0.0, "high_exposure_m": 0.0, "very_high_exposure_m": 0.0, "risk_cost": 0.0}
+    metrics = {
+        "distance_m": 0.0,
+        "travel_time_s": 0.0,
+        "high_exposure_m": 0.0,
+        "very_high_exposure_m": 0.0,
+        "risk_cost": 0.0,
+    }
     for u, v in zip(nodes, nodes[1:]):
         _, data = select_edge(graph, u, v, weight)
         for key in metrics:
-            fallback = data.get("length", 0.0) if key in {"distance_m", "risk_cost"} else 0.0
+            if key == "travel_time_s":
+                fallback = float(data.get("length", 0.0)) / (15_000 / 3_600)
+            else:
+                fallback = data.get("length", 0.0) if key in {"distance_m", "risk_cost"} else 0.0
             source_key = "length" if key == "distance_m" else key
             metrics[key] += float(data.get(source_key, fallback))
     return {key: round(value, 1) for key, value in metrics.items()}
@@ -230,6 +240,8 @@ def main() -> None:
             raise FileNotFoundError(input_path)
 
     graph = load_or_download_graph(args)
+    graph = ox.routing.add_edge_speeds(graph)
+    graph = ox.routing.add_edge_travel_times(graph)
     origin = Point(args.origin_lon, args.origin_lat)
     origin_node = ox.distance.nearest_nodes(graph, X=args.origin_lon, Y=args.origin_lat)
     graph, high_risk, very_high_risk, current_flood, metric_crs, blocked_count = add_risk_costs(
@@ -259,7 +271,7 @@ def main() -> None:
 
     generated_at = datetime.now(timezone.utc).isoformat()
     features = [
-        make_feature(origin, layer="origin", label="Demo origin near POSTECH"),
+        make_feature(origin, layer="origin", label="Route origin"),
         make_feature(
             Point(float(destination["longitude"]), float(destination["latitude"])),
             layer="destination",
@@ -287,6 +299,7 @@ def main() -> None:
             "label": "lower-risk route candidate",
             "disclaimer": "Static surface-flood susceptibility and OSM roads only. Not a safety guarantee; follow official alerts and road controls.",
             "osm_attribution": "© OpenStreetMap contributors",
+            "forecast_horizon_minutes": args.forecast_horizon_minutes,
             "origin": {"latitude": args.origin_lat, "longitude": args.origin_lon},
             "parameters": {
                 "radius_m": args.radius_m,

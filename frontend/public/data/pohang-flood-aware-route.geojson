@@ -1,11 +1,12 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "generated_at": "2026-08-22T14:17:37.235626+00:00",
+    "generated_at": "2026-08-22T15:50:17.008697+00:00",
     "prototype": true,
     "label": "lower-risk route candidate",
     "disclaimer": "Static surface-flood susceptibility and OSM roads only. Not a safety guarantee; follow official alerts and road controls.",
     "osm_attribution": "© OpenStreetMap contributors",
+    "forecast_horizon_minutes": 60,
     "origin": {
       "latitude": 36.014,
       "longitude": 129.325
@@ -548,6 +549,7 @@
       "properties": {
         "layer": "baseline_route",
         "distance_m": 2121.9,
+        "travel_time_s": 509.3,
         "high_exposure_m": 0.0,
         "very_high_exposure_m": 0.0,
         "risk_cost": 2121.9
@@ -1039,6 +1041,7 @@
       "properties": {
         "layer": "lower_risk_route",
         "distance_m": 2121.9,
+        "travel_time_s": 509.3,
         "high_exposure_m": 0.0,
         "very_high_exposure_m": 0.0,
         "risk_cost": 2121.9

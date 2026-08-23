@@ -224,6 +224,7 @@
 - Figma 원본 흰색 SUV PNG와 위치 SVG를 프로젝트에 저장하고 임시 에셋 URL 의존성을 제거했다.
 - 빗방울이 차체의 지정 위치에 도달하면 낙하선이 사라지고 물방울 파편이 튀는 CSS 애니메이션을 추가했다. 이는 물리 엔진 충돌 판정이 아니라 화면 크기에 맞춘 연출이며 `prefers-reduced-motion`에서 반복을 중단한다.
 - Figma의 iPhone 상태바·다이내믹 아일랜드·홈 인디케이터는 예시용 기기 크롬이므로 실제 웹 UI에서 제외했다.
+- 2026-08-23 교정: 홈 인디케이터 그래픽은 계속 제외하되 그 아래 34px 레이아웃 여백은 유지한다. 온보딩 2·3 CTA는 402×874 기준 `y=778–828`, 위치 동의 안내문은 `y=727`로 맞춘다.
 - 흐름은 `차량 보호 소개 → 위치 동의 → 브라우저 위치 권한 요청 → Kakao 지도`로 연결했다. URL은 `view=consent`, `view=map`으로 상태를 반영하며 뒤로가기를 지원한다.
 - 402×874에서 최신 SUV 화면과 빗방울 충돌 물보라를 시각 확인했고, 1280×900 중앙 프레임 확인, lint/build, Kakao 지도 진입, 브라우저 경고·오류 0건을 검증했다.
 - 상세: [온보딩 뷰 구현](./frontend/04-onboarding-views.md)
@@ -301,8 +302,9 @@
 - `FACT`: 기본 경로의 도로 일부를 가로지르는 합성 Polygon을 `data/demo/pohang-current-flood-scenario.geojson`으로 추가했다.
 - `FACT`: 합성 폴리곤을 현재 침수 입력으로 사용하면 OSM 간선 6개가 제거되고 목적지는 `효곡동 노상8`, 우회 거리는 2,121.9m가 된다.
 - `FACT`: Figma `119:1140`, `123:1743`, `90:755`를 확인해 위험 상세·안전 상세·길찾기 React 뷰를 구현했다.
-- `FACT`: 긴급 경고부터 `emergency → risk-detail → safe-detail → route`로 이어지며 각 URL로 직접 진입할 수도 있다.
-- `LIMITATION`: Polygon과 `30mm`, 2시간 위험, 안전시간 30분은 시연 값이다. 실제 침수·강수·안전 보증으로 발표하지 않는다.
+- `FACT`: 2026-08-23 흐름을 교정했다. 긴급 경고 뒤 실제 지도에서 주차장을 선택하며, 판정이 고위험이면 `risk-detail`, 저위험이면 `safe-detail`로 분기한다. 위험 상세 CTA는 지도 선택으로 돌아가고 안전 상세 CTA만 `route`로 이동한다.
+- `DECISION`: 위험·안전 상세는 순차 화면이 아니라 주차장별 API 판정의 상호 배타적 결과다. 백엔드 계약 확정 전에는 `frontend/src/lib/parkingRisk.ts`의 어댑터 경계와 두 데모 후보만 사용하고 HTTP 계약은 만들지 않는다.
+- `LIMITATION`: Polygon과 `30mm`, 1시간 위험, 안전시간 30분은 시연 값이다. 실제 침수·강수·안전 보증으로 발표하지 않는다.
 - 상세: [가짜 침수 상황 데모 흐름](./frontend/08-flood-scenario-demo-flow.md)
 - 출처: [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 길찾기 `90:755`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=90-755&m=dev)
 
@@ -328,6 +330,68 @@
 - 상세: [전국 데이터 및 코드 감사](./08-national-data-and-code-audit.md)
 - 출처: [Esri Korea 전국 침수흔적도](https://www.arcgis.com/home/item.html?id=36b15209737c49b3893332c71db04a27), [VWorld GIS건물통합정보](https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18)
 - 확인일: 2026-08-22
+
+### 2026-08-23 — 워드마크·스플래시와 상세 화면 실지도 연결
+
+- `FACT`: Figma `123:2252`의 흰색 `WATERPARK`와 스플래시 `266:3497`의 그라데이션 워드마크를 투명 배경 SVG 에셋 기반 공통 컴포넌트로 만들고 임시 `APP` 표시를 모두 교체했다.
+- `FACT`: Figma `50:84`의 원본 이미지 두 개를 저장해 쿼리 없는 최초 진입 스플래시를 구현했다. 예시 iOS 상태바는 기존 UI 결정에 따라 제외했다.
+- `FACT`: 위험 상세 `119:1140`과 안전 상세 `123:1743`이 `VITE_KAKAO_MAP_APP_KEY`를 받아 실제 Kakao 지도·계산 경로·마커를 표시하도록 변경했다.
+- `FACT`: `localhost:5173` 브라우저에서 두 상세 화면의 Kakao 지도 타일과 접근 가능한 지도 region을 확인했고 TypeScript build와 ESLint를 통과했다.
+- `LIMITATION`: Kakao 지도는 등록 origin과 활성 JavaScript 키가 필요하며, 실패 시 정적 경로 미리보기로 폴백한다.
+- `DECISION`: 스플래시는 1.6초 유지 후 1.1초 동안 전체 화면을 페이드아웃하고, 페이드가 끝난 다음 온보딩으로 전환한다. Figma 원본 노드에는 별도 모션 데이터가 없어 사용자 요청을 앱 전환 명세로 기록했다.
+- `DECISION`: 위험 폴리곤은 Figma `244:3303`을 기준으로 청록색 저투명도 외곽과 내부 레이어를 겹친 발광 표현을 사용한다. 상세 위험 예측 시간은 제품 설명과 같은 1시간으로 통일한다.
+- `FACT`: 길찾기 `90:755`도 `VITE_KAKAO_MAP_APP_KEY`를 전달해 실제 Kakao 지도 위에 OSM 도로망 기반 저위험 경로, 현재 위치, 목적지와 위험 영역을 렌더링한다. Kakao SDK 실패 시에만 SVG 미리보기로 폴백한다.
+- `FACT`: Figma `244:3303` 재확인 결과, 길찾기의 임의 파란 출처 문구를 제거하고 Figma 원본 뒤로가기 SVG 비율을 복원했다. 하단 카드는 GeoJSON의 예측 범위 `60분`, OSM 도로 속성 기반 예상 이동시간 `509.3초`, 도로거리 `2,121.9m`를 각각 `1 hour`, `9 min`, `2.1km`로 표시한다. `1 hour`는 안전 보장이 아니라 모델 예측 범위다.
+- `FACT`: 기상청은 힌남노가 2022년 9월 6일 04:50 거제 동쪽에 상륙했고 같은 날 포항 달력일 강수량이 342.4mm였다고 기록한다. 냉천 유역 수문 연구는 포항관측소 실측 기반 이동누적 최대 강우를 1시간 77.0mm, 2시간 147.9mm, 3시간 203.2mm, 6시간 314.5mm, 9시간 359.8mm, 12시간 378.7mm로 제시한다.
+- `FACT`: ADRC 대한민국 국가보고서는 2022년 9월 6일 포항 남구 인덕동 아파트 지하주차장 사고에서 7명이 사망하고 2명이 생존했다고 기록한다. 로컬 건물 결합 결과의 `우방신세계타운(1차)` 동일 필지 건물 6개는 모두 지하주차장 용도 확인 상태이며 지하층수 최대값은 1층이다.
+- `LIMITATION`: 현재 확보한 행정안전부 침수흔적도 경북 부분집합 1,402건의 실제 연도 최댓값은 2021이라 힌남노 실제 침수 Polygon을 포함하지 않는다. 과거 재현 화면의 붉은 범위는 관측 침수면이 아닌 시연용 영향 반경으로 고정 표기한다.
+- `DECISION`: 별도 힌남노 아카이브 화면은 제거한다. 기본 앱은 GPS·현재 데이터 흐름을 유지하고, `?scenario=hinnamnor`일 때만 기존 Waterpark 전체 플로우에 인덕동 위치·역사 강우·별도 OSM 경로를 주입한다.
+- `LIMITATION`: 이 모드는 힌남노 당시 Waterpark가 실제 실행됐다는 기록이 아니라 제품 흐름 재연이다. 확보하지 못한 2022년 실제 침수 경계와 시각별 모델 출력은 만들지 않으며, 지도 위험 영역은 정적 위험 데이터임을 문서에 고정한다.
+- `DECISION`: 힌남노 재연은 중간 `view` 쿼리가 포함된 URL로 직접 접속해도 첫 페이지 로드에서 Figma `50:84` Splash부터 시작한다. Splash 종료 뒤 `view`를 제거하고 온보딩부터 전체 앱 흐름을 재생한다.
+- `FACT`: 길찾기 `90:755`의 출발지·목적지 카드에서 긴 영문명이 카드 밖으로 넘치던 문제는 grid·flex 자식의 `min-width: 0`, 카드 overflow, 한 줄 ellipsis로 교정했다.
+- 상세: [힌남노 상황으로 실행하는 Waterpark 전체 플로우](./frontend/10-hinnamnor-waterpark-scenario.md)
+- 출처: [기상청 2022 태풍 보고서](https://www.kma.go.kr/download_01/typhoon/typreport_2022.pdf), [기상청 2022년 9월 기후 뉴스레터](https://www.weather.go.kr/download_02/ellinonewsletter_2022_09.pdf), [냉천 유역 힌남노 수문 연구](https://journal.dssms.org/articles/xml/5aEx/), [ADRC 대한민국 국가보고서 FY2024](https://web.adrc.asia/countryreport/KOR/2024/Korea_CountryReport_FY2024.pdf)
+- 상세: [워드마크·스플래시·상세 실지도](./frontend/09-brand-splash-and-live-detail-maps.md)
+- 출처: [Figma 워드마크 `123:2252`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-2252&m=dev), [Figma 스플래시 `50:84`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=50-84&m=dev), [Figma 위험 상세 `119:1140`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=119-1140&m=dev), [Figma 안전 상세 `123:1743`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=123-1743&m=dev), [Figma 청록색 위험 영역 `244:3303`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=244-3303&m=dev)
+
+### 2026-08-23 — 위험 주차장 접근 경로와 카카오 장소 사진 확인
+
+- `FACT`: 위험 주차장 선택 상세는 선택한 장소를 경로 `destination`으로 사용하도록 분리했다. 힌남노 데모에서는 저장된 실제 OSM 도로 경로의 위험 장소 접근 구간을 역방향으로 사용한다.
+- `LIMITATION`: 현재 접근 경로는 발표용 고정 경로 구간이다. 임의 GPS와 임의 위험 주차장 사이의 재탐색은 백엔드 라우팅 API가 필요하다.
+- `FACT`: 카카오맵 키워드·카테고리 장소 검색의 공식 응답 필드는 장소 ID, 이름, 분류, 전화번호, 주소, 좌표, 장소 상세 URL, 거리이며 이미지 URL은 포함하지 않는다.
+- `FACT`: Daum 이미지 검색 API에는 `thumbnail_url`과 `image_url`이 있지만 웹 이미지 검색 결과이므로 특정 카카오맵 장소의 공식 사진을 보장하지 않는다.
+- `DECISION`: 카카오 장소 상세 페이지를 스크래핑해 사진을 저장하지 않는다. 주차장 사진은 공공데이터 또는 팀이 사용권을 확보한 별도 `imageUrl` 데이터로 연결하고, 없으면 앱 기본 이미지를 사용한다.
+- 출처: [카카오맵 REST API 장소 검색](https://developers.kakao.com/docs/ko/kakaomap/rest-api), [Daum 이미지 검색 REST API](https://developers.kakao.com/docs/ko/daum-search/dev-guide)
+- 확인일: 2026-08-23
+
+### 2026-08-23 — 우방신세계타운 1차 실제 이미지 URL 후보
+
+- `FACT`: 단지명과 주소가 일치하는 우방신세계타운 1차 106동 전경 이미지 URL을 확인했다. 원본은 2048×1536 JPEG이며 현재 HTTP 200으로 응답한다.
+- `FACT`: 동아일보의 2022년 9월 7일 힌남노 보도에서 우방신세계타운 1차 침수 현장으로 명시한 640×449 JPEG URL을 확인했다. 현재 HTTP 200으로 응답한다.
+- 단지 전경 URL: `https://image.hogangnono.com/image/original/apt/82Y81/20240419120232_k5U3CmU46WZtMRMXbw?q=100&s=2048x180&t=outside`
+- 힌남노 현장 URL: `https://t1.daumcdn.net/news/202209/07/donga/20220907030059842cmpo.jpg`
+- `LIMITATION`: 두 이미지는 카카오맵 장소 검색 API가 제공한 사진이 아니다. 각 매체의 저작물이므로 발표 자료나 앱에서 재게시하기 전에 이용 허락·라이선스를 확인해야 하며, 외부 URL의 영구 제공도 보장되지 않는다.
+- 출처: [호갱노노 우방신세계타운 1차 단지 페이지](https://hogangnono.com/apt/82Y81), [동아일보 힌남노 보도](https://www.donga.com/news/Society/article/all/20220907/115344711/1)
+- 확인일: 2026-08-23
+
+### 2026-08-23 — 주차장 이미지와 경로 끝점 UI 적용
+
+- `FACT`: Kakao 지도 Web SDK의 `RoadviewClient.getNearestPanoId(position, radius, callback)`는 특정 좌표 반경 내 가장 가까운 로드뷰 파노라마 ID를 반환한다.
+- `DECISION`: 장소 사진 URL이 없는 주차장은 목록과 상세에서 좌표 반경 120m의 Kakao 실제 로드뷰를 사용한다. 목록에서는 작은 프레임에 하늘만 잘리지 않도록 로드뷰를 큰 크기로 렌더링한 뒤 축소하고, 로드뷰 또는 SDK를 쓸 수 없을 때만 로컬 폴백 이미지를 사용한다.
+- `DECISION`: 목록의 `가까운 순` 오른쪽 출처 라벨은 제거하되 데이터 출처 메타데이터는 삭제하지 않는다.
+- `FACT`: OSM 도로망 경로의 시작·끝은 실제 출발·도착 Point와 스냅 오차가 있다. 렌더링 경로에 정확한 두 Point를 연결해 선과 마커 사이의 시각적 틈을 제거했다.
+- 출처: [Kakao 지도 Web API RoadviewClient](https://apis.map.kakao.com/web/documentation/)
+- 확인일: 2026-08-23
+
+### 2026-08-23 — 힌남노 입력과 실제 제품 흐름 분리
+
+- `DECISION`: 힌남노 시나리오는 과거 강우·위험 판정 입력으로만 사용하며 화면에는 `Hinnamnor Replay`, `Historical scenario inputs`, 침수 당시 보도 사진을 노출하지 않는다.
+- `DECISION`: 힌남노 재연은 발표자의 현재 GPS가 아니라 오천읍 구정길 `35.9816, 129.4103`을 사용자 시연 위치로 사용한다. 위험 상세는 이 위치에서 저장한 내 차까지, 안전 상세는 저장한 내 차에서 선택한 안전 후보까지의 서로 다른 두 경로를 계산한다.
+- `FACT`: OSRM Route Service는 전달한 좌표 순서대로 자동차 도로 경로를 계산하며 GeoJSON 형상·거리·시간을 반환한다.
+- `DECISION`: 위험·안전 주차장 선택 시 저장한 내 차 위치와 선택 장소를 OSRM에 전달해 경로를 다시 계산한다. 공개 라우터 장애 시 운영 품질을 보장할 수 없으므로 현재 구현은 시연용이다.
+- `DECISION`: 목적지 마커의 검은 테두리를 제거하고 경로의 마지막 좌표를 정확한 목적지로 연결해 선이 `P` 아래까지 이어지게 한다.
+- 출처: [OSRM Route API](https://project-osrm.org/docs/v26.4.0/http/#route-service), [OpenStreetMap 저작권](https://www.openstreetmap.org/copyright)
+- 확인일: 2026-08-23
 
 ## 결정 로그
 

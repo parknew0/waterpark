@@ -39,6 +39,13 @@ interface KakaoDrawableInstance {
   setMap(map: KakaoMapInstance | null): void;
 }
 
+interface KakaoRoadviewInstance {
+  getViewpoint(): { pan: number; tilt: number; zoom: number };
+  setPanoId(panoId: number, position: KakaoLatLng): void;
+  setViewpoint(viewpoint: { pan: number; tilt: number; zoom: number }): void;
+  relayout(): void;
+}
+
 interface KakaoLatLngBounds {
   extend(position: KakaoLatLng): void;
 }
@@ -53,6 +60,14 @@ interface KakaoMapsApi {
     draggable?: boolean;
     scrollwheel?: boolean;
   }) => KakaoMapInstance;
+  Roadview: new (container: HTMLElement, options?: { disableZoomControl?: boolean }) => KakaoRoadviewInstance;
+  RoadviewClient: new () => {
+    getNearestPanoId(position: KakaoLatLng, radius: number, callback: (panoId: number | null) => void): void;
+  };
+  event: {
+    addListener(target: object, eventName: string, handler: () => void): void;
+    removeListener(target: object, eventName: string, handler: () => void): void;
+  };
   Marker: new (options: { map: KakaoMapInstance; position: KakaoLatLng; title?: string }) => KakaoMarkerInstance;
   CustomOverlay: new (options: {
     map: KakaoMapInstance;
@@ -241,14 +256,25 @@ export function createKakaoMap(
   if (evacuationRoute) {
     evacuationRoute.riskZones.forEach((zone) => {
       zone.polygons.forEach((polygon) => {
+        const path = toPath(polygon);
         routeLayers.push(new maps.Polygon({
           map,
-          path: toPath(polygon),
-          strokeWeight: 1,
-          strokeColor: zone.level === "CURRENT" ? "#ff244f" : zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
-          strokeOpacity: 0.72,
-          fillColor: zone.level === "CURRENT" ? "#ff244f" : zone.level === "VERY_HIGH" ? "#ff4f67" : "#ff8b67",
-          fillOpacity: zone.level === "CURRENT" ? 0.48 : zone.level === "VERY_HIGH" ? 0.3 : 0.17,
+          path,
+          strokeWeight: 14,
+          strokeColor: "#00e8ec",
+          strokeOpacity: 0.12,
+          fillColor: "#00e8ec",
+          fillOpacity: 0.06,
+          zIndex: 2,
+        }));
+        routeLayers.push(new maps.Polygon({
+          map,
+          path,
+          strokeWeight: 2,
+          strokeColor: "#00e8ec",
+          strokeOpacity: 0.5,
+          fillColor: "#00e8ec",
+          fillOpacity: zone.level === "CURRENT" ? 0.22 : 0.14,
           zIndex: 2,
         }));
       });
@@ -275,7 +301,7 @@ export function createKakaoMap(
     destinationMarker.className = "evacuation-destination-marker";
     destinationMarker.textContent = "P";
     destinationMarker.setAttribute("role", "img");
-    destinationMarker.setAttribute("aria-label", `대피 주차장 후보: ${evacuationRoute.destination.name}`);
+    destinationMarker.setAttribute("aria-label", `경로 목적지: ${evacuationRoute.destination.name}`);
     overlays.push(new maps.CustomOverlay({
       map,
       position: new maps.LatLng(evacuationRoute.destination.latitude, evacuationRoute.destination.longitude),
@@ -345,7 +371,7 @@ export function createKakaoMap(
       content: marker,
       xAnchor: 0.5,
       yAnchor: 0.5,
-      zIndex: 4,
+      zIndex: 6,
     }));
   });
 

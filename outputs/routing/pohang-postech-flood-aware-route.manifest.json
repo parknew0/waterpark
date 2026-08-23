@@ -1,17 +1,19 @@
 {
-  "generated_at": "2026-08-22T14:17:37.235626+00:00",
+  "generated_at": "2026-08-22T15:50:17.008697+00:00",
   "output": "outputs/routing/pohang-postech-flood-aware-route.geojson",
   "frontend_output": "frontend/public/data/pohang-flood-aware-route.geojson",
   "feature_count": 7,
   "destination": "효곡동 노상8",
   "baseline": {
     "distance_m": 2121.9,
+    "travel_time_s": 509.3,
     "high_exposure_m": 0.0,
     "very_high_exposure_m": 0.0,
     "risk_cost": 2121.9
   },
   "lower_risk": {
     "distance_m": 2121.9,
+    "travel_time_s": 509.3,
     "high_exposure_m": 0.0,
     "very_high_exposure_m": 0.0,
     "risk_cost": 2121.9

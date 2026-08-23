@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   FloodRiskRequest,
   FloodRiskResponse,
+  Rainfall,
   RiskLevel,
 } from "../types/floodRisk";
 
@@ -100,16 +101,35 @@ export function useFloodRisk(point: { lat: number; lon: number } | null) {
     // `loading` is deliberately left alone here. Blanking a reading that is
     // already on screen every time the map settles reads as a fault; keeping
     // the previous number until the new one lands does not.
-    void run(
-      { lat, lon, nearbyParking: { include: true, radiusM: 1000, limit: 5 } },
-      controller.signal,
-    );
+    // Only the coordinate is sent. Every other field the API accepts has a
+    // server-side default, and the app decides what to show from the response
+    // rather than asking for a pre-filtered slice of it.
+    void run({ lat, lon }, controller.signal);
     return () => controller.abort();
   }, [lat, lon, run]);
 
   useEffect(() => () => inFlight.current?.abort(), []);
 
   return { ...state, query };
+}
+
+/**
+ * The home chip's rainfall text, and the label a screen reader hears.
+ *
+ * A failed lookup renders "--mm", never "0.0mm". This is the number a driver
+ * glances at, and showing zero because the request failed states the one
+ * thing that would keep someone parked through a downpour.
+ */
+export function formatRainfall(rainfall?: Rainfall): string {
+  if (!rainfall?.available || rainfall.mm1h == null) return "--mm";
+  return `${rainfall.mm1h.toFixed(1)}mm`;
+}
+
+export function rainfallAriaLabel(rainfall?: Rainfall): string {
+  if (!rainfall?.available || rainfall.mm1h == null) {
+    return "강수량을 가져오지 못했습니다";
+  }
+  return `최근 1시간 강수량 ${formatRainfall(rainfall)}`;
 }
 
 /**
