@@ -1296,17 +1296,17 @@ h3 { margin: 0; font-size: 14px; }
   transform-origin: left top;
 }
 .parking-detail-copy { position: relative; padding: 24px 16px 18px; }
-.prototype-warning {
+.parking-risk-chip {
   display: inline-flex;
   min-height: 40px;
   margin-bottom: 8px;
   padding: 0 16px;
   align-items: center;
   border-radius: 24px;
-  color: #f97575;
-  background: #362020;
   font: 600 14px/1.4 "Noto Sans KR", sans-serif;
 }
+.parking-risk-chip--warning { color: #f97575; background: #362020; }
+.parking-risk-chip--safe { color: #22c55e; background: #021b0b; }
 .parking-detail-copy h2 { margin: 0 0 6px; font: 600 18px/1.4 "Plus Jakarta Sans", "Noto Sans KR", sans-serif; letter-spacing: -.18px; }
 .parking-detail-copy p { margin: 0; color: #c7c7c7; font-size: 14px; }
 .parking-detail-distance { display: block; margin-top: 8px; color: #00e8ec; text-align: right; font-size: 14px; }
@@ -1318,7 +1318,8 @@ h3 { margin: 0; font-size: 14px; }
   background: #343939;
 }
 .parking-risk-preview h3 { margin: 0 0 22px; font: 600 20px/1.4 "Plus Jakarta Sans", sans-serif; letter-spacing: -.2px; }
-.parking-risk-preview h3 span { color: #f97575; }
+.parking-risk-preview--warning h3 span { color: #f97575; }
+.parking-risk-preview--safe h3 span { color: #22c55e; }
 .parking-risk-preview p { margin: 0 0 10px; color: #adadad; font-size: 14px; }
 .parking-risk-preview ul { margin: 0; padding-left: 24px; color: #e0e0e0; font-size: 16px; line-height: 1.5; }
 

@@ -31,6 +31,7 @@ interface ParkingHomeViewProps {
   rainfallAriaLabel?: string;
   assessmentMode?: boolean;
   assessmentPending?: boolean;
+  parkingRiskState?: "safe" | "warning";
 }
 
 const numberFormatter = new Intl.NumberFormat("en-US");
@@ -65,6 +66,7 @@ export function ParkingHomeView({
   rainfallAriaLabel = "Rainfall data are unavailable",
   assessmentMode = false,
   assessmentPending = false,
+  parkingRiskState = "safe",
 }: ParkingHomeViewProps) {
   const [query, setQuery] = useState("");
   const nearbyPlaces = places.slice(0, 3);
@@ -154,6 +156,7 @@ export function ParkingHomeView({
               <ParkingDetail
                 appKey={appKey}
                 place={selected}
+                riskState={parkingRiskState}
                 onSetCarLocation={onSetCarLocation}
               />
             ) : (
@@ -216,13 +219,16 @@ export function ParkingHomeView({
 function ParkingDetail({
   appKey,
   place,
+  riskState,
   onSetCarLocation,
 }: {
   appKey?: string;
   place: ParkingPlace;
+  riskState: "safe" | "warning";
   onSetCarLocation: () => void;
 }) {
   const label = getEnglishParkingLabel(place);
+  const isSafe = riskState === "safe";
   return (
     <div className="parking-detail">
       <ParkingMedia
@@ -231,28 +237,35 @@ function ParkingDetail({
         place={place}
       />
       <div className="parking-detail-copy">
-        <span className="prototype-warning">Warning</span>
+        <span className={`parking-risk-chip parking-risk-chip--${riskState}`}>
+          {isSafe ? "Safe" : "Warning"}
+        </span>
         <h2>{label.name}</h2>
         <p>{label.address}</p>
         <span className="parking-detail-distance">{formatDistance(place.distanceMeters)}</span>
       </div>
-      <div className="parking-risk-preview">
-        <h3><span>High risk of flooding</span><br />in the next 1 hour</h3>
-        <p>Here’s Why</p>
+      <div className={`parking-risk-preview parking-risk-preview--${riskState}`}>
+        <h3>
+          <span>{isSafe ? "Low" : "High"}</span> risk of flooding<br />
+          in the next <span>1 hour</span>
+        </h3>
+        <p>Here’s why</p>
         <ul>
-          <li>Building is lower than the surrounding</li>
+          <li>Building is {isSafe ? "higher" : "lower"} than the surrounding</li>
           <li>Rainfall over the past 6 hours</li>
         </ul>
       </div>
       <footer className="parking-detail-footer">
-        <p className="parking-detail-guidance">
-          <span className="parking-detail-guidance-icon" aria-hidden="true">
-            <img className="parking-detail-guidance-outline" src="/assets/parking/danger-circle-outline.svg" alt="" />
-            <img className="parking-detail-guidance-line" src="/assets/parking/danger-circle-line.svg" alt="" />
-            <img className="parking-detail-guidance-dot" src="/assets/parking/danger-circle-dot.svg" alt="" />
-          </span>
-          <span>We’ll immediately guide you to a safer route immediately</span>
-        </p>
+        {!isSafe ? (
+          <p className="parking-detail-guidance">
+            <span className="parking-detail-guidance-icon" aria-hidden="true">
+              <img className="parking-detail-guidance-outline" src="/assets/parking/danger-circle-outline.svg" alt="" />
+              <img className="parking-detail-guidance-line" src="/assets/parking/danger-circle-line.svg" alt="" />
+              <img className="parking-detail-guidance-dot" src="/assets/parking/danger-circle-dot.svg" alt="" />
+            </span>
+            <span>We’ll immediately guide you to a safer route immediately</span>
+          </p>
+        ) : null}
         <button type="button" onClick={onSetCarLocation}>Set My Car’s Location</button>
       </footer>
     </div>

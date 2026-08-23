@@ -406,6 +406,7 @@ export default function App() {
       }
       assessmentMode={riskAssessmentPending}
       assessmentPending={riskAssessmentPending}
+      parkingRiskState={historicalScenario ? "warning" : "safe"}
     />
   );
 }

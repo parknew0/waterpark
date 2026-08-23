@@ -437,6 +437,14 @@
 
 ## 결정 로그
 
+### 2026-08-23 — 일반 주차 위치 상세의 안전 상태 분리
+
+- `DECISION`: 일반 `?view=map`에서 주차장을 선택한 시점은 침수 위험이 감지되지 않은 정상 상태이므로 상세 화면을 `Safe`와 `Low risk of flooding in the next 1 hour`로 표시한다.
+- `DECISION`: 일반 안전 상태의 근거 문구는 `Building is higher than the surrounding`, `Rainfall over the past 6 hours`로 표시하고 위험 상황 전용 즉시 우회 안내는 숨긴다.
+- `DECISION`: 힌남노 재연은 과거 위험 입력이 주입된 시나리오이므로 동일한 공용 상세 컴포넌트에 명시적인 `warning` 상태를 전달해 기존 경고 화면을 유지한다.
+- 출처: [Figma 차량 위치 설정 안전 상세 `332:4205`](https://www.figma.com/design/rq2THpj29lq6OhqCq6xcAw/-Junction--Uneducated-Kids?node-id=332-4205&m=dev)
+- 확인일: 2026-08-23
+
 | ID | 날짜 | 결정 | 상태 |
 | --- | --- | --- | --- |
 | D-001 | 2026-08-22 | 경상북도 공공데이터 챌린지로 참가한다. | `DECISION` |
