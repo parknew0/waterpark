@@ -102,10 +102,12 @@ export default function App() {
   }, [evacuationRoute]);
   const safeParkingCandidates = useMemo<ParkingPlace[]>(() => {
     const candidates = historicalScenario
-      ? historicalScenario.parkingOptions.slice(1)
-      : (lowerRiskParkingPlace ? [lowerRiskParkingPlace] : []);
+      ? historicalScenario.parkingOptions.filter((candidate) => (
+        historicalScenario.safeParkingIds.includes(candidate.id)
+      ))
+      : visiblePlaces;
     return candidates.filter((candidate) => candidate.id !== parkedPlace?.id);
-  }, [lowerRiskParkingPlace, parkedPlace?.id]);
+  }, [parkedPlace?.id, visiblePlaces]);
   const selectedPlace = useMemo(
     () => visiblePlaces.find((place) => place.id === selected?.id) ?? selected,
     [selected, visiblePlaces],
@@ -237,9 +239,6 @@ export default function App() {
 
   const handleSelect = useCallback(async (place: ParkingPlace) => {
     if (parkedPlace && !isCarLocationOpen) {
-      if (!lowerRiskParkingPlace) {
-        return;
-      }
       setRiskAssessmentPending(true);
       setAssessedPlace(place);
       setLiveRouteError(null);
@@ -256,7 +255,7 @@ export default function App() {
           && parkedPlace?.id === dangerParkingPlace.id;
         const liveRoute = canReuseSuggestion
           ? suggestedSafeRoute
-          : (evacuationRoute ? await fetchLiveDrivingRoute(routeOrigin, place) : undefined);
+          : await fetchLiveDrivingRoute(routeOrigin, place, historicalScenario ? "hinnamnor" : "current");
         setAssessedRoute(liveRoute);
         navigateToView(branch === "danger" ? "risk-detail" : "safe-detail");
       } catch (caught: unknown) {
@@ -269,7 +268,7 @@ export default function App() {
     setSelected(place);
     setCenter({ latitude: place.latitude, longitude: place.longitude });
     setIsCarLocationOpen(true);
-  }, [center, currentPosition, dangerParkingPlace.id, evacuationRoute, isCarLocationOpen, lowerRiskParkingPlace, navigateToView, parkedPlace, safeParkingCandidates, suggestedSafeRoute]);
+  }, [center, currentPosition, dangerParkingPlace.id, isCarLocationOpen, navigateToView, parkedPlace, safeParkingCandidates, suggestedSafeRoute]);
 
   const handleSetCarLocation = useCallback(() => {
     if (selectedPlace) setParkedPlace(selectedPlace);
@@ -279,11 +278,11 @@ export default function App() {
     if (currentPosition) setCenter(currentPosition);
     if (historicalScenario) {
       if (selectedPlace && safeParkingCandidates.length > 0) {
-        void fetchNearestSafeDrivingRoute(selectedPlace, safeParkingCandidates)
+        void fetchNearestSafeDrivingRoute(selectedPlace, safeParkingCandidates, "hinnamnor")
           .then(setSuggestedSafeRoute)
-          .catch((caught: unknown) => {
-            setSuggestedSafeRoute(undefined);
-            setLiveRouteError(caught instanceof Error ? caught.message : "Unable to calculate a flood-aware route.");
+          .catch(() => {
+            setSuggestedSafeRoute(evacuationRoute);
+            setLiveRouteError(null);
           });
       }
       if (historicalAlertTimer.current) window.clearTimeout(historicalAlertTimer.current);
@@ -292,7 +291,7 @@ export default function App() {
         historicalScenario.alertDelayMs,
       );
     }
-  }, [currentPosition, navigateToView, safeParkingCandidates, selectedPlace]);
+  }, [currentPosition, evacuationRoute, navigateToView, safeParkingCandidates, selectedPlace]);
 
   const handleMoveToNearestSafeParking = useCallback(async () => {
     setEmergencyRouting(true);
@@ -301,7 +300,15 @@ export default function App() {
       const routeOrigin = parkedPlace ?? currentPosition ?? historicalScenario?.origin ?? evacuationRoute?.origin;
       let nearestRoute = suggestedSafeRoute;
       if (!nearestRoute && historicalScenario && routeOrigin) {
-        nearestRoute = await fetchNearestSafeDrivingRoute(routeOrigin, safeParkingCandidates);
+        try {
+          nearestRoute = await fetchNearestSafeDrivingRoute(
+            routeOrigin,
+            safeParkingCandidates,
+            "hinnamnor",
+          );
+        } catch {
+          nearestRoute = evacuationRoute;
+        }
       }
       nearestRoute ??= evacuationRoute;
       if (!nearestRoute) throw new Error("No safe route is available yet.");

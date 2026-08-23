@@ -34,10 +34,10 @@
 | `OnboardingCarView` | 차량 보호 가치 제안과 다음 단계 이동 |
 | `LocationConsentView` | 위치 권한 사용 목적 안내와 지도 진입 |
 | `OnboardingProgress` | 2단계 온보딩 진행 상태 |
-| `ParkingHomeView` | 즉시 열린 목록, 선택 상세, 확정된 내 차·주변 주차장 지도 상태를 조율하고 차량 위치 확정 전 자동 안전 경로 안내 문구를 표시 |
+| `ParkingHomeView` | 즉시 열린 목록, 선택 상세, 확정된 내 차·주변 주차장 지도 상태를 조율하고 `P` 마커 클릭을 위험 판정·실제 경로 상세 흐름으로 전달 |
 | `ParkingMedia` | 실제 장소 이미지 또는 Kakao 로드뷰가 준비되기 전 회색 플레이스홀더를 유지하고 준비 완료 뒤 페이드인 |
 | `EmergencyView` | 긴급 경고, 예상 안전 시간, 배정 주차장과 지도 이동 CTA를 표시하고 비·진동 모션을 조율 |
-| `liveDrivingRoute` | `/api/flood-route`에 선택 좌표를 전달해 침수회피 경로와 위험 폴리곤을 받고, 긴급 상황에서는 안전 후보별 결과 중 도로거리가 가장 짧은 경로를 선택 |
+| `liveDrivingRoute` | 평상시 Safe 상세은 OSRM/OpenStreetMap의 전국 실제 도로 형상을 사용하고, 힌남노 침수 회피는 `/api/flood-route`의 Python 가중치 다익스트라와 위험 폴리곤을 유지한다. 긴급 상황에서는 안전 후보별 결과 중 도로거리가 가장 짧은 경로를 선택 |
 
 ## 현재 포함하지 않는 것
 

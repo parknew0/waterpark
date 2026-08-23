@@ -62,6 +62,7 @@ export function FloodLocationDetailView({
               currentPosition={route.origin}
               evacuationRoute={route}
               places={[]}
+              showCurrentDirection={false}
               onSelect={() => undefined}
             />
           ) : <div className="flood-route-map-loading">Calculating route…</div>}

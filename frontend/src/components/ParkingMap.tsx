@@ -12,19 +12,22 @@ interface ParkingMapProps {
   parkedPlace?: ParkingPlace;
   places: ParkingPlace[];
   selected?: ParkingPlace;
+  showCurrentDirection?: boolean;
   onSelect: (place: ParkingPlace) => void;
 }
 
-function CurrentLocationMarker() {
+function CurrentLocationMarker({ showDirection = true }: { showDirection?: boolean }) {
   return (
-    <span className="current-map-marker" role="img" aria-label="Current location">
-      <span className="current-map-marker-direction-frame" aria-hidden="true">
-        <span className="current-map-marker-direction-rotator">
-          <span className="current-map-marker-direction-canvas">
-            <img className="current-map-marker-direction" src="/assets/parking/current-location-direction.svg" alt="" />
+    <span className={`current-map-marker${showDirection ? "" : " current-map-marker--dot-only"}`} role="img" aria-label="Current location">
+      {showDirection ? (
+        <span className="current-map-marker-direction-frame" aria-hidden="true">
+          <span className="current-map-marker-direction-rotator">
+            <span className="current-map-marker-direction-canvas">
+              <img className="current-map-marker-direction" src="/assets/parking/current-location-direction.svg" alt="" />
+            </span>
           </span>
         </span>
-      </span>
+      ) : null}
       <span className="current-map-marker-dot-frame" aria-hidden="true">
         <img className="current-map-marker-dot" src="/assets/parking/current-location-dot.svg" alt="" />
       </span>
@@ -70,7 +73,7 @@ function RoutePreview({ route }: { route: FloodAwareRoute }) {
   );
 }
 
-function FallbackMap({ places, selected, onSelect, currentPosition, parkedPlace, evacuationRoute }: Omit<ParkingMapProps, "appKey" | "center">) {
+function FallbackMap({ places, selected, onSelect, currentPosition, parkedPlace, evacuationRoute, showCurrentDirection }: Omit<ParkingMapProps, "appKey" | "center">) {
   const visiblePlaces = places.slice(0, 8);
   return (
     <div className="fallback-map" role="region" aria-label="Parking location preview">
@@ -94,14 +97,14 @@ function FallbackMap({ places, selected, onSelect, currentPosition, parkedPlace,
         );
       })}
       <div className="map-center-copy">
-        {!evacuationRoute && (currentPosition ? <CurrentLocationMarker /> : <span className="map-pulse" aria-hidden="true" />)}
+        {!evacuationRoute && (currentPosition ? <CurrentLocationMarker showDirection={showCurrentDirection} /> : <span className="map-pulse" aria-hidden="true" />)}
       </div>
       {parkedPlace ? <span className="fallback-parked-car"><ParkedCarMarker /></span> : null}
     </div>
   );
 }
 
-export function ParkingMap({ appKey, center, currentPosition, evacuationRoute, parkedPlace, places, selected, onSelect }: ParkingMapProps) {
+export function ParkingMap({ appKey, center, currentPosition, evacuationRoute, parkedPlace, places, selected, showCurrentDirection = true, onSelect }: ParkingMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapError, setMapError] = useState<string | null>(null);
 
@@ -123,6 +126,7 @@ export function ParkingMap({ appKey, center, currentPosition, evacuationRoute, p
           currentPosition,
           evacuationRoute,
           parkedPlace,
+          showCurrentDirection,
           onSelect,
         );
       })
@@ -137,7 +141,7 @@ export function ParkingMap({ appKey, center, currentPosition, evacuationRoute, p
       clearMarkers();
       mapContainer.replaceChildren();
     };
-  }, [appKey, center, currentPosition, evacuationRoute, onSelect, parkedPlace, places, selected]);
+  }, [appKey, center, currentPosition, evacuationRoute, onSelect, parkedPlace, places, selected, showCurrentDirection]);
 
   if (!appKey || mapError) {
     return (
@@ -149,6 +153,7 @@ export function ParkingMap({ appKey, center, currentPosition, evacuationRoute, p
           currentPosition={currentPosition}
           evacuationRoute={evacuationRoute}
           parkedPlace={parkedPlace}
+          showCurrentDirection={showCurrentDirection}
         />
         {mapError ? (
           <p className={`map-error${evacuationRoute ? " map-error--route" : ""}`} role="status">

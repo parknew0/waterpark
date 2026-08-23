@@ -245,6 +245,7 @@ export function createKakaoMap(
   currentPosition?: Coordinate,
   evacuationRoute?: FloodAwareRoute,
   parkedPlace?: ParkingPlace,
+  showCurrentDirection = true,
   onParkingSelect?: (place: ParkingPlace) => void,
 ): () => void {
   const map = new maps.Map(container, {
@@ -323,7 +324,7 @@ export function createKakaoMap(
 
   if (currentPosition) {
     const marker = document.createElement("span");
-    marker.className = "current-map-marker";
+    marker.className = `current-map-marker${showCurrentDirection ? "" : " current-map-marker--dot-only"}`;
     marker.setAttribute("role", "img");
     marker.setAttribute("aria-label", "Current location");
 
@@ -351,13 +352,14 @@ export function createKakaoMap(
     dot.alt = "";
     dotFrame.append(dot);
 
-    marker.append(directionFrame, dotFrame);
+    if (showCurrentDirection) marker.append(directionFrame, dotFrame);
+    else marker.append(dotFrame);
     overlays.push(new maps.CustomOverlay({
       map,
       position: new maps.LatLng(currentPosition.latitude, currentPosition.longitude),
       content: marker,
-      xAnchor: 0.3,
-      yAnchor: 0.71,
+      xAnchor: showCurrentDirection ? 0.3 : 0.5,
+      yAnchor: showCurrentDirection ? 0.71 : 0.5,
       zIndex: 5,
     }));
   }

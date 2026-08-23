@@ -19,6 +19,19 @@
 
 * { box-sizing: border-box; }
 html { background: var(--background); }
+html,
+body,
+#root {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
 body { margin: 0; min-width: 320px; min-height: 100vh; overflow-x: hidden; }
 button, input { font: inherit; }
 button { touch-action: manipulation; -webkit-tap-highlight-color: rgba(0, 232, 236, 0.18); }
@@ -933,6 +946,9 @@ h3 { margin: 0; font-size: 14px; }
   max-width: none;
 }
 
+.current-map-marker--dot-only { width: 24px; height: 24px; }
+.current-map-marker--dot-only .current-map-marker-dot-frame { inset: 0; }
+
 .parking-dot-marker {
   width: 24px;
   height: 24px;
@@ -1380,6 +1396,19 @@ h3 { margin: 0; font-size: 14px; }
   .car-location-sheet-header { height: 60px; }
   .parking-detail-image { height: 150px; }
   .parking-risk-preview h3 { margin-bottom: 12px; }
+}
+
+@media (max-height: 820px) {
+  .flood-detail-map,
+  .flood-detail-map .map-wrap,
+  .flood-detail-map .fallback-map,
+  .flood-detail-map .kakao-map { height: 240px; min-height: 240px; }
+  .flood-detail-sheet { inset: 240px 0 0; }
+  .flood-detail-header { top: 36px; }
+  .flood-detail-rain-chip { top: 100px; }
+  .flood-location-phone--safe .flood-place-summary { top: 24px; }
+  .flood-location-phone--safe .flood-risk-reason { top: 168px; }
+  .flood-detail-footer { bottom: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
