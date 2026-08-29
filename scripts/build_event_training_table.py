@@ -136,7 +136,9 @@ def main() -> None:
     # terrain predictors in flood hydrology, and every column above is a form
     # of "how high is this above something" -- none of them says how much water
     # arrives from upslope. They were computed and then never wired in.
-    hydro = np.load(ROOT / "data/interim/hydro/grid_hydro_full.npz")
+    # v2 fixes routing: the first accumulation left depressions unfilled, so
+    # D8 died at every one and half the country drained from nowhere.
+    hydro = np.load(ROOT / "data/interim/hydro/grid_hydro_v2.npz")
     # What the ground is made of, not just its shape: a cell under buildings
     # sheds rain that a field would absorb.
     built = np.load(ROOT / "data/interim/hydro/grid_built.npz")
@@ -145,7 +147,7 @@ def main() -> None:
     # yards that a building outline never will.
     land = np.load(ROOT / "data/interim/hydro/grid_landcover_5179.npz")
     names = ["elevation", "rel_200m", "rel_500m", "rel_1000m", "rel_2000m", "slope_deg",
-             "twi", "flow_acc", "built_ratio", "built_count",
+             "twi", "flow_acc", "sink_depth", "built_ratio", "built_count",
              "impervious", "water"]
 
     def locate(lons, lats):
@@ -161,7 +163,7 @@ def main() -> None:
         safe_r = np.clip(rows_idx, 0, grid["risk_score"].shape[0] - 1)
         safe_c = np.clip(cols_idx, 0, grid["risk_score"].shape[1] - 1)
         def source(n):
-            if n in ("twi", "flow_acc"):
+            if n in ("twi", "flow_acc", "sink_depth"):
                 return hydro[n]
             if n in ("built_ratio", "built_count"):
                 return built[n]

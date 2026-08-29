@@ -68,3 +68,10 @@ data/interim/hydro/
 data/interim/flood-labels/
 data/interim/geocoding/
 config/radar/radar_points3.csv
+
+# 30 m 격자 레이어 8.8 GB. scripts/build_grid30.py 로 재생성한다.
+data/interim/grid30/
+# 배수 관련 원본·중간물. 공공데이터 API와 VWorld에서 다시 받는다.
+data/interim/drainage/
+# numba 컴파일 캐시
+scripts/__pycache__/

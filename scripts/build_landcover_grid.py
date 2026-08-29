@@ -34,8 +34,10 @@ X0, X1 = 13_914_936.0, 14_401_956.0
 Y0, Y1 = 3_911_907.0, 4_597_097.0
 SRC_M = 10.0          # native resolution
 OUT_M = 100.0         # model grid resolution
-BUILT = (110, 120, 130, 140, 150, 160)     # 시가화건조지역
-WATER = (710, 720)
+# 중분류는 110~160, 세분류는 111~163으로 자릿수가 다르다. 코드를 나열하면
+# 판이 바뀔 때 조용히 하나도 걸리지 않으므로 대분류 자리로 판단한다.
+BUILT_MIN, BUILT_MAX = 100, 199        # 시가화건조지역
+WATER_MIN, WATER_MAX = 700, 799        # 수역
 
 
 def fetch(url: str, tries: int = 3) -> np.ndarray | None:
@@ -104,8 +106,8 @@ def main() -> None:
                 w = (arr.shape[1] // k) * k
                 if h and w:
                     blk = arr[:h, :w].reshape(h // k, k, w // k, k)
-                    b = np.isin(blk, BUILT).mean(axis=(1, 3))
-                    wt = np.isin(blk, WATER).mean(axis=(1, 3))
+                    b = ((blk >= BUILT_MIN) & (blk <= BUILT_MAX)).mean(axis=(1, 3))
+                    wt = ((blk >= WATER_MIN) & (blk <= WATER_MAX)).mean(axis=(1, 3))
                     c0 = int(round((x - X0) / OUT_M))
                     r0 = int(round((Y1 - (y + h * SRC_M)) / OUT_M))
                     r1, c1 = r0 + b.shape[0], c0 + b.shape[1]
