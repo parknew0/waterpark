@@ -1,0 +1,48 @@
+{
+  "excluded": [
+    "20220814",
+    "20230715"
+  ],
+  "events": [
+    20161005,
+    20170716,
+    20180827,
+    20181006,
+    20200723,
+    20200802,
+    20210705,
+    20220808
+  ],
+  "capture": {
+    "top_1pct": {
+      "terrain": 1.1,
+      "combined": 10.5
+    },
+    "top_5pct": {
+      "terrain": 8.8,
+      "combined": 26.0
+    },
+    "top_10pct": {
+      "terrain": 22.7,
+      "combined": 38.7
+    },
+    "top_20pct": {
+      "terrain": 50.7,
+      "combined": 60.7
+    }
+  },
+  "importance_pct": {
+    "rain_1h": 29.15,
+    "rel_200m": 21.68,
+    "rain_6h": 13.2,
+    "rel_500m": 11.9,
+    "rain_12h": 3.97,
+    "rain_3h": 3.83,
+    "rain_24h": 3.71,
+    "elevation": 3.01,
+    "slope_deg": 2.88,
+    "rel_1000m": 2.69,
+    "above_river": 2.22,
+    "rel_2000m": 1.75
+  }
+}

@@ -101,6 +101,11 @@ def worker_init(model_path: str, buffer_m: float) -> None:
     # Passed rather than read from the module global: workers are spawned,
     # so a value set in main() would not reach them.
     _WORKER["buffer_m"] = buffer_m
+    # None means "score every cell in the extent". The model's inputs are
+    # elevation and river height, both available anywhere the DSM is, so
+    # the survey radius was a policy about what to publish, not a limit on
+    # what could be computed.
+    _WORKER["fill_all"] = buffer_m is None
 
 
 def compute_chunk(bounds: tuple[float, float, int, int]) -> dict[str, Any]:
@@ -112,7 +117,7 @@ def compute_chunk(bounds: tuple[float, float, int, int]) -> dict[str, Any]:
     rivers = _WORKER["rivers"]
     to4326 = _WORKER["to4326"]
     flood_tree, flood_geoms = _WORKER["flood"]
-    buffer_m = _WORKER["buffer_m"]
+    buffer_m = _WORKER["buffer_m"] or 0.0
 
     risk = np.full((rows, cols), NODATA_F32, dtype="float32")
     rel = np.full((rows, cols), NODATA_F32, dtype="float32")
@@ -133,7 +138,7 @@ def compute_chunk(bounds: tuple[float, float, int, int]) -> dict[str, Any]:
             if nearest is None:
                 continue
             flood_distance = point.distance(flood_geoms[nearest])
-            if flood_distance > buffer_m:
+            if not _WORKER["fill_all"] and flood_distance > buffer_m:
                 # Outside the surveyed influence: leave every band nodata so
                 # the service answers UNKNOWN rather than a low number.
                 continue
@@ -142,6 +147,12 @@ def compute_chunk(bounds: tuple[float, float, int, int]) -> dict[str, Any]:
             lon, lat = to4326.transform(x, y)
             surface = dem.sample(lon, lat)
             if math.isnan(surface):
+                continue
+            # Copernicus writes water as exactly 0, and open sea is flat, so
+            # every sea cell reads as "at the lowest point around" -- the one
+            # pattern the model treats as most dangerous. Left in, 6.4 M ocean
+            # cells scored 0.59-0.80 and dragged every quantile band with them.
+            if surface <= 0.0:
                 continue
 
             relatives = []
@@ -211,6 +222,12 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 4) - 2))
     parser.add_argument("--limit-chunks", type=int, default=0, help="smoke test only")
     parser.add_argument(
+        "--fill-all",
+        action="store_true",
+        help="범위 안의 모든 셀을 채운다. 거리 게이트를 끈다. "
+        "범위는 --buffer-m 으로 계산하되 채우기에는 쓰지 않는다.",
+    )
+    parser.add_argument(
         "--buffer-m",
         type=float,
         default=BUFFER_M,
@@ -251,7 +268,7 @@ def main() -> None:
     with ProcessPoolExecutor(
         max_workers=args.workers,
         initializer=worker_init,
-        initargs=(str(args.model), args.buffer_m),
+        initargs=(str(args.model), None if args.fill_all else args.buffer_m),
     ) as pool:
         futures = {pool.submit(compute_chunk, chunk): chunk for chunk in chunks}
         for future in as_completed(futures):
@@ -294,7 +311,8 @@ def main() -> None:
             "rows": rows,
         },
         "coverage": {
-            "rule": f"침수 Polygon 합집합 + {args.buffer_m:.0f}m 버퍼",
+            "rule": ("범위 안 전체 셀" if args.fill_all
+                     else f"침수 Polygon 합집합 + {args.buffer_m:.0f}m 버퍼"),
             "cells_total": cols * rows,
             "cells_filled": filled,
             "fill_ratio": round(filled / (cols * rows), 4),

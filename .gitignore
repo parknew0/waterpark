@@ -54,3 +54,17 @@ frontend/.env
 frontend/.env.*
 !frontend/.env.example
 data/raw/kma-stations/kma_station_list_raw.csv
+
+# 레이더 원자료 35 GB. 기상청 대용량 API로 재수집하며, 방법은
+# docs/radar_download_plan.md 에 있다.
+data/interim/radar/
+# 학습표는 수백 MB이고 위 원자료에서 스크립트로 다시 만들어진다.
+data/processed/ml/training/
+# 지형·토지피복 격자 365 MB. compute_hydro_features.py,
+# build_impervious_grid.py, build_landcover_grid.py 로 재생성한다.
+data/interim/hydro/
+# 침수흔적 기하에서 파생된 좌표들. 원본(korea_flood_2002_2022.geojson)이
+# 재배포 조건 미확인으로 로컬 전용이므로 파생물도 같이 로컬에 둔다.
+data/interim/flood-labels/
+data/interim/geocoding/
+config/radar/radar_points3.csv

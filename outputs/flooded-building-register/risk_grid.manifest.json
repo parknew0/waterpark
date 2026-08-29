@@ -6,12 +6,12 @@
     "risk_score": "float32, XGBoost 출력. 순위 점수이며 확률이 아니다."
   },
   "coverage": {
-    "cells_filled": 3429144,
+    "cells_filled": 10394830,
     "cells_total": 17674579,
-    "fill_ratio": 0.194,
-    "rule": "침수 Polygon 합집합 + 3000m 버퍼"
+    "fill_ratio": 0.5881,
+    "rule": "범위 안 전체 셀"
   },
-  "elapsed_minutes": 4.8,
+  "elapsed_minutes": 12.0,
   "grid": {
     "cell_m": 100.0,
     "cols": 3097,
@@ -25,5 +25,5 @@
     "버퍼 밖은 전 밴드 nodata이며 서비스는 UNKNOWN을 반환해야 한다. 안전이 아니다.",
     "risk_score는 지표면 침수 순위 점수다. 지하주차장 침수 확률이 아니다."
   ],
-  "output_bytes": 38748392
+  "output_bytes": 130189415
 }

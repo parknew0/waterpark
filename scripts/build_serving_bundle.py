@@ -85,7 +85,7 @@ BUILDING_USE_EN = {
 }
 
 
-def quantize_grid(grid: Any, destination: Path) -> None:
+def quantize_grid(grid: Any, destination: Path, surveyed_m: float) -> None:
     """Store the grid as integers rather than float32.
 
     float32 costs four bytes to carry precision nothing downstream uses.  The
@@ -105,18 +105,36 @@ def quantize_grid(grid: Any, destination: Path) -> None:
     risk_u8 = np.zeros(risk.shape, dtype="uint8")
     risk_u8[valid] = np.clip(np.round(risk[valid] * 254.0) + 1, 1, 255).astype("uint8")
 
+    # The score ships nationwide; the evidence bands do not. The runtime only
+    # quotes elevations where a flood record backs the reading up, and three
+    # extra bands over 17.7 M cells is the difference between a package the
+    # console accepts and one that needs S3. A present distance therefore
+    # doubles as the runtime's test for "surveyed".
+    inside = grid["dist_flood_m"] <= surveyed_m
+
     def to_decimetres(band: np.ndarray) -> np.ndarray:
+        """Whole metres, carried in the decimetre encoding the runtime reads.
+
+        The DSM is a 30 m product, so a tenth of a metre was never real
+        precision. Rounding leaves far fewer distinct values to compress.
+        """
         out = np.full(band.shape, np.iinfo("int16").min, dtype="int16")
-        finite = np.isfinite(band)
-        out[finite] = np.clip(np.round(band[finite] * 10.0), -32767, 32767).astype("int16")
+        finite = np.isfinite(band) & inside
+        out[finite] = np.clip(np.round(band[finite]) * 10.0, -32767, 32767).astype("int16")
         return out
+
+    # 20 m steps: the cell is 100 m, so metre-level distance was never real.
+    distance = np.full(grid["dist_flood_m"].shape, 65535, dtype="uint16")
+    distance[inside] = (
+        np.round(grid["dist_flood_m"][inside] / 20.0) * 20.0
+    ).astype("uint16")
 
     np.savez_compressed(
         destination,
         risk_score_u8=risk_u8,
         rel_elev_500m_dm=to_decimetres(grid["rel_elev_500m"]),
         elev_above_national_river_dm=to_decimetres(grid["elev_above_national_river"]),
-        dist_flood_m=grid["dist_flood_m"],
+        dist_flood_m=distance,
     )
 
 
@@ -205,6 +223,13 @@ def build_parking() -> list[dict[str, Any]]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=BUNDLE_DIR)
+    parser.add_argument(
+        "--surveyed-radius-m",
+        type=float,
+        default=1800.0,
+        help="이 거리 안에서만 지형 근거를 싣는다. 점수는 전국에 싣는다. "
+        "serverless/handler.py 의 SURVEYED_RADIUS_M 와 같은 뜻이다.",
+    )
     args = parser.parse_args()
 
     grid_path = GRID_DIR / "risk_grid.npz"
@@ -218,7 +243,7 @@ def main() -> None:
 
     args.out.mkdir(parents=True, exist_ok=True)
     grid = np.load(grid_path)
-    quantize_grid(grid, args.out / "risk_grid.npz")
+    quantize_grid(grid, args.out / "risk_grid.npz", args.surveyed_radius_m)
     bands = build_bands(grid["risk_score"])
     parking = build_parking()
     stations = build_stations()

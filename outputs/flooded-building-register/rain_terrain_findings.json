@@ -1,0 +1,45 @@
+{
+  "question": "지형에 그날의 강수를 더하면 침수 위치를 더 잘 짚는가, 그리고 얼마나 오면 잠기는가",
+  "data": {
+    "radar_events": 131,
+    "radar_window": "침수 시각 기준 48시간, 10분 간격 전구간",
+    "radar_download_gb": 490, "radar_stored_gb": 32,
+    "event_rows": 3297153, "event_positives": 22153,
+    "census_cells": 1027071, "census_floods": 14757, "census_rate": 0.0144
+  },
+  "validation": "사건 하나씩 빼고 학습(leave-one-event-out), 채점 가능 사건 31개",
+  "auc": {"terrain": 0.8178, "rain": 0.6984, "combined": 0.8625, "gain": 0.0447, "events_won": "21/31"},
+  "pr_auc": {"terrain": 0.0761, "rain": 0.0879, "combined": 0.1578},
+  "capture_by_top_fraction_pct": {
+    "top_1pct":  {"terrain": 3.9,  "combined": 16.2},
+    "top_5pct":  {"terrain": 22.1, "combined": 37.9},
+    "top_10pct": {"terrain": 37.5, "combined": 51.6},
+    "top_20pct": {"terrain": 59.7, "combined": 72.4}
+  },
+  "threshold_mm_6h": {
+    "note": "조사 범위(침수 기록 2km 이내) 안에서 센 값이며 전국 비율이 아니다",
+    "0~2m 거의 평지":  {"3%": 50, "5%": 80, "10%": 100},
+    "2~5m 낮음":      {"3%": 40, "5%": 40, "10%": 80},
+    "5~15m 보통":     {"3%": 40, "5%": 50, "10%": null},
+    "15~40m 높음":    {"3%": null, "5%": null, "10%": null},
+    "40m+ 매우 높음":  {"3%": null, "5%": null, "10%": null}
+  },
+  "superseded": {
+    "note": "사건 8~17개로 냈던 이전 수치는 표본이 작아 이득이 부풀어 있었다",
+    "8events":  {"auc_gain": 0.0787, "top5_terrain": 11.1, "top5_combined": 41.6},
+    "17events": {"auc_gain": 0.0625, "top5_terrain": null, "top5_combined": null},
+    "31events": {"auc_gain": 0.0447, "top5_terrain": 22.1, "top5_combined": 37.9}
+  },
+  "anchor_verification_failed": {
+    "attempt": "48시간 창을 받아 '침수점 강수가 최대가 되는 시각'으로 기록된 침수 시각을 검증하려 했다",
+    "result": "31개 중 정확 일치 6%, 중앙 오차 5시간, 32%가 창의 맨 끝을 선택",
+    "cause": "6시간 누적은 늦게 끊을수록 커지므로 이 탐색은 구조적으로 뒤쪽에 쏠린다",
+    "decision": "기록된 시각(흔적 조사 fldn_bgng_tm)을 그대로 쓴다. 이 방법으로 고쳤던 20230715도 되돌렸다"
+  },
+  "limitations": [
+    "침수 라벨은 조사된 침수뿐이다. 잠겼으나 조사되지 않은 곳은 음성으로 들어간다.",
+    "확률은 침수 기록 2km 이내에서 센 값이라 전국 비율이 아니다.",
+    "2013년 이전 사건 84개(침수점 11,619건)는 레이더가 존재하지 않아 영구히 쓸 수 없다.",
+    "깊이(depth_cm)는 물리 검증을 통과하지 못해 쓰지 않았다."
+  ]
+}

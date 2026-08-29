@@ -7,10 +7,10 @@ gauge and its closest neighbour was 26.7 mm/h — wider than the 30 mm that
 separates a 호우주의보 from a 호우경보. Interpolating between gauges therefore
 decides the alert level by accident as often as by measurement.
 
-The radar composite is 2305 x 2881 at 500 m. Only the values under the points
-we care about are kept; the 13 MB grid behind each timestamp is read and
-discarded, which is the difference between a few megabytes of output and a
-hundred gigabytes of it.
+The radar composite is 2305 x 2881 at 500 m. With ``--grid-out`` the original
+int16 national grid is archived as well as the much smaller point series. This
+lets later analyses choose new controls or neighbourhoods without spending the
+API allowance a second time.
 
 HSR carries reflectivity, not depth, so each frame is converted with the
 Marshall-Palmer relation and the frames are integrated over time. Against the
@@ -24,10 +24,12 @@ import csv
 import io
 import json
 import os
+import socket
+import subprocess
 import sys
 import threading
+import tempfile
 import time
-import urllib.request
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -39,7 +41,10 @@ ROOT = Path(__file__).resolve().parents[1]
 RADAR = ROOT / "data/interim/radar"
 NX, NY = 2305, 2881
 CELLS = NX * NY
-BASE = "https://apihub.kma.go.kr/api/typ01/cgi-bin/url/nph-rdr_cmp1_api"
+# The large-volume service lives on its own hostname with its own allowance
+# (2 TB a day against 5 GB), so the host is configurable rather than fixed.
+API_HOST = os.environ.get("KMA_APIHUB_HOST", "apihub.kma.go.kr")
+BASE = f"https://{API_HOST}/api/typ01/cgi-bin/url/nph-rdr_cmp1_api"
 
 OUT_OF_RANGE = -290.0   # dBZ; -300 marks outside radar coverage
 NO_ECHO = -250.0        # dBZ; -250 marks a scanned cell with no rain
@@ -121,7 +126,8 @@ class KeyRing:
             return self.keys[self.index] if self.index < len(self.keys) else None
 
 
-def fetch(stamp: str, ring: "KeyRing", pacer: "Pacer", retries: int = 4) -> np.ndarray | None:
+def fetch(stamp: str, ring: "KeyRing", pacer: "Pacer", api_ip: str,
+          retries: int = 4) -> np.ndarray | None:
     """One frame, distinguishing a spent key from a blocked connection.
 
     These fail differently and the difference matters. A spent key still
@@ -143,52 +149,98 @@ def fetch(stamp: str, ring: "KeyRing", pacer: "Pacer", retries: int = 4) -> np.n
         if loud:
             print(f"    [추적] {stamp} 시도 {attempt+1}", flush=True)
         try:
-            # urlopen's timeout bounds a single socket operation, not the
-            # transfer. Once this IP has spent its burst allowance the host
-            # keeps the connection open and dribbles bytes, so every read
-            # returns in time and the download never ends -- a frame that
-            # normally takes seven seconds sat for twenty minutes. A whole
-            # frame is 13 MB and arrives in under ten seconds when the host is
-            # willing, so give the transfer its own deadline and give up on a
-            # throttled one rather than holding the worker.
-            with urllib.request.urlopen(url, timeout=20) as handle:
-                deadline = time.monotonic() + 45
-                chunks, total = [], 0
-                while True:
-                    piece = handle.read(1 << 18)
-                    if not piece:
-                        break
-                    chunks.append(piece)
-                    total += len(piece)
-                    if time.monotonic() > deadline:
-                        raise TimeoutError(f"throttled at {total/1e6:.1f}MB")
-                raw = b"".join(chunks)
-        except urllib.error.HTTPError as exc:
-            if exc.code in (401, 403, 429):
-                if ring.retire(key) is None:
-                    return None
-                continue
-            time.sleep(5 * (attempt + 1))
-            continue
+            # urllib's timeout is not a whole-request deadline: address
+            # resolution/connection attempts can run before it, and a server
+            # that dribbles bytes can keep resetting the socket timeout. curl's
+            # --max-time covers DNS, connection and transfer together. Feed the
+            # URL through stdin so the API key is not exposed in the process
+            # command line.
+            escaped_url = url.replace("\\", "\\\\").replace('"', '\\"')
+            config = f'url = "{escaped_url}"\n'.encode()
+            response = subprocess.run(
+                [
+                    "/usr/bin/curl",
+                    "--silent",
+                    "--show-error",
+                    # The host accepts connections slowly once this IP has
+                    # pulled a lot in a day -- a hand-run curl still succeeds
+                    # while a 10 s limit fails two frames in three. Waiting
+                    # longer for the handshake costs nothing when it is going
+                    # to arrive, and the transfer deadline still bounds a
+                    # throttled download.
+                    "--connect-timeout", "40",
+                    "--max-time", "120",
+                    "--resolve", f"{API_HOST}:443:{api_ip}",
+                    "--output", "-",
+                    "--config", "-",
+                ],
+                input=config,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=130,
+                check=False,
+            )
+            if response.returncode:
+                message = response.stderr.decode("utf-8", errors="replace").strip()
+                raise RuntimeError(f"curl {response.returncode}: {message}")
+            raw = response.stdout
         except Exception as exc:
             # Connection refused or timed out: the host, not the key. Back off
             # and let the caller's pacing decide whether to keep going.
+            elapsed = time.time() - began
             if loud:
                 print(f"    [추적] {stamp} 실패 {type(exc).__name__}: {exc} "
-                      f"({time.time()-began:.1f}s)", flush=True)
-            ring.note_connection_failure()
+                      f"({elapsed:.1f}s)", flush=True)
+            # An IP block has presented as an immediate (HTTP 000) connection
+            # refusal. A 20-second read timeout on one historical timestamp is
+            # instead a slow/missing archive frame and must not trip the global
+            # block circuit for all later timestamps.
+            if elapsed < 2.0:
+                ring.note_connection_failure()
             time.sleep(10 * (attempt + 1))
             continue
         if len(raw) < need:
-            if b"result" in raw[:200] or len(raw) < 1000:
+            # "# CMP 합성 자료가 없음" is the archive saying this timestamp was
+            # never recorded -- common near 2014, where the radar composite
+            # begins. It is not a spent key, and retiring one for it killed a
+            # run whose key still had 2 TB left. Only the JSON quota error
+            # retires a key.
+            if raw[:1] == b"#" or b"CMP" in raw[:40]:
+                return None                      # 그 시각 자료가 애초에 없다
+            # Retire a key only on the hub's own quota answer. Anything else
+            # short -- an empty body, a cut-off transfer -- is the network
+            # having a bad moment, and treating it as a spent key threw away a
+            # key with 2 TB left and stopped the run three times.
+            quota = b"result" in raw[:200] and (b"403" in raw[:400]
+                                                or "용량".encode() in raw[:400])
+            if quota:
                 if ring.retire(key) is None:
                     return None
                 continue
             time.sleep(2 + attempt)
             continue
+            time.sleep(2 + attempt)
+            continue
         ring.note_success()
-        return np.frombuffer(raw[len(raw) - need :], dtype="<i2").astype("float32") / 100.0
+        # Keep the provider's compact int16 representation. Converting the
+        # whole country to float32 here doubles memory and, more importantly,
+        # makes it impossible to preserve the exact response for reuse.
+        return np.frombuffer(raw[len(raw) - need :], dtype="<i2").copy()
     return None
+
+
+def save_npz_atomic(target: Path, **arrays: object) -> None:
+    """Write a compressed archive without exposing a partial final file."""
+    target.parent.mkdir(parents=True, exist_ok=True)
+    partial = target.with_name(f"{target.name}.part")
+    try:
+        with partial.open("wb") as handle:
+            np.savez_compressed(handle, **arrays)
+            handle.flush()
+            os.fsync(handle.fileno())
+        partial.replace(target)
+    finally:
+        partial.unlink(missing_ok=True)
 
 
 def main() -> None:
@@ -207,15 +259,20 @@ def main() -> None:
                              "프레임이 288에서 78로 줄어 같은 할당량으로 사건을 "
                              "네 배 가까이 더 받는다.")
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--min-interval", type=float, default=4.0,
+    parser.add_argument("--grid-out", type=Path,
+                        help="원본 전국 격자 NPZ 저장 폴더. 생략하면 지점 시계열만 저장")
+    parser.add_argument("--grid-temp", type=Path,
+                        help="격자 압축 전 임시 파일 폴더(기본: 시스템 임시 폴더)")
+    parser.add_argument("--min-interval", type=float, default=0.5,
                         help="요청 시작 사이 최소 간격(초). 여러 워커의 연결 "
                              "시작이 한꺼번에 몰리지 않게 한다.")
-    parser.add_argument("--workers", type=int, default=3,
-                        help="동시 다운로드 수. 전송이 병목이라 겹칠 값어치가 "
-                             "있지만, 8병렬로 13 MB를 계속 당기자 호스트가 이 IP의 "
-                             "연결을 끊었다. 3 정도가 속도와 안전의 타협점이다.")
+    parser.add_argument("--workers", type=int, default=1,
+                        help="동시 다운로드 수. 8병렬 수집 뒤 IP가 차단된 전력이 "
+                             "있어 기본값은 1이다.")
     parser.add_argument("--retries", type=int, default=4,
                         help="프레임 하나의 네트워크 재시도 횟수")
+    parser.add_argument("--repair-rounds", type=int, default=2,
+                        help="사건의 나머지 프레임을 저장 전에 다시 훑는 횟수")
     parser.add_argument("--block-after", type=int, default=4,
                         help="연속 연결 실패가 이 횟수에 이르면 새 요청을 중단")
     args = parser.parse_args()
@@ -225,8 +282,17 @@ def main() -> None:
     if not ring.keys:
         raise SystemExit("KMA_APIHUB_KEYS 또는 KMA_APIHUB_AUTH_KEY 가 없다")
     pacer = Pacer(args.min_interval)
+    try:
+        # Resolve once per run. Repeating synchronous DNS lookup for every
+        # frame let one lookup sit outside curl's 45-second transfer deadline
+        # for more than six minutes. --resolve below keeps TLS/SNI validation
+        # on the hostname while connecting to this resolved address directly.
+        api_ip = socket.gethostbyname(API_HOST)
+    except OSError as exc:
+        raise SystemExit(f"{API_HOST} 주소 확인 실패: {exc}") from exc
     print(f"[키] {len(ring.keys)}개 준비  |  최소 간격 {args.min_interval}s "
           f"(약 {13.3/args.min_interval:.1f} MB/s)", flush=True)
+    print(f"[호스트] {API_HOST} -> {api_ip} (실행 중 DNS 재조회 안 함)", flush=True)
 
     lon = np.frombuffer((RADAR / "hsr_lon.bin").read_bytes()[-CELLS * 4 :], dtype="<f4")
     lat = np.frombuffer((RADAR / "hsr_lat.bin").read_bytes()[-CELLS * 4 :], dtype="<f4")
@@ -255,12 +321,26 @@ def main() -> None:
 
     events = json.loads(args.events.read_text(encoding="utf-8"))
     args.out.mkdir(parents=True, exist_ok=True)
+    if args.grid_out:
+        args.grid_out.mkdir(parents=True, exist_ok=True)
+    if args.grid_temp:
+        args.grid_temp.mkdir(parents=True, exist_ok=True)
 
     for event in events:
-        target = args.out / f"rain_{event}.npz"
-        if target.exists():
-            print(f"[건너뜀] {event} 이미 있음", flush=True)
+        point_target = args.out / f"rain_{event}.npz"
+        grid_target = (args.grid_out / f"rain_{event}_grid.npz"
+                       if args.grid_out else None)
+        need_point = not point_target.exists()
+        need_grid = grid_target is not None and not grid_target.exists()
+        if not need_point and not need_grid:
+            print(f"[건너뜀] {event} 지점·격자 이미 있음", flush=True)
             continue
+        wanted = []
+        if need_point:
+            wanted.append("지점")
+        if need_grid:
+            wanted.append("전국 격자")
+        print(f"[시작] {event}  저장 대상: {', '.join(wanted)}", flush=True)
         # Without a known flood hour the window has to cover the whole event
         # day and the day before it, because the water could have arrived at
         # any point. Knowing the hour turns 48 hours of frames into 24 and
@@ -281,13 +361,41 @@ def main() -> None:
             spans.append(step)
             cursor += timedelta(minutes=step)
 
-        series = np.full((len(stamps), len(pts)), np.nan, dtype="float32")
+        series = (np.full((len(stamps), len(pts)), np.nan, dtype="float32")
+                  if need_point else None)
+        grid_tmp = None
+        grid = None
+        if need_grid:
+            grid_tmp = tempfile.TemporaryDirectory(
+                prefix=f"waterpark-radar-{event}-",
+                dir=str(args.grid_temp) if args.grid_temp else None,
+            )
+            grid = np.memmap(
+                Path(grid_tmp.name) / "grid.i2",
+                dtype="<i2",
+                mode="w+",
+                shape=(len(stamps), NY, NX),
+            )
         started, done, ok = time.time(), 0, 0
         last_report = started
+        received = np.zeros(len(stamps), dtype=bool)
+
+        def keep(index: int, raw_grid: np.ndarray) -> None:
+            """Put one response in every requested output exactly once."""
+            nonlocal ok
+            if received[index]:
+                return
+            if series is not None:
+                point_dbz = raw_grid[cell_of_point].astype("float32") / 100.0
+                series[index] = rain_rate(point_dbz)
+            if grid is not None:
+                grid[index] = raw_grid.reshape(NY, NX)
+            received[index] = True
+            ok += 1
 
         def grab(pair):
             index, stamp = pair
-            return index, fetch(stamp, ring, pacer, retries=args.retries)
+            return index, fetch(stamp, ring, pacer, api_ip, retries=args.retries)
 
         # Executor.map eagerly queues the entire event. If the IP becomes
         # blocked, breaking its result loop still leaves every queued request
@@ -304,11 +412,10 @@ def main() -> None:
             while pending:
                 finished, pending = wait(pending, return_when=FIRST_COMPLETED)
                 for future in finished:
-                    index, dbz = future.result()
+                    index, raw_grid = future.result()
                     done += 1
-                    if dbz is not None:
-                        series[index] = rain_rate(dbz)[cell_of_point]
-                        ok += 1
+                    if raw_grid is not None:
+                        keep(index, raw_grid)
                     if ring.current() is None:
                         print(f"[중단] 모든 키 소진. {event} {done}/{len(stamps)}까지",
                               flush=True)
@@ -340,30 +447,99 @@ def main() -> None:
             for future in pending:
                 future.cancel()
             pool.shutdown(wait=True, cancel_futures=True)
+
+        # Old archives occasionally stall on an individual timestamp while
+        # the frames around it work. Re-request only those holes; throwing
+        # away the other 38 national grids would waste both quota and time.
+        if not stopped and need_grid and ok < len(stamps):
+            for repair_round in range(1, args.repair_rounds + 1):
+                missing = np.flatnonzero(~received)
+                if not len(missing):
+                    break
+                print(f"[보충 {repair_round}/{args.repair_rounds}] {event}  "
+                      f"빠진 프레임 {len(missing)}개", flush=True)
+                for index in missing:
+                    raw_grid = fetch(stamps[index], ring, pacer, api_ip,
+                                     retries=args.retries)
+                    if raw_grid is not None:
+                        keep(int(index), raw_grid)
+                    if ring.current() is None or ring.blocked(args.block_after):
+                        stopped = True
+                        break
+                if stopped:
+                    break
         # A run cut short by an exhausted key must not leave a file behind:
         # the next run skips anything already written, so a stub would quietly
         # retire an event that was never collected.
+        if need_point and ok >= len(stamps) * 0.9:
+            save_npz_atomic(
+                point_target,
+                series=series,
+                stamps=np.array(stamps),
+                span_min=np.array(spans, dtype="int16"),
+                step_min=args.step_min,
+                lon=pts_arr[:, 0],
+                lat=pts_arr[:, 1],
+                kind=np.array([p["kind"] for p in point_rows]),
+                owner=np.array([p["event"] for p in point_rows]),
+            )
+            print(f"[지점 저장] {event}  {ok}/{len(stamps)}프레임  "
+                  f"{point_target.stat().st_size/1e6:.1f}MB", flush=True)
+
+        # Keep only frames that actually arrived. Missing int16 rows cannot be
+        # represented by floating-point NaN, so saving an uninitialised full
+        # array would create plausible-looking false observations. The archive
+        # records requested/downloaded counts and the missing timestamps.
+        if need_grid and ok >= len(stamps) * 0.9:
+            assert grid is not None and grid_target is not None
+            grid.flush()
+            valid_index = np.flatnonzero(received)
+            missing_stamps = np.array(stamps)[~received]
+            print(f"[격자 압축] {event}  {ok}/{len(stamps)}프레임", flush=True)
+            save_npz_atomic(
+                grid_target,
+                grid=grid[valid_index],
+                stamps=np.array(stamps)[received],
+                span_min=np.array(spans, dtype="int16")[received],
+                missing_stamps=missing_stamps,
+                requested_count=np.int32(len(stamps)),
+                downloaded_count=np.int32(ok),
+                event=np.array(event),
+                nx=np.int32(NX),
+                ny=np.int32(NY),
+                cell_m=np.int32(500),
+                dbz_scale=np.float32(0.01),
+                dbz_unit=np.array("dBZ"),
+                layout=np.array("grid[frame,y,x], C-order"),
+                outside_coverage_raw=np.int16(-30000),
+                no_echo_raw=np.int16(-25000),
+                lon_file=np.array("data/interim/radar/hsr_lon.bin"),
+                lat_file=np.array("data/interim/radar/hsr_lat.bin"),
+                source=np.array(BASE),
+            )
+            print(f"[격자 저장] {event}  {grid_target.stat().st_size/1e6:.1f}MB",
+                  flush=True)
+
+        if grid is not None:
+            del grid
+        if grid_tmp is not None:
+            grid_tmp.cleanup()
+
         if ok < len(stamps) * 0.9:
             print(f"[미저장] {event}  {ok}/{len(stamps)}프레임만 받아 저장하지 않음 "
                   f"(다음 실행에서 다시 시도)", flush=True)
             if ring.current() is None:
                 break
+            if stopped and ring.blocked(args.block_after):
+                print("[전체 중단] 접속 차단 상태에서 다음 사건을 건드리지 않음",
+                      flush=True)
+                break
             continue
-        # Frames no longer sit on one cadence, so each one's span is stored
-        # alongside it: an accumulation is a span-weighted sum, and without the
-        # spans a coarse frame would be read as if it covered ten minutes.
-        # The point list is stored with the series. A file that only carries a
-        # column count silently mismatches a point file drawn later, and the
-        # mismatch surfaces as an index error deep in a downstream join rather
-        # than where the two disagree.
-        np.savez_compressed(target, series=series, stamps=np.array(stamps),
-                            span_min=np.array(spans, dtype="int16"),
-                            step_min=args.step_min,
-                            lon=pts_arr[:, 0], lat=pts_arr[:, 1],
-                            kind=np.array([p["kind"] for p in point_rows]),
-                            owner=np.array([p["event"] for p in point_rows]))
-        print(f"[저장] {event}  {ok}/{len(stamps)}프레임  {time.time()-started:.0f}s  "
-              f"{target.stat().st_size/1e6:.1f}MB", flush=True)
+        if need_grid and ok < len(stamps) * 0.9:
+            print(f"[격자 미저장] {event}  완전한 {len(stamps)}프레임 중 "
+                  f"{ok}개만 받아 다음 실행에서 다시 시도", flush=True)
+        print(f"[완료] {event}  {ok}/{len(stamps)}프레임  "
+              f"{time.time()-started:.0f}s", flush=True)
 
 
 if __name__ == "__main__":

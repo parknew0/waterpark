@@ -56,6 +56,13 @@ RAIN_CACHE_SECONDS = 600
 NODATA_INT16 = -32768
 NODATA_UINT16 = 65535
 
+# How far from a surveyed flood polygon a cell still counts as validated.
+# The model itself runs anywhere -- its inputs are elevation and river height,
+# both measurable nationwide -- but it was only ever checked against records
+# inside this radius. Beyond it the reading is an extrapolation, and the
+# response says so through surveyStatus rather than by withholding the level.
+SURVEYED_RADIUS_M = 1800
+
 # Official KMA 호우특보 criteria, ordered most severe first.  These are not
 # fitted: the 06 analysis measured a non-monotonic flood rate against
 # rainfall and concluded the event count cannot support learning them.
@@ -163,6 +170,13 @@ def terrain_at(lon: float, lat: float) -> dict[str, Any]:
     if raw == 0:
         return unknown
     score = (raw - 1) / 254.0
+    # A grade is published everywhere the grid has one. Whether a survey ever
+    # confirmed it is a separate question, answered by surveyStatus: saying
+    # "unknown" to a place the model can actually score withheld the one
+    # reading the person came for.
+    # The evidence bands are only carried inside the surveyed radius, so a
+    # present distance is exactly the test for "a record backs this up".
+    surveyed = st["dist"].at(row, col) != NODATA_UINT16
 
     band = band_of(score)
     evidence: dict[str, Any] = {}
@@ -177,7 +191,7 @@ def terrain_at(lon: float, lat: float) -> dict[str, Any]:
         evidence["distanceToFloodTraceM"] = distance
 
     return {
-        "surveyStatus": "SURVEYED",
+        "surveyStatus": "SURVEYED" if surveyed else "NOT_SURVEYED",
         "riskLevel": band["level"],
         "riskScore": round(score, 4),
         "rainTrigger": band["rain_trigger"],

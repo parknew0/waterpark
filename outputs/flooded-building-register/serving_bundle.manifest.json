@@ -2,25 +2,25 @@
   "bands": [
     {
       "level": "VERY_HIGH",
-      "min_score": 0.81513,
+      "min_score": 0.771141,
       "percentile": 95.0,
       "rain_trigger": "HEAVY_RAIN_ADVISORY"
     },
     {
       "level": "HIGH",
-      "min_score": 0.676907,
+      "min_score": 0.41945,
       "percentile": 85.0,
       "rain_trigger": "HEAVY_RAIN_ADVISORY"
     },
     {
       "level": "MODERATE",
-      "min_score": 0.190115,
+      "min_score": 0.164882,
       "percentile": 60.0,
       "rain_trigger": "HEAVY_RAIN_WARNING"
     },
     {
       "level": "LOW",
-      "min_score": 0.101143,
+      "min_score": 0.098959,
       "percentile": 30.0,
       "rain_trigger": "EXTREME_RAIN"
     },
@@ -33,10 +33,10 @@
   ],
   "bundle_dir": "data/processed/serving-bundle",
   "files": {
-    "grid_meta.json": 978,
+    "grid_meta.json": 962,
     "parking.json": 156738,
-    "risk_bands.json": 860,
-    "risk_grid.npz": 19342813,
+    "risk_bands.json": 861,
+    "risk_grid.npz": 14490559,
     "stations.json": 297768
   },
   "notes": [
@@ -46,5 +46,5 @@
   ],
   "parking_count": 1233,
   "station_count": 11914,
-  "total_bytes": 19799157
+  "total_bytes": 14946888
 }
