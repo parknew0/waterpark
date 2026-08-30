@@ -6,6 +6,9 @@
 <style>
   html,body{margin:0;height:100%;font:14px/1.5 -apple-system,"Apple SD Gothic Neo",sans-serif}
   #map{position:absolute;inset:0}
+  /* 확대하면 브라우저가 픽셀을 부드럽게 이어 붙여 경계가 뭉개진다. 자료는
+     칸 단위이고 한 칸이 곧 한 판단이므로, 격자가 보이는 편이 정직하다. */
+  .leaflet-image-layer{image-rendering:crisp-edges;image-rendering:pixelated}
   .panel{position:absolute;z-index:1000;left:16px;bottom:16px;background:#fffe;
          padding:14px 18px;border-radius:10px;box-shadow:0 2px 12px #0003;width:330px}
   .rain{font-size:30px;font-weight:600;letter-spacing:-.02em}
