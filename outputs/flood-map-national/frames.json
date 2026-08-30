@@ -1,0 +1,49 @@
+{
+ "bounds": [
+  [
+   33.160687108934745,
+   126.03932741983832
+  ],
+  [
+   38.312655849363374,
+   129.58030760728647
+  ]
+ ],
+ "frames": [
+  {
+   "mm": 0.0,
+   "file": "risk_000.png",
+   "risky_pct": 2.0
+  },
+  {
+   "mm": 20.0,
+   "file": "risk_020.png",
+   "risky_pct": 5.7
+  },
+  {
+   "mm": 40.0,
+   "file": "risk_040.png",
+   "risky_pct": 9.5
+  },
+  {
+   "mm": 60.0,
+   "file": "risk_060.png",
+   "risky_pct": 13.2
+  },
+  {
+   "mm": 80.0,
+   "file": "risk_080.png",
+   "risky_pct": 16.9
+  },
+  {
+   "mm": 100.0,
+   "file": "risk_100.png",
+   "risky_pct": 20.7
+  },
+  {
+   "mm": 150.0,
+   "file": "risk_150.png",
+   "risky_pct": 30.0
+  }
+ ]
+}
