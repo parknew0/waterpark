@@ -1,0 +1,79 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Waterpark — 전국 침수 위험 (30 m)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  html,body{margin:0;height:100%;font:14px/1.5 -apple-system,"Apple SD Gothic Neo",sans-serif}
+  #map{position:absolute;inset:0}
+  /* 한 칸이 곧 한 판단이다. 브라우저가 이어 붙여 뭉개지 않게 한다. */
+  #map .risk-tile{image-rendering:crisp-edges;image-rendering:pixelated}
+  .panel{position:absolute;z-index:1000;left:16px;bottom:16px;background:#fffe;
+         padding:14px 18px;border-radius:10px;box-shadow:0 2px 12px #0003;width:340px}
+  .rain{font-size:30px;font-weight:600;letter-spacing:-.02em}
+  .rain small{font-size:14px;font-weight:400;color:#666}
+  input[type=range]{width:100%;margin:10px 0 4px}
+  .legend{display:flex;gap:6px;margin-top:10px;font-size:11px;color:#555}
+  .legend i{width:22px;height:11px;display:inline-block;border-radius:2px;margin-right:3px;vertical-align:-1px}
+  .note{margin-top:10px;font-size:11.5px;color:#777;line-height:1.45}
+  .scale{position:absolute;z-index:1000;right:16px;top:16px;background:#fffe;
+         padding:7px 11px;border-radius:8px;box-shadow:0 2px 8px #0003;font-size:12px;color:#444}
+  .scale b{color:#111}
+</style>
+<div id="map"></div>
+<div class="scale">한 칸 <b id="cell">30</b> m · 화면 <b id="zoom">–</b></div>
+<div class="panel">
+  <div class="rain"><span id="mm">0</span><small> mm / 6시간</small></div>
+  <input type="range" id="slider" min="0" max="10" value="0" step="1">
+  <div id="area" style="font-size:12px;color:#444"></div>
+  <div class="legend">
+    <span><i style="background:#ffeb82"></i>0.8~2%</span>
+    <span><i style="background:#ffaa3c"></i>2~5%</span>
+    <span><i style="background:#f05a28"></i>5~12%</span>
+    <span><i style="background:#be141e"></i>12%+</span>
+  </div>
+  <div class="note">같은 땅에 비만 늘려 모델을 다시 돌린 침수 확률입니다.
+    전국을 30&nbsp;m 격자 그대로 그렸으니 끝까지 확대해 보세요. 40&nbsp;mm
+    위로는 값이 유지되는데, 침수 조사가 이뤄진 곳에서만 라벨이 오는 탓에 그
+    위 구간을 신뢰할 수 없기 때문입니다.</div>
+</div>
+<script>
+const map = L.map('map', {maxZoom: 18});
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {maxZoom:19, attribution:'© OpenStreetMap'}).addTo(map);
+
+let layer = null;
+fetch('frames.json').then(r=>r.json()).then(d=>{
+  const s = document.getElementById('slider');
+  document.getElementById('cell').textContent = d.cell_m;
+  map.invalidateSize();
+  requestAnimationFrame(() => { map.invalidateSize(); map.fitBounds(d.bounds); });
+  s.max = d.frames.length - 1;
+
+  const show = i => {
+    const f = d.frames[i];
+    document.getElementById('mm').textContent = f.mm;
+    document.getElementById('area').textContent =
+      `침수 확률 2% 넘는 곳: 이 지역의 ${f.risky_pct}%`;
+    if (layer) map.removeLayer(layer);
+    // maxNativeZoom 을 넘으면 같은 타일을 확대해 보여준다. 자료가 없는 자리를
+    // 지어내지 않으면서 30 m 칸이 네모로 커지는, 우리가 원하는 동작이다.
+    layer = L.tileLayer(`tiles/${f.dir}/{z}/{x}/{y}.png`, {
+      opacity: 0.75, minZoom: d.zoom_min, maxNativeZoom: d.zoom_native,
+      maxZoom: 18, className: 'risk-tile', bounds: d.bounds,
+      errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+    }).addTo(map);
+  };
+  s.oninput = e => show(+e.target.value);
+  show(0);
+
+  const zoomNote = () => {
+    const z = map.getZoom();
+    const px = 156543.03 * Math.cos(map.getCenter().lat * Math.PI/180) / Math.pow(2, z);
+    document.getElementById('zoom').textContent =
+      z >= d.zoom_native ? `한 칸이 ${(d.cell_m/px).toFixed(0)}픽셀`
+                         : `픽셀당 ${px.toFixed(0)} m`;
+  };
+  map.on('zoomend moveend', zoomNote); map.whenReady(zoomNote);
+});
+</script>

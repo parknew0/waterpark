@@ -24,6 +24,18 @@
         "outputs/flood-map-national"
       ],
       "port": 8766
+    },
+    {
+      "name": "flood-map-tiles",
+      "runtimeExecutable": "/Users/park/Desktop/waterpark/.venv/bin/python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8767",
+        "-d",
+        "outputs/flood-map-tiles"
+      ],
+      "port": 8767
     }
   ]
 }
