@@ -75,3 +75,5 @@ data/interim/grid30/
 data/interim/drainage/
 # numba 컴파일 캐시
 scripts/__pycache__/
+# 시각별 전수 조사 21 GB. 검증 결과 기존판보다 못해 쓰지 않으며,
+# scripts/build_ring_census30_timed.py 로 재생성한다.
