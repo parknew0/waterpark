@@ -55,6 +55,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--radar-dir", type=Path, default=ROOT / "data/interim/radar/grids_full")
     ap.add_argument("--points", type=Path, default=ROOT / "config/radar/radar_points3.csv")
+    ap.add_argument("--low-rain-mm", type=float, default=10.0,
+                    help="이 값보다 비가 적게 온 칸은 침수 이력 근처여도 음성으로 쓴다")
     ap.add_argument("--anchor-hours", type=Path, default=ROOT / "config/radar/flood_hours.json")
     ap.add_argument("--drop-river", type=Path,
                     default=ROOT / "data/interim/flood-labels/flood_cause.csv")
@@ -185,18 +187,31 @@ def main() -> None:
             flooded = np.fromiter((k in own for k in keys), bool, len(keys))
         else:
             flooded = d_own < 1.0
-        keep = flooded | (d_any > INNER)
-        rr, cc, flooded = rr[keep], cc[keep], flooded[keep]
-
         el = layers["elevation"][rr, cc]
         land = np.isfinite(el) & (el > 0)
         rr, cc, flooded = rr[land], cc[land], flooded[land]
+        d_any = d_any[land]
 
         x = g["origin_x"] + (cc + 0.5) * cell
         y = g["origin_y_top"] - (rr + 0.5) * cell
         lon, lat = to4326.transform(x, y)
         near = rtree.query(np.c_[lon * 88_000, lat * 111_000], k=1)[1]
         cellidx = ridx[near]
+        rain6 = totals[6][cellidx]
+
+        # 침수 이력 가까이 있는데 이번에 라벨이 없는 칸은 조사가 빠뜨렸을 수 있어
+        # 빼 왔다. 그런데 그 규칙 때문에 "잠긴 적 있는 자리가 이번엔 무사했다"는
+        # 사례가 표에서 통째로 사라졌다 -- 2,030 만 행에 단 한 건도 없었다.
+        # 지형은 그대로인데 비만 다른 그 대비가 강수가 하는 일의 전부인데, 모델이
+        # 그것을 본 적이 없으니 비와 관련된 변수가 붙을 자리가 없었다.
+        #
+        # 비가 거의 안 온 날은 다르다. 6 시간에 10 mm 도 안 왔는데 잠기지 않은
+        # 것은 조사가 빠뜨린 것이 아니라 정말로 잠기지 않은 것이다.
+        keep = flooded | (d_any > INNER) | (rain6 < a.low_rain_mm)
+        # 걸러내기 전에 센다. 뒤에서 세면 flooded 가 이미 짧아져 있다.
+        recovered = int((keep & ~flooded & (d_any <= INNER)).sum())
+        rr, cc, flooded = rr[keep], cc[keep], flooded[keep]
+        lon, lat, cellidx = lon[keep], lat[keep], cellidx[keep]
 
         frame = {"event": ev, "flooded": flooded.astype(np.int8),
                  "lon": lon.astype("float32"), "lat": lat.astype("float32")}
@@ -209,7 +224,8 @@ def main() -> None:
         df.to_csv(a.out, mode="a", header=not a.out.exists(), index=False)
         total += len(df); flooded_n += int(df.flooded.sum())
         note(f"{ev}: 칸 {len(df):,}  침수 {int(df.flooded.sum()):,} "
-             f"({df.flooded.mean()*100:.2f}%)", 0.05 + 0.9 * (n + 1) / len(files))
+             f"({df.flooded.mean()*100:.2f}%)  되살린 음성 {recovered:,}",
+             0.05 + 0.9 * (n + 1) / len(files))
 
     note(f"완료 — {total:,}칸  침수 {flooded_n:,} "
          f"({flooded_n/max(total,1)*100:.2f}%) -> {a.out}", 1.0)
