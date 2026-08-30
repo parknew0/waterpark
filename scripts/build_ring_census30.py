@@ -123,6 +123,7 @@ def main() -> None:
     disk = (dy**2 + dx**2) <= OUTER**2
     dy, dx = dy[disk].astype(np.int32), dx[disk].astype(np.int32)
 
+    ftree = None
     files = sorted(a.radar_dir.glob("rain_*_grid.npz"))
     # 사건마다 이어 쓴다. 마지막에 1,300만 행을 한 번에 concat 하면 메모리가
     # 두 배로 뛰어 다 만들어놓고 저장 직전에 죽는다.
@@ -133,6 +134,14 @@ def main() -> None:
     for n, path in enumerate(files):
         ev = path.stem.replace("rain_", "").replace("_grid", "")
         case = floods[floods.event == ev]
+        if len(case) < 20 and polys is not None and ev in polys:
+            # 지점 표는 레이더를 어디서 뽑을지 정하려고 만든 것이라 사건이 31개
+            # 뿐이다. 그 파일이 어쩌다 사건 목록 노릇을 하는 바람에, 폴리곤과
+            # 레이더를 다 갖춘 사건 92개가 학습에서 빠져 있었다. 면으로 칠한
+            # 칸이 있으면 그것으로 고리의 중심을 삼는다.
+            k = np.fromiter(polys[ev], np.int64, len(polys[ev]))
+            case = pd.DataFrame({"row": (k // C).astype(np.int64),
+                                 "col": (k % C).astype(np.int64), "event": ev})
         if len(case) < 20 or ev not in anchors:
             continue
         z = np.load(path)
@@ -154,7 +163,17 @@ def main() -> None:
         keys = np.unique(rows[good].astype(np.int64) * C + cols[good])
         rr, cc = (keys // C).astype(np.int32), (keys % C).astype(np.int32)
 
-        ftree = cKDTree(np.c_[floods.row.to_numpy(), floods.col.to_numpy()])
+        # "다른 사건에서 잠긴 적 있는 자리"를 재는 나무. 지점 표로 세우면 31개
+        # 사건만 반영되어, 새로 들어온 사건은 이 걸름망을 사실상 통과해 버린다.
+        # 사건마다 표본 뽑는 기준이 달라지는 것은 라벨이 달라지는 것보다 나쁘다.
+        if ftree is None:
+            base = np.c_[floods.row.to_numpy(), floods.col.to_numpy()]
+            if polys is not None:
+                allk = np.concatenate([np.fromiter(v, np.int64, len(v))
+                                       for v in polys.values()])
+                base = np.r_[base, np.c_[allk // C, allk % C]]
+            note(f"침수 이력 좌표 {len(base):,}개로 걸름망 구축", 0.07)
+            ftree = cKDTree(base)
         ctree = cKDTree(np.c_[case.row.to_numpy(), case.col.to_numpy()])
         d_any = ftree.query(np.c_[rr, cc], k=1)[0]
         d_own = ctree.query(np.c_[rr, cc], k=1)[0]
