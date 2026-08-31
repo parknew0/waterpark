@@ -81,3 +81,12 @@ scripts/__pycache__/
 # 전국 30m 타일: 5만 7천 장, 다시 만들 수 있으므로 저장소에 넣지 않는다
 outputs/flood-map-tiles/tiles/
 data/interim/flood-tiles-work/
+
+# 행정경계 원본과 침수 원자료: 크고 다시 받을 수 있다
+data/interim/emd_boundaries.json
+data/interim/waterlevel/
+data/raw/env-bigdata/
+data/raw/flood-trace/flood_trace_*.json
+
+# 채점 원본표: 100MB 넘고 다시 만들 수 있다 (요약은 .json 으로 남는다)
+outputs/flooded-building-register/news_eval*.csv

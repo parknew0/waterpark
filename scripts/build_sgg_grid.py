@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""시군구 경계를 30 m 격자에 올린다. 기사 채점을 시군구 단위로 하기 위한 것.
+"""행정경계를 30 m 격자에 올린다. 기사 채점의 눈금이 된다.
 
 기사 자료의 시군구 코드와 우리 경계 파일의 코드는 76% 만 겹친다. 경계 파일이
 전남·광주 통합(46xxx/29xxx -> 12xxx) 이후 코드를 쓰기 때문이다. 코드 대신
@@ -19,6 +19,7 @@ from PIL import Image, ImageDraw
 ROOT = Path(__file__).resolve().parents[1]
 G30 = ROOT / "data/interim/grid30"
 BND = ROOT / "data/interim/drainage/sgg_boundaries.json"
+EMD = ROOT / "data/interim/emd_boundaries.json"
 # 기사 자료의 시도 표기 -> 경계 파일 full_nm 앞부분. 통합으로 이름이 바뀐 곳은
 # 옛 이름 둘이 새 이름 하나를 가리킨다.
 SIDO_ALIAS = {"전라남도": "전남광주통합특별시", "광주광역시": "전남광주통합특별시",
@@ -28,31 +29,42 @@ SIDO_ALIAS = {"전라남도": "전남광주통합특별시", "광주광역시": 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--out", type=Path, default=G30 / "sgg_id.npy")
-    ap.add_argument("--table", type=Path, default=G30 / "sgg_index.json")
+    ap.add_argument("--emd", action="store_true", help="읍면동 경계를 쓴다")
+    ap.add_argument("--out", type=Path)
+    ap.add_argument("--table", type=Path)
     a = ap.parse_args()
+    a.out = a.out or (G30 / ("emd_id.npy" if a.emd else "sgg_id.npy"))
+    a.table = a.table or (G30 / ("emd_index.json" if a.emd else "sgg_index.json"))
 
     g = json.loads((G30 / "grid_meta30.json").read_text(encoding="utf-8"))["grid"]
     R, C, cell = g["rows"], g["cols"], g["cell_m"]
     ox, oyt = g["origin_x"], g["origin_y_top"]
     to5179 = pyproj.Transformer.from_crs("EPSG:4326", "EPSG:5179", always_xy=True)
 
-    feats = json.loads(BND.read_text(encoding="utf-8"))
-    # 시군구 하나가 여러 구로 쪼개져 있으면 부모 시로 묶는다
+    feats = json.loads((EMD if a.emd else BND).read_text(encoding="utf-8"))
     groups: dict[tuple, list] = {}
-    for f in feats:
-        p = f["properties"]
-        parts = p.get("full_nm", "").split()
-        sido = parts[0] if parts else ""
-        name = parts[-1] if parts else ""
-        parent = next((x for x in parts[1:-1] if x.endswith("시")), None)
-        groups.setdefault((sido, parent or name), []).append(f)
-        if parent:                       # 구 단위로도 찾을 수 있게 둘 다 넣는다
-            groups.setdefault((sido, name), []).append(f)
+    if a.emd:
+        # 읍면동은 같은 이름이 전국에 여럿 있으므로 시군구까지 붙여 가른다
+        for f in feats:
+            parts = f["properties"].get("full_nm", "").split()
+            if len(parts) < 3:
+                continue
+            groups.setdefault((parts[1], parts[-1]), []).append(f)
+    else:
+        # 시군구 하나가 여러 구로 쪼개져 있으면 부모 시로 묶는다
+        for f in feats:
+            p = f["properties"]
+            parts = p.get("full_nm", "").split()
+            sido = parts[0] if parts else ""
+            name = parts[-1] if parts else ""
+            parent = next((x for x in parts[1:-1] if x.endswith("시")), None)
+            groups.setdefault((sido, parent or name), []).append(f)
+            if parent:                   # 구 단위로도 찾을 수 있게 둘 다 넣는다
+                groups.setdefault((sido, name), []).append(f)
 
     keys = sorted(groups)
     idx = {k: i + 1 for i, k in enumerate(keys)}      # 0 은 "어느 시군구도 아님"
-    out = np.zeros((R, C), dtype=np.uint16)
+    out = np.zeros((R, C), dtype=np.uint16 if len(keys) < 65000 else np.uint32)
     print(f"시군구 {len(keys)}개를 {R:,} x {C:,} 격자에 올린다")
 
     for n, k in enumerate(keys):
