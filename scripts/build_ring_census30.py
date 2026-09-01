@@ -55,6 +55,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--radar-dir", type=Path, default=ROOT / "data/interim/radar/grids_full")
     ap.add_argument("--points", type=Path, default=ROOT / "config/radar/radar_points3.csv")
+    ap.add_argument("--min-cells", type=int, default=1,
+                    help="사건을 쓰려면 침수 칸이 몇 개 이상이어야 하는지")
     ap.add_argument("--low-rain-mm", type=float, default=10.0,
                     help="이 값보다 비가 적게 온 칸은 침수 이력 근처여도 음성으로 쓴다")
     ap.add_argument("--anchor-hours", type=Path, default=ROOT / "config/radar/flood_hours.json")
@@ -144,7 +146,11 @@ def main() -> None:
             k = np.fromiter(polys[ev], np.int64, len(polys[ev]))
             case = pd.DataFrame({"row": (k // C).astype(np.int64),
                                  "col": (k % C).astype(np.int64), "event": ev})
-        if len(case) < 20 or ev not in anchors:
+        # 칸이 적은 사건을 20 칸 문턱으로 버려 왔다. 그런데 폭풍을 늘린 효과를
+        # 재보니 값어치는 칸 수가 아니라 폭풍의 다양성에서 왔다 -- 77 -> 88 개일 때
+        # 칸은 0.8% 만 늘었는데 상위 5% 포착은 +1.97p 였다. 문턱을 낮추면 폭풍이
+        # 95 -> 146 개가 된다. 다른 비를 하나 더 보는 것이 칸 몇 개보다 값지다.
+        if len(case) < a.min_cells or ev not in anchors:
             continue
         z = np.load(path)
         stamps = z["stamps"]

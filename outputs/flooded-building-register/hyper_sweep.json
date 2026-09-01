@@ -1,0 +1,755 @@
+{
+  "훑기": [
+    {
+      "이름": "무작위9",
+      "kw": {
+        "learning_rate": 0.05,
+        "n_estimators": 2000,
+        "max_depth": 14,
+        "min_child_weight": 10,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 5.0
+      },
+      "top5": 82.79940857565303,
+      "auc": 0.9579623095577295
+    },
+    {
+      "이름": "무작위26",
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 200,
+        "max_depth": 7,
+        "min_child_weight": 1,
+        "subsample": 0.9,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 20.0
+      },
+      "top5": 82.69262362411696,
+      "auc": 0.9595850748720829
+    },
+    {
+      "이름": "무작위21",
+      "kw": {
+        "learning_rate": 0.08,
+        "n_estimators": 1581,
+        "max_depth": 12,
+        "min_child_weight": 80,
+        "subsample": 0.8,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 2.0
+      },
+      "top5": 82.31476918022014,
+      "auc": 0.9557094597479004
+    },
+    {
+      "이름": "무작위7",
+      "kw": {
+        "learning_rate": 0.02,
+        "n_estimators": 632,
+        "max_depth": 6,
+        "min_child_weight": 30,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 0.5
+      },
+      "top5": 81.97798587152948,
+      "auc": 0.9565533447303591
+    },
+    {
+      "이름": "max_depth=13",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 13,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 81.91227205519961,
+      "auc": 0.9575707357857525
+    },
+    {
+      "이름": "무작위25",
+      "kw": {
+        "learning_rate": 0.02,
+        "n_estimators": 1897,
+        "max_depth": 8,
+        "min_child_weight": 30,
+        "subsample": 0.9,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 20.0
+      },
+      "top5": 81.86298669295219,
+      "auc": 0.9565064089910756
+    },
+    {
+      "이름": "무작위29",
+      "kw": {
+        "learning_rate": 0.05,
+        "n_estimators": 3000,
+        "max_depth": 9,
+        "min_child_weight": 30,
+        "subsample": 0.7,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 0.5
+      },
+      "top5": 81.86298669295219,
+      "auc": 0.9542944809427466
+    },
+    {
+      "이름": "무작위15",
+      "kw": {
+        "learning_rate": 0.05,
+        "n_estimators": 3000,
+        "max_depth": 9,
+        "min_child_weight": 30,
+        "subsample": 0.7,
+        "colsample_bytree": 0.4,
+        "reg_lambda": 5.0
+      },
+      "top5": 81.76441596845737,
+      "auc": 0.9556023398388203
+    },
+    {
+      "이름": "min_child_weight=1",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 1,
+        "reg_lambda": 2.0
+      },
+      "top5": 81.6083456546739,
+      "auc": 0.9570184269504344
+    },
+    {
+      "이름": "learning_rate=0.15",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.15,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 81.60013142763266,
+      "auc": 0.9553596506871895
+    },
+    {
+      "이름": "무작위18",
+      "kw": {
+        "learning_rate": 0.02,
+        "n_estimators": 1897,
+        "max_depth": 9,
+        "min_child_weight": 80,
+        "subsample": 0.5,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 0.1
+      },
+      "top5": 81.37013307047806,
+      "auc": 0.9559547500032456
+    },
+    {
+      "이름": "지금 설정",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 81.21406275669459,
+      "auc": 0.9577740094068196
+    },
+    {
+      "이름": "n_estimators=2000",
+      "kw": {
+        "n_estimators": 2000,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 81.21406275669459,
+      "auc": 0.9570690760802432
+    },
+    {
+      "이름": "subsample=0.6",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.6,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 81.08263512403482,
+      "auc": 0.9593651651553197
+    },
+    {
+      "이름": "colsample_bytree=0.5",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.5,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 81.06620666995235,
+      "auc": 0.9568759457741031
+    },
+    {
+      "이름": "무작위20",
+      "kw": {
+        "learning_rate": 0.03,
+        "n_estimators": 2581,
+        "max_depth": 14,
+        "min_child_weight": 1,
+        "subsample": 0.7,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 0.1
+      },
+      "top5": 80.96763594545753,
+      "auc": 0.9610681108695914
+    },
+    {
+      "이름": "reg_lambda=10.0",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 10.0
+      },
+      "top5": 80.93477903729259,
+      "auc": 0.9568032434575295
+    },
+    {
+      "이름": "무작위24",
+      "kw": {
+        "learning_rate": 0.12,
+        "n_estimators": 774,
+        "max_depth": 10,
+        "min_child_weight": 5,
+        "subsample": 0.8,
+        "colsample_bytree": 0.4,
+        "reg_lambda": 5.0
+      },
+      "top5": 80.91835058321011,
+      "auc": 0.9572161185723038
+    },
+    {
+      "이름": "무작위13",
+      "kw": {
+        "learning_rate": 0.12,
+        "n_estimators": 774,
+        "max_depth": 10,
+        "min_child_weight": 5,
+        "subsample": 0.9,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 0.5
+      },
+      "top5": 80.90192212912764,
+      "auc": 0.9547041382206225
+    },
+    {
+      "이름": "max_depth=9",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 9,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 80.82799408575653,
+      "auc": 0.9540667186580037
+    },
+    {
+      "이름": "무작위16",
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 200,
+        "max_depth": 6,
+        "min_child_weight": 30,
+        "subsample": 0.7,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 0.1
+      },
+      "top5": 80.7540660423854,
+      "auc": 0.9550064540718609
+    },
+    {
+      "이름": "min_child_weight=50",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 50,
+        "reg_lambda": 2.0
+      },
+      "top5": 80.69656645309676,
+      "auc": 0.9548560972194045
+    },
+    {
+      "이름": "무작위10",
+      "kw": {
+        "learning_rate": 0.05,
+        "n_estimators": 3000,
+        "max_depth": 7,
+        "min_child_weight": 10,
+        "subsample": 0.9,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 2.0
+      },
+      "top5": 80.68835222605553,
+      "auc": 0.9535777867310602
+    },
+    {
+      "이름": "무작위19",
+      "kw": {
+        "learning_rate": 0.08,
+        "n_estimators": 948,
+        "max_depth": 14,
+        "min_child_weight": 3,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 20.0
+      },
+      "top5": 80.67192377197306,
+      "auc": 0.9576850233108449
+    },
+    {
+      "이름": "learning_rate=0.08",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.08,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 80.4747823229834,
+      "auc": 0.9560919166930968
+    },
+    {
+      "이름": "learning_rate=0.03",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.03,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 80.39264005257105,
+      "auc": 0.9561531271299091
+    },
+    {
+      "이름": "min_child_weight=20",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 20,
+        "reg_lambda": 2.0
+      },
+      "top5": 80.31871200919993,
+      "auc": 0.9559983850922291
+    },
+    {
+      "이름": "무작위23",
+      "kw": {
+        "learning_rate": 0.05,
+        "n_estimators": 3000,
+        "max_depth": 11,
+        "min_child_weight": 80,
+        "subsample": 0.5,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 20.0
+      },
+      "top5": 80.285855101035,
+      "auc": 0.9533786884975797
+    },
+    {
+      "이름": "무작위12",
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 600,
+        "max_depth": 9,
+        "min_child_weight": 30,
+        "subsample": 0.8,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 0.5
+      },
+      "top5": 80.14621324133398,
+      "auc": 0.9563849953119544
+    },
+    {
+      "이름": "무작위17",
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 600,
+        "max_depth": 14,
+        "min_child_weight": 30,
+        "subsample": 0.9,
+        "colsample_bytree": 0.4,
+        "reg_lambda": 5.0
+      },
+      "top5": 79.91621488417941,
+      "auc": 0.9512798421492975
+    },
+    {
+      "이름": "무작위27",
+      "kw": {
+        "learning_rate": 0.12,
+        "n_estimators": 1936,
+        "max_depth": 13,
+        "min_child_weight": 1,
+        "subsample": 0.5,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 0.1
+      },
+      "top5": 79.51371775915887,
+      "auc": 0.9501811734993373
+    },
+    {
+      "이름": "무작위28",
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 1500,
+        "max_depth": 14,
+        "min_child_weight": 5,
+        "subsample": 0.5,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 20.0
+      },
+      "top5": 79.36586167241663,
+      "auc": 0.9524806242014713
+    },
+    {
+      "이름": "무작위5",
+      "kw": {
+        "learning_rate": 0.12,
+        "n_estimators": 1290,
+        "max_depth": 13,
+        "min_child_weight": 3,
+        "subsample": 0.5,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 0.1
+      },
+      "top5": 79.30836208312797,
+      "auc": 0.9466884662608837
+    },
+    {
+      "이름": "n_estimators=600",
+      "kw": {
+        "n_estimators": 600,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 79.02086413668474,
+      "auc": 0.9536653205519594
+    },
+    {
+      "이름": "무작위4",
+      "kw": {
+        "learning_rate": 0.12,
+        "n_estimators": 1290,
+        "max_depth": 6,
+        "min_child_weight": 5,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 0.1
+      },
+      "top5": 79.00443568260226,
+      "auc": 0.9543825296661983
+    },
+    {
+      "이름": "무작위8",
+      "kw": {
+        "learning_rate": 0.08,
+        "n_estimators": 1581,
+        "max_depth": 9,
+        "min_child_weight": 5,
+        "subsample": 1.0,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 20.0
+      },
+      "top5": 78.85657959586003,
+      "auc": 0.9513386022381674
+    },
+    {
+      "이름": "무작위1",
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 1000,
+        "max_depth": 10,
+        "min_child_weight": 3,
+        "subsample": 0.7,
+        "colsample_bytree": 0.4,
+        "reg_lambda": 0.1
+      },
+      "top5": 78.69229505503532,
+      "auc": 0.944472448402502
+    },
+    {
+      "이름": "무작위11",
+      "kw": {
+        "learning_rate": 0.05,
+        "n_estimators": 800,
+        "max_depth": 9,
+        "min_child_weight": 5,
+        "subsample": 0.9,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 0.1
+      },
+      "top5": 78.56086742237555,
+      "auc": 0.9484138405310774
+    },
+    {
+      "이름": "무작위6",
+      "kw": {
+        "learning_rate": 0.08,
+        "n_estimators": 316,
+        "max_depth": 8,
+        "min_child_weight": 5,
+        "subsample": 0.8,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 0.1
+      },
+      "top5": 78.42122556267455,
+      "auc": 0.950036216987308
+    },
+    {
+      "이름": "무작위3",
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 1000,
+        "max_depth": 11,
+        "min_child_weight": 10,
+        "subsample": 0.8,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 0.5
+      },
+      "top5": 78.35551174634466,
+      "auc": 0.9518182427004558
+    },
+    {
+      "이름": "reg_lambda=0.5",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 0.5
+      },
+      "top5": 78.2240841136849,
+      "auc": 0.9522038441777638
+    },
+    {
+      "이름": "subsample=1.0",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 78.13372761623131,
+      "auc": 0.9460743521474966
+    },
+    {
+      "이름": "무작위14",
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 400,
+        "max_depth": 8,
+        "min_child_weight": 30,
+        "subsample": 0.9,
+        "colsample_bytree": 0.4,
+        "reg_lambda": 0.1
+      },
+      "top5": 77.27944800394283,
+      "auc": 0.9505046933959183
+    },
+    {
+      "이름": "무작위2",
+      "kw": {
+        "learning_rate": 0.02,
+        "n_estimators": 632,
+        "max_depth": 13,
+        "min_child_weight": 10,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 5.0
+      },
+      "top5": 77.12337769015936,
+      "auc": 0.950234355403512
+    },
+    {
+      "이름": "무작위22",
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_child_weight": 1,
+        "subsample": 0.8,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 5.0
+      },
+      "top5": 75.16839165434533,
+      "auc": 0.9447606414176366
+    },
+    {
+      "이름": "colsample_bytree=1.0",
+      "kw": {
+        "n_estimators": 1200,
+        "max_depth": 11,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 1.0,
+        "min_child_weight": 5,
+        "reg_lambda": 2.0
+      },
+      "top5": 74.48661080992278,
+      "auc": 0.954198550572644
+    },
+    {
+      "이름": "무작위30",
+      "kw": {
+        "learning_rate": 0.03,
+        "n_estimators": 3872,
+        "max_depth": 13,
+        "min_child_weight": 1,
+        "subsample": 1.0,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 0.5
+      },
+      "top5": 73.93625759816001,
+      "auc": 0.9489263534359539
+    }
+  ],
+  "확인": {
+    "지금 설정": {
+      "auc": 0.8893947588426592,
+      "top5": 48.45093589900583,
+      "per": [
+        67.04722792607802,
+        24.484599589322382,
+        45.02217841301134,
+        56.8424511253491,
+        48.85822244126828
+      ]
+    },
+    "무작위9": {
+      "auc": 0.896090859609397,
+      "top5": 49.357791691924994,
+      "per": [
+        65.70841889117042,
+        25.51129363449692,
+        47.61787415804173,
+        57.25316247741088,
+        50.69820929850501
+      ],
+      "kw": {
+        "learning_rate": 0.05,
+        "n_estimators": 2000,
+        "max_depth": 14,
+        "min_child_weight": 10,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 5.0
+      }
+    },
+    "무작위26": {
+      "auc": 0.8847172775262282,
+      "top5": 43.524223738677605,
+      "per": [
+        55.63039014373716,
+        24.87063655030801,
+        43.592902907836375,
+        52.842122556267455,
+        40.68506653523903
+      ],
+      "kw": {
+        "learning_rate": 0.2,
+        "n_estimators": 200,
+        "max_depth": 7,
+        "min_child_weight": 1,
+        "subsample": 0.9,
+        "colsample_bytree": 1.0,
+        "reg_lambda": 20.0
+      }
+    },
+    "무작위21": {
+      "auc": 0.9002094639955613,
+      "top5": 50.39271075901819,
+      "per": [
+        68.98562628336755,
+        26.710472279260784,
+        48.39822572695909,
+        58.107442089699354,
+        49.76178741580417
+      ],
+      "kw": {
+        "learning_rate": 0.08,
+        "n_estimators": 1581,
+        "max_depth": 12,
+        "min_child_weight": 80,
+        "subsample": 0.8,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 2.0
+      }
+    },
+    "무작위7": {
+      "auc": 0.8979979578769572,
+      "top5": 42.94108985757172,
+      "per": [
+        53.12525667351129,
+        22.73511293634497,
+        43.62575981600131,
+        54.95317890586497,
+        40.26614095613603
+      ],
+      "kw": {
+        "learning_rate": 0.02,
+        "n_estimators": 632,
+        "max_depth": 6,
+        "min_child_weight": 30,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 0.5
+      }
+    }
+  }
+}

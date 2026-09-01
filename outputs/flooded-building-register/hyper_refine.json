@@ -1,0 +1,619 @@
+{
+  "훑기": [
+    {
+      "이름": "둘레27",
+      "kw": {
+        "learning_rate": 0.0664,
+        "n_estimators": 2522,
+        "max_depth": 7,
+        "min_child_weight": 75,
+        "subsample": 1.0,
+        "colsample_bytree": 0.533,
+        "reg_lambda": 3.0679
+      },
+      "top5": 74.51334702258727
+    },
+    {
+      "이름": "둘레14",
+      "kw": {
+        "learning_rate": 0.0637,
+        "n_estimators": 1638,
+        "max_depth": 7,
+        "min_child_weight": 71,
+        "subsample": 0.8506,
+        "colsample_bytree": 0.4299,
+        "reg_lambda": 2.593
+      },
+      "top5": 73.3305954825462
+    },
+    {
+      "이름": "둘레40",
+      "kw": {
+        "learning_rate": 0.125,
+        "n_estimators": 1677,
+        "max_depth": 8,
+        "min_child_weight": 130,
+        "subsample": 1.0,
+        "colsample_bytree": 0.437,
+        "reg_lambda": 1.449
+      },
+      "top5": 73.10882956878851
+    },
+    {
+      "이름": "둘레29",
+      "kw": {
+        "learning_rate": 0.0807,
+        "n_estimators": 1778,
+        "max_depth": 9,
+        "min_child_weight": 68,
+        "subsample": 0.9746,
+        "colsample_bytree": 0.6159,
+        "reg_lambda": 2.9416
+      },
+      "top5": 72.63244353182752
+    },
+    {
+      "이름": "둘레3",
+      "kw": {
+        "learning_rate": 0.0747,
+        "n_estimators": 1737,
+        "max_depth": 9,
+        "min_child_weight": 83,
+        "subsample": 0.659,
+        "colsample_bytree": 0.5331,
+        "reg_lambda": 2.8508
+      },
+      "top5": 72.57494866529774
+    },
+    {
+      "이름": "둘레32",
+      "kw": {
+        "learning_rate": 0.0644,
+        "n_estimators": 2122,
+        "max_depth": 15,
+        "min_child_weight": 62,
+        "subsample": 1.0,
+        "colsample_bytree": 0.4619,
+        "reg_lambda": 2.3227
+      },
+      "top5": 71.80287474332648
+    },
+    {
+      "이름": "둘레37",
+      "kw": {
+        "learning_rate": 0.0858,
+        "n_estimators": 2140,
+        "max_depth": 9,
+        "min_child_weight": 82,
+        "subsample": 0.4975,
+        "colsample_bytree": 0.414,
+        "reg_lambda": 1.6762
+      },
+      "top5": 71.59753593429159
+    },
+    {
+      "이름": "둘레33",
+      "kw": {
+        "learning_rate": 0.0607,
+        "n_estimators": 2196,
+        "max_depth": 11,
+        "min_child_weight": 60,
+        "subsample": 0.5205,
+        "colsample_bytree": 0.4754,
+        "reg_lambda": 1.622
+      },
+      "top5": 71.5728952772074
+    },
+    {
+      "이름": "둘레1",
+      "kw": {
+        "learning_rate": 0.093,
+        "n_estimators": 2602,
+        "max_depth": 9,
+        "min_child_weight": 131,
+        "subsample": 0.7544,
+        "colsample_bytree": 0.6394,
+        "reg_lambda": 3.0209
+      },
+      "top5": 70.73511293634496
+    },
+    {
+      "이름": "둘레2",
+      "kw": {
+        "learning_rate": 0.084,
+        "n_estimators": 1904,
+        "max_depth": 8,
+        "min_child_weight": 114,
+        "subsample": 0.9536,
+        "colsample_bytree": 0.5776,
+        "reg_lambda": 2.9345
+      },
+      "top5": 70.70225872689939
+    },
+    {
+      "이름": "둘레25",
+      "kw": {
+        "learning_rate": 0.0657,
+        "n_estimators": 2667,
+        "max_depth": 17,
+        "min_child_weight": 80,
+        "subsample": 1.0,
+        "colsample_bytree": 0.6114,
+        "reg_lambda": 2.0393
+      },
+      "top5": 70.64476386036961
+    },
+    {
+      "이름": "둘레39",
+      "kw": {
+        "learning_rate": 0.0562,
+        "n_estimators": 2624,
+        "max_depth": 17,
+        "min_child_weight": 78,
+        "subsample": 0.5963,
+        "colsample_bytree": 0.6152,
+        "reg_lambda": 1.9462
+      },
+      "top5": 69.93018480492813
+    },
+    {
+      "이름": "둘레11",
+      "kw": {
+        "learning_rate": 0.0612,
+        "n_estimators": 1787,
+        "max_depth": 18,
+        "min_child_weight": 85,
+        "subsample": 0.9988,
+        "colsample_bytree": 0.3762,
+        "reg_lambda": 2.6816
+      },
+      "top5": 69.46201232032854
+    },
+    {
+      "이름": "중심",
+      "kw": {
+        "learning_rate": 0.08,
+        "n_estimators": 1581,
+        "max_depth": 12,
+        "min_child_weight": 80,
+        "subsample": 0.8,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 2.0
+      },
+      "top5": 68.98562628336755
+    },
+    {
+      "이름": "둘레16",
+      "kw": {
+        "learning_rate": 0.0781,
+        "n_estimators": 1894,
+        "max_depth": 10,
+        "min_child_weight": 136,
+        "subsample": 0.694,
+        "colsample_bytree": 0.5295,
+        "reg_lambda": 1.361
+      },
+      "top5": 68.870636550308
+    },
+    {
+      "이름": "둘레22",
+      "kw": {
+        "learning_rate": 0.1157,
+        "n_estimators": 1863,
+        "max_depth": 9,
+        "min_child_weight": 133,
+        "subsample": 0.8334,
+        "colsample_bytree": 0.5549,
+        "reg_lambda": 3.0634
+      },
+      "top5": 68.63244353182752
+    },
+    {
+      "이름": "둘레13",
+      "kw": {
+        "learning_rate": 0.1212,
+        "n_estimators": 1058,
+        "max_depth": 18,
+        "min_child_weight": 62,
+        "subsample": 0.8101,
+        "colsample_bytree": 0.569,
+        "reg_lambda": 2.7209
+      },
+      "top5": 68.4599589322382
+    },
+    {
+      "이름": "둘레8",
+      "kw": {
+        "learning_rate": 0.1201,
+        "n_estimators": 2137,
+        "max_depth": 18,
+        "min_child_weight": 65,
+        "subsample": 1.0,
+        "colsample_bytree": 0.4863,
+        "reg_lambda": 1.3794
+      },
+      "top5": 68.12320328542094
+    },
+    {
+      "이름": "둘레17",
+      "kw": {
+        "learning_rate": 0.0707,
+        "n_estimators": 2276,
+        "max_depth": 16,
+        "min_child_weight": 59,
+        "subsample": 0.8111,
+        "colsample_bytree": 0.6378,
+        "reg_lambda": 2.663
+      },
+      "top5": 67.81930184804928
+    },
+    {
+      "이름": "둘레28",
+      "kw": {
+        "learning_rate": 0.1013,
+        "n_estimators": 2350,
+        "max_depth": 16,
+        "min_child_weight": 80,
+        "subsample": 1.0,
+        "colsample_bytree": 0.3775,
+        "reg_lambda": 2.183
+      },
+      "top5": 67.31006160164272
+    },
+    {
+      "이름": "둘레36",
+      "kw": {
+        "learning_rate": 0.0713,
+        "n_estimators": 1450,
+        "max_depth": 8,
+        "min_child_weight": 113,
+        "subsample": 1.0,
+        "colsample_bytree": 0.7603,
+        "reg_lambda": 1.2749
+      },
+      "top5": 66.71047227926078
+    },
+    {
+      "이름": "둘레23",
+      "kw": {
+        "learning_rate": 0.059,
+        "n_estimators": 2224,
+        "max_depth": 10,
+        "min_child_weight": 83,
+        "subsample": 0.6841,
+        "colsample_bytree": 0.9152,
+        "reg_lambda": 2.0582
+      },
+      "top5": 66.41478439425052
+    },
+    {
+      "이름": "둘레9",
+      "kw": {
+        "learning_rate": 0.1233,
+        "n_estimators": 2446,
+        "max_depth": 18,
+        "min_child_weight": 90,
+        "subsample": 0.7212,
+        "colsample_bytree": 0.3647,
+        "reg_lambda": 2.6206
+      },
+      "top5": 65.92197125256673
+    },
+    {
+      "이름": "둘레18",
+      "kw": {
+        "learning_rate": 0.0881,
+        "n_estimators": 1969,
+        "max_depth": 18,
+        "min_child_weight": 112,
+        "subsample": 0.8012,
+        "colsample_bytree": 0.6559,
+        "reg_lambda": 2.0089
+      },
+      "top5": 65.5852156057495
+    },
+    {
+      "이름": "둘레19",
+      "kw": {
+        "learning_rate": 0.0577,
+        "n_estimators": 1302,
+        "max_depth": 11,
+        "min_child_weight": 76,
+        "subsample": 0.7555,
+        "colsample_bytree": 0.7406,
+        "reg_lambda": 3.3377
+      },
+      "top5": 64.28747433264887
+    },
+    {
+      "이름": "둘레15",
+      "kw": {
+        "learning_rate": 0.0815,
+        "n_estimators": 2210,
+        "max_depth": 16,
+        "min_child_weight": 86,
+        "subsample": 1.0,
+        "colsample_bytree": 0.7772,
+        "reg_lambda": 2.9826
+      },
+      "top5": 64.02464065708419
+    },
+    {
+      "이름": "둘레21",
+      "kw": {
+        "learning_rate": 0.0548,
+        "n_estimators": 1798,
+        "max_depth": 10,
+        "min_child_weight": 60,
+        "subsample": 0.9253,
+        "colsample_bytree": 0.8782,
+        "reg_lambda": 1.849
+      },
+      "top5": 63.36755646817248
+    },
+    {
+      "이름": "둘레5",
+      "kw": {
+        "learning_rate": 0.0621,
+        "n_estimators": 2635,
+        "max_depth": 14,
+        "min_child_weight": 58,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8726,
+        "reg_lambda": 2.5486
+      },
+      "top5": 62.940451745379875
+    },
+    {
+      "이름": "둘레4",
+      "kw": {
+        "learning_rate": 0.0727,
+        "n_estimators": 1792,
+        "max_depth": 18,
+        "min_child_weight": 133,
+        "subsample": 1.0,
+        "colsample_bytree": 0.7172,
+        "reg_lambda": 1.8092
+      },
+      "top5": 62.80082135523614
+    },
+    {
+      "이름": "둘레12",
+      "kw": {
+        "learning_rate": 0.1289,
+        "n_estimators": 2387,
+        "max_depth": 18,
+        "min_child_weight": 106,
+        "subsample": 0.6961,
+        "colsample_bytree": 0.8672,
+        "reg_lambda": 1.6657
+      },
+      "top5": 62.66119096509241
+    },
+    {
+      "이름": "둘레31",
+      "kw": {
+        "learning_rate": 0.0546,
+        "n_estimators": 2623,
+        "max_depth": 14,
+        "min_child_weight": 116,
+        "subsample": 0.9457,
+        "colsample_bytree": 0.7636,
+        "reg_lambda": 1.2746
+      },
+      "top5": 62.62012320328542
+    },
+    {
+      "이름": "둘레20",
+      "kw": {
+        "learning_rate": 0.1162,
+        "n_estimators": 2324,
+        "max_depth": 17,
+        "min_child_weight": 101,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8152,
+        "reg_lambda": 2.3008
+      },
+      "top5": 62.41478439425051
+    },
+    {
+      "이름": "둘레24",
+      "kw": {
+        "learning_rate": 0.1338,
+        "n_estimators": 2036,
+        "max_depth": 16,
+        "min_child_weight": 94,
+        "subsample": 0.7519,
+        "colsample_bytree": 0.6211,
+        "reg_lambda": 3.2701
+      },
+      "top5": 62.24229979466119
+    },
+    {
+      "이름": "둘레35",
+      "kw": {
+        "learning_rate": 0.1306,
+        "n_estimators": 988,
+        "max_depth": 9,
+        "min_child_weight": 80,
+        "subsample": 0.5624,
+        "colsample_bytree": 0.7557,
+        "reg_lambda": 1.7728
+      },
+      "top5": 61.856262833675565
+    },
+    {
+      "이름": "둘레26",
+      "kw": {
+        "learning_rate": 0.0923,
+        "n_estimators": 978,
+        "max_depth": 14,
+        "min_child_weight": 134,
+        "subsample": 0.7312,
+        "colsample_bytree": 0.8538,
+        "reg_lambda": 2.1741
+      },
+      "top5": 61.691991786447645
+    },
+    {
+      "이름": "둘레10",
+      "kw": {
+        "learning_rate": 0.1114,
+        "n_estimators": 2402,
+        "max_depth": 11,
+        "min_child_weight": 67,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8913,
+        "reg_lambda": 3.3201
+      },
+      "top5": 61.264887063655024
+    },
+    {
+      "이름": "둘레6",
+      "kw": {
+        "learning_rate": 0.1287,
+        "n_estimators": 1017,
+        "max_depth": 14,
+        "min_child_weight": 88,
+        "subsample": 0.5349,
+        "colsample_bytree": 0.7833,
+        "reg_lambda": 3.0758
+      },
+      "top5": 60.76386036960986
+    },
+    {
+      "이름": "둘레34",
+      "kw": {
+        "learning_rate": 0.0953,
+        "n_estimators": 1733,
+        "max_depth": 18,
+        "min_child_weight": 132,
+        "subsample": 1.0,
+        "colsample_bytree": 0.8032,
+        "reg_lambda": 3.0591
+      },
+      "top5": 59.51540041067762
+    },
+    {
+      "이름": "둘레30",
+      "kw": {
+        "learning_rate": 0.1013,
+        "n_estimators": 2446,
+        "max_depth": 17,
+        "min_child_weight": 101,
+        "subsample": 0.7331,
+        "colsample_bytree": 0.8766,
+        "reg_lambda": 1.7528
+      },
+      "top5": 58.16016427104723
+    },
+    {
+      "이름": "둘레38",
+      "kw": {
+        "learning_rate": 0.0845,
+        "n_estimators": 1754,
+        "max_depth": 18,
+        "min_child_weight": 76,
+        "subsample": 0.4989,
+        "colsample_bytree": 0.9053,
+        "reg_lambda": 1.3361
+      },
+      "top5": 57.88911704312115
+    },
+    {
+      "이름": "둘레7",
+      "kw": {
+        "learning_rate": 0.1002,
+        "n_estimators": 1401,
+        "max_depth": 18,
+        "min_child_weight": 93,
+        "subsample": 0.9296,
+        "colsample_bytree": 0.857,
+        "reg_lambda": 1.5254
+      },
+      "top5": 57.634496919917865
+    }
+  ],
+  "확인": {
+    "중심": {
+      "auc": 0.9013576912622632,
+      "top5": 53.05853933838871,
+      "per": [
+        82.31476918022014,
+        26.710472279260784,
+        48.39822572695909,
+        58.107442089699354,
+        49.76178741580417
+      ],
+      "kw": {
+        "learning_rate": 0.08,
+        "n_estimators": 1581,
+        "max_depth": 12,
+        "min_child_weight": 80,
+        "subsample": 0.8,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 2.0
+      }
+    },
+    "둘레27": {
+      "auc": 0.8841535598881199,
+      "top5": 48.84962513101439,
+      "per": [
+        78.86479382290126,
+        23.318275154004105,
+        44.79218005585675,
+        54.50961064563824,
+        42.76326597667159
+      ],
+      "kw": {
+        "learning_rate": 0.0664,
+        "n_estimators": 2522,
+        "max_depth": 7,
+        "min_child_weight": 75,
+        "subsample": 1.0,
+        "colsample_bytree": 0.533,
+        "reg_lambda": 3.0679
+      }
+    },
+    "둘레14": {
+      "auc": 0.8972602203636979,
+      "top5": 51.627633132042604,
+      "per": [
+        82.25726959093149,
+        25.971252566735114,
+        44.521110563495974,
+        55.84031542631839,
+        49.54821751273205
+      ],
+      "kw": {
+        "learning_rate": 0.0637,
+        "n_estimators": 1638,
+        "max_depth": 7,
+        "min_child_weight": 71,
+        "subsample": 0.8506,
+        "colsample_bytree": 0.4299,
+        "reg_lambda": 2.593
+      }
+    },
+    "둘레40": {
+      "auc": 0.8929746755988972,
+      "top5": 49.92569332630317,
+      "per": [
+        78.3883686545096,
+        23.04722792607803,
+        44.31575488746509,
+        54.99425004107113,
+        48.88286512239198
+      ],
+      "kw": {
+        "learning_rate": 0.125,
+        "n_estimators": 1677,
+        "max_depth": 8,
+        "min_child_weight": 130,
+        "subsample": 1.0,
+        "colsample_bytree": 0.437,
+        "reg_lambda": 1.449
+      }
+    }
+  }
+}

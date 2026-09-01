@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""도시 편향이 우리를 끌어내리는가. 도로 침수 위험지점으로 짝지어 잰다.
+"""손질한 설정이 [1m바깥에서도[0m 나은가. 도로 침수 위험지점으로 짝지어 잰다.
+
+설정을 손질해 우리 라벨에서 +1.94p 를 얻었다. 그런데 우리 라벨은 조사가 이뤄진
+곳에서만 온다. 그 정답지에 맞춰 손잡이를 돌린 것이 [1m바깥에서도[0m 나은지, 아니면
+우리 정답지에만 더 맞춘 것인지는 다른 자료로 봐야 안다.
+
+도로 침수 위험지점 657 곳은 교통안전 점검에서 나왔고 우리 라벨과 4.3% 만 겹친다.
+옛 설정은 여기서 75.7%, 표고 하나가 78.4% 였다. 격차가 줄면 손질이 진짜였던 것이고,
+그대로면 우리 정답지에만 맞춘 것이다.
 
 도로 채점에서 우리 21 개 열(75.7%)이 표고 하나(78.4%)에게 졌다. 그리고 불투수율
 하나만 쓰면 41.7% -- 50% 아래, 즉 \033[1m거꾸로\033[0m 작동한다. 위험지점들이 대조점보다
@@ -25,6 +33,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_flood_map_national import USE, MODEL_KW, RATIO_1H_6H, PLATEAU_MM  # noqa: E402
 
 URBAN = ["built_ratio", "built_count", "impervious"]
+BEST = ROOT / "outputs/flooded-building-register/best_model_kw.json"
+
+
+def tuned_kw():
+    """손질한 설정이 있으면 쓴다. 우리 라벨에서 +1.94p 였던 것이 바깥에서도
+    나은지가 이 시험의 요점이다."""
+    import json
+    if BEST.exists():
+        j = json.loads(BEST.read_text(encoding="utf-8"))
+        print(f"손질한 설정을 쓴다: {j['이름']} (우리 라벨 상위5% {j['상위5%']:.1f}%)")
+        return j["kw"]
+    return dict(MODEL_KW)
 
 
 def main() -> None:
@@ -36,7 +56,7 @@ def main() -> None:
     ap.add_argument("--controls", type=int, default=40)
     ap.add_argument("--rain", type=float, default=40.0)
     ap.add_argument("--out", type=Path,
-                    default=ROOT / "outputs/flooded-building-register/road_urban_bias.json")
+                    default=ROOT / "outputs/flooded-building-register/road_tuned.json")
     a = ap.parse_args()
 
     g = json.loads((G30 / "grid_meta30.json").read_text(encoding="utf-8"))["grid"]
@@ -90,12 +110,14 @@ def main() -> None:
         layers[n] = np.where(np.isfinite(v), v, med[n])
 
     res = {}
-    sets = {"기존 21개": list(USE), "도시 3열 뺀 18개": [c for c in USE if c not in URBAN]}
+    tuned = tuned_kw()
+    sets = {"옛 설정": (list(USE), dict(MODEL_KW)),
+            "손질한 설정": (list(USE), tuned)}
     scores = {}
-    for name, use in sets.items():
+    for name, (use, kw) in sets.items():
         pos = max(int(d.flooded.sum()), 1)
         w = (len(d) - pos) / pos
-        m = XGBClassifier(eval_metric="logloss", n_jobs=9, scale_pos_weight=w, **MODEL_KW)
+        m = XGBClassifier(eval_metric="logloss", n_jobs=9, scale_pos_weight=w, **kw)
         m.fit(d[use], d.flooded)
         X = np.empty((len(allr), len(use)), dtype="float32")
         for j, n in enumerate(use):
@@ -106,6 +128,7 @@ def main() -> None:
         scores[name] = odds / (1 + odds)
         print(f"  {name} 학습·채점 완료", flush=True)
     scores["표고만 (낮을수록)"] = -layers["elevation"]
+    scores["주변대비 높이만"] = -layers["rel_500m"]
 
     df = pd.DataFrame({"y": y, "grp": grp, **scores})
     per = {}
@@ -119,8 +142,8 @@ def main() -> None:
         print(f"  {c:<18} {per[c].mean()*100:5.1f}% ± {per[c].std(ddof=1)/np.sqrt(len(wins))*100:.1f}")
 
     print("\n\033[1m같은 짝끼리 빼면\033[0m")
-    base = per["기존 21개"]
-    for c in ("도시 3열 뺀 18개", "표고만 (낮을수록)"):
+    base = per["옛 설정"]
+    for c in ("손질한 설정", "표고만 (낮을수록)", "주변대비 높이만"):
         dd = per[c] - base
         se = dd.std(ddof=1) / np.sqrt(len(dd))
         v = "낫다" if dd.mean() > 2*se else ("못하다" if dd.mean() < -2*se else "판정불가")

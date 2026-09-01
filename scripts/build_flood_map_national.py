@@ -36,8 +36,18 @@ USE = BASE + EXTRA
 # 상위 5% 포착은 26.4%에서 32.2%로 오른다. 침수 칸이 0.4% 뿐이라 얕은 나무는
 # 그 희귀한 조합을 넓은 구간 안에 뭉개버리고, 우리가 쓰는 것은 순위 전체가
 # 아니라 맨 위이므로 그 거래가 남는다. 13/1500 에서는 다시 꺾인다.
-MODEL_KW = dict(n_estimators=1200, max_depth=11, learning_rate=0.05,
-                subsample=0.8, colsample_bytree=0.8, min_child_weight=5,
+# 무작위 45 가지 + 둘레 40 가지를 훑어 고른 설정이다. 하나씩 바꾸는 방식으로는
+# 이긴 것이 하나도 없었고 이긴 넷이 전부 무작위 조합이었다 -- learning_rate 와
+# n_estimators 가 서로 묶여 있어 한 번에 하나씩 바꾸면 도달하지 못하는 자리다.
+#
+# min_child_weight 가 5 -> 80 이다. 잎 하나에 표본이 훨씬 많아야 쪼개게 한 것,
+# 즉 과적합을 크게 줄이는 방향이다. 행은 2,500 만이지만 독립된 표본은 폭풍
+# 146 개뿐이라는 사실과 맞아떨어진다.
+#
+# 세 시험지에서 모두 이겼다: 우리 라벨 +1.94p, 한 번도 안 가본 시도 +3.00p
+# (11 개 중 10 개), 도로 침수 위험지점 +1.13p.
+MODEL_KW = dict(n_estimators=1581, max_depth=12, learning_rate=0.08,
+                subsample=0.8, colsample_bytree=0.6, min_child_weight=80,
                 reg_lambda=2.0)
 
 RATIO_1H_6H = 0.20

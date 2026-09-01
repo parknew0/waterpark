@@ -32,8 +32,12 @@ def capture(y, p, frac=0.05):
     return float(np.asarray(y)[np.argsort(-p)[:k]].sum()) / max(float(np.sum(y)), 1.0)
 
 
-def prep(path, cols):
-    d = pd.read_csv(path, usecols=cols, dtype={"event": str})
+def prep(path, cols, sample=1.0):
+    dt = {c: "float32" for c in cols if c not in ("event", "flooded")}
+    dt.update({"event": str, "flooded": "int8"})
+    d = pd.read_csv(path, usecols=cols, dtype=dt)
+    if sample < 1.0:
+        d = d.sample(frac=sample, random_state=0)
     sh = d[d.flooded == 1].groupby("event").rain_6h.apply(lambda s: (s < 1).mean())
     d = d[~d.event.isin(sh[sh >= 0.5].index)]
     d["sewer_density"] = d.sewer_density.fillna(d.sewer_density.median())
@@ -49,17 +53,20 @@ def main() -> None:
     ap.add_argument("--test-rain-min", type=float, default=10.0)
     ap.add_argument("--folds", type=int, default=6)
     ap.add_argument("--jobs", type=int, default=9)
+    ap.add_argument("--sample", type=float, default=1.0)
+    ap.add_argument("--labels", nargs=2, default=["옛 표", "고친 표"])
     ap.add_argument("--out", type=Path,
                     default=ROOT / "outputs/flooded-building-register/dry_vs_all.json")
     a = ap.parse_args()
 
     cols = sorted({*USE, "event", "flooded"})
-    tabs = {"옛 표": prep(a.old, cols), "고친 표": prep(a.new, cols)}
+    tabs = {a.labels[0]: prep(a.old, cols, a.sample),
+            a.labels[1]: prep(a.new, cols, a.sample)}
     for k, v in tabs.items():
         print(f"{k}: {len(v):,}행  침수 {int(v.flooded.sum()):,}  폭풍 {v.event.nunique()}개")
 
     # 묶음은 두 표에 같은 방식으로 매긴다 (사건 이름 기준이라 동일해진다)
-    base = tabs["옛 표"]
+    base = tabs[a.labels[0]]
     ev = base.groupby("event").flooded.sum().sort_values(ascending=False)
     fold, load = {}, np.zeros(a.folds)
     for e, n in ev.items():
@@ -94,11 +101,11 @@ def main() -> None:
     for k, v in res.items():
         print(f"  {k:<8} AUC {np.mean([x['auc'] for x in v]):.4f}   "
               f"상위5% {np.mean([x['top5'] for x in v]):5.1f}%")
-    d5 = np.array([x["top5"] for x in res["고친 표"]]) - \
-         np.array([x["top5"] for x in res["옛 표"]])
+    d5 = np.array([x["top5"] for x in res[a.labels[1]]]) - \
+         np.array([x["top5"] for x in res[a.labels[0]]])
     se = d5.std(ddof=1) / np.sqrt(len(d5))
     v = "채택" if d5.mean() > 2*se else ("기각" if d5.mean() < -2*se else "판정불가")
-    print(f"\n  \033[1m걸름망 수정 효과: 상위5% {d5.mean():+.2f}p ± {se:.2f}\033[0m"
+    print(f"\n  \033[1m{a.labels[1]} 효과: 상위5% {d5.mean():+.2f}p ± {se:.2f}\033[0m"
           f"   이긴 묶음 {int((d5>0).sum())}/{len(d5)}  -> {v}")
     a.out.parent.mkdir(parents=True, exist_ok=True)
     a.out.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")

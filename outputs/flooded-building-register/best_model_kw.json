@@ -1,0 +1,14 @@
+{
+ "출처": "hyper_sweep.json",
+ "이름": "무작위21",
+ "상위5%": 50.39271075901819,
+ "kw": {
+  "learning_rate": 0.08,
+  "n_estimators": 1581,
+  "max_depth": 12,
+  "min_child_weight": 80,
+  "subsample": 0.8,
+  "colsample_bytree": 0.6,
+  "reg_lambda": 2.0
+ }
+}

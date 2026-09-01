@@ -40,12 +40,20 @@ def main() -> None:
                     default=ROOT / "config/radar/original_30_events.json")
     ap.add_argument("--folds", type=int, default=6)
     ap.add_argument("--jobs", type=int, default=9)
+    ap.add_argument("--sample", type=float, default=1.0,
+                    help="행을 이 비율로 고르게 뽑는다. 표가 크면 스왑에 걸린다")
     ap.add_argument("--out", type=Path,
                     default=ROOT / "outputs/flooded-building-register/storm_count.json")
     a = ap.parse_args()
 
     old = set(json.loads(a.old_events.read_text()))
-    d = pd.read_csv(a.table, usecols=sorted({*USE, "event", "flooded"}), dtype={"event": str})
+    cols = sorted({*USE, "event", "flooded"})
+    dt = {c: "float32" for c in cols if c not in ("event", "flooded")}
+    dt.update({"event": str, "flooded": "int8"})
+    d = pd.read_csv(a.table, usecols=cols, dtype=dt)
+    if a.sample < 1.0:
+        d = d.sample(frac=a.sample, random_state=0)
+        print(f"행을 {a.sample*100:.0f}% 로 줄였다: {len(d):,}행")
     sh = d[d.flooded == 1].groupby("event").rain_6h.apply(lambda s: (s < 1).mean())
     d = d[~d.event.isin(sh[sh >= 0.5].index)]
     d["sewer_density"] = d.sewer_density.fillna(d.sewer_density.median())
